@@ -1,0 +1,17 @@
+version: '3.1'
+
+services:
+
+  mariadb:
+    image: mariadb:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: checkersdb
+      MYSQL_USER: db
+      MYSQL_PASSWORD: 123456
+    ports:
+      - 3306:3306 
+    volumes:
+      - ./mariadb:/etc/mysql/conf.d
+      - ./mariadb/data:/var/lib/mysql
