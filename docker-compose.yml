@@ -3,15 +3,17 @@ version: '3.1'
 services:
 
   mariadb:
-    image: mariadb:latest
+    build: 
+      context: ./mariadb
+      dockerfile: Dockerfile
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD: EypJBYzXAGZ3CoZPANUQ
       MYSQL_DATABASE: checkersdb
-      MYSQL_USER: db
-      MYSQL_PASSWORD: 123456
+      MYSQL_USER: user
+      MYSQL_PASSWORD: EypJBYzXAGZ3CoZPANUQ
     ports:
-      - 3306:3306 
+      - 6000:3306 
     volumes:
-      - ./mariadb:/etc/mysql/conf.d
-      - ./mariadb/data:/var/lib/mysql
+      - ./mariadb/container:/etc/mysql/conf.d
+      - ./mariadb/container/data:/var/lib/mysql
