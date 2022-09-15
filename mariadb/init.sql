@@ -10,7 +10,7 @@ CREATE TABLE accounts(
 
 CREATE TABLE tokens(
     token_id int NOT NULL AUTO_INCREMENT,
-    content varchar(255) NOT NULL,
+    content varchar(1024) NOT NULL,
     token_creation datetime NOT NULL,
     account_id int NOT NULL,
     PRIMARY KEY (token_id),
