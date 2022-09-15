@@ -1,61 +1,56 @@
-require("dotenv").config();
-const jwt = require("jsonwebtoken");
 const express = require("express");
-const app = express();
-const db = require("./db");
+const db = require("../db");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const handleError = require("../error");
 
-app.use(express.json());
+const router = express.Router();
 
-app.post("/account/register", onRegister);
-app.post("/account/login", onLogin);
-app.delete("/account/logout");
-app.delete("/account/delete");
-app.post("/update/refreshToken", onRefreshToken);
-app.post("/update/accessToken", onAccessToken);
+module.exports = router;
 
-app.listen(5000, () => console.log("server_auth listening on port 5000"));
+router.post("/account/register", handleError(onRegister));
+router.post("/account/login", handleError(onLogin));
+router.delete("/account/logout");
+router.delete("/account/delete");
+router.post("/update/refreshToken", onRefreshToken);
+router.post("/update/accessToken", onAccessToken);
 
-async function onLogin(req, res) {
-    if (!req.body.email || !req.body.password) {
-        return res.sendStatus(406);
+async function onLogin(req, res, next) {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    if (!email || !password) {
+        return res.status(400);
     }
 
-    let query_getAccount = "SELECT * FROM accounts WHERE email = ?;";
+    const query_getAccount = "SELECT * FROM accounts WHERE email = ?;";
+    const query_result = await db.query(query_getAccount, [req.body.email]);
 
-    await db
-        .queryPromise(query_getAccount, [req.body.email])
-        .then((rows) => {
-            if (rows.length < 1) {
-                return res.sendStatus(404);
-            }
-            if (rows.length > 1) {
-                return res.sendStatus(500);
-            }
+    if (query_result.length < 1) {
+        return res.sendStatus(404);
+    }
+    if (query_result.length > 1) {
+        throw "Query returned multiple users with same email address";
+    }
 
-            const account = rows[0];
-            const verified = bcrypt.compareSync(
-                req.body.password,
-                account.password
-            );
+    const account = query_result[0];
+    const verified = await bcrypt.compare(req.body.password, account.password);
 
-            if (!verified) {
-                return res.sendStatus(403);
-            }
 
-            const user = {
-                email: req.body.email,
-            };
+    if (!verified) {
+        return res.sendStatus(403);
+    }
 
-            const accessToken = generateAccessToken(user);
-            const refreshToken = generateRefreshToken(user);
+    const user = {
+        email: email,
+    };
 
-            res.json({ accessToken: accessToken, refreshToken: refreshToken });
-        })
-        .catch((err) => {
-            console.log(err);
-            res.sendStatus(500);
-        });
+    const accessToken = await generateAccessToken(user);
+    const refreshToken = await generateRefreshToken(user);
+
+    res.json({ accessToken: accessToken, refreshToken: refreshToken });
+
+    next();
 }
 
 async function onRegister(req, res) {
@@ -66,7 +61,7 @@ async function onRegister(req, res) {
     let query_getAccount = "SELECT * FROM accounts WHERE email = ?;";
 
     await db
-        .queryPromise(query_getAccount, [req.body.email])
+        .query(query_getAccount, [req.body.email])
         .then((rows) => {
             if (rows.length > 0) {
                 return res.sendStatus(409);
@@ -82,10 +77,7 @@ async function onRegister(req, res) {
             const query_insertAccount =
                 "INSERT INTO accounts(email, password, account_creation) VALUES (?,?,NOW());";
 
-            db.queryPromise(query_insertAccount, [
-                req.body.email,
-                hashed_password,
-            ])
+            db.query(query_insertAccount, [req.body.email, hashed_password])
                 .then((rows) => {
                     const accessToken = generateAccessToken(user);
                     const refreshToken = generateRefreshToken(user);
@@ -108,7 +100,7 @@ async function onRegister(req, res) {
 
 async function onRefreshToken(req, res) {
     const refreshToken = req.headers.authorization?.split(" ")[1];
-console.log(refreshToken);
+    console.log(refreshToken);
     if (!refreshToken) return res.sendStatus(403);
 
     const decrypted_token = await verifyRefreshToken(refreshToken);
@@ -125,7 +117,7 @@ console.log(refreshToken);
 
     const query_deleteToken = "DELETE FROM tokens WHERE content = ?;";
 
-    db.queryPromise(query_deleteToken, [refreshToken]).catch((err) =>
+    db.query(query_deleteToken, [refreshToken]).catch((err) =>
         console.log(err)
     );
 
@@ -137,17 +129,20 @@ console.log(refreshToken);
 async function onAccessToken(req, res) {}
 
 async function verifyRefreshToken(token) {
+    const start = performance.now();
     try {
         var decrypted_token = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
     } catch (err) {
         return false;
     }
+    console.log("Token verification time: " + (performance.now()-start));
 
     const query_getToken = "SELECT * FROM tokens WHERE content = ?";
 
-    await db.queryPromise(query_getToken, [token])
+    await db
+        .query(query_getToken, [token])
         .then((rows) => {
-            console.log("ROWS:" +rows);
+            console.log("ROWS:" + rows);
             if (rows.length != 1) {
                 decrypted_token = false;
             }
@@ -160,20 +155,21 @@ async function verifyRefreshToken(token) {
     return decrypted_token;
 }
 
-function generateRefreshToken(user) {
+async function generateRefreshToken(user) {
     const token = jwt.sign(user, process.env.JWT_REFRESH_SECRET, {
         expiresIn: "30d",
     });
     const query_insertToken =
         "INSERT INTO tokens(content, token_creation, account_id) VALUES (?, NOW(), (SELECT account_id FROM accounts WHERE email = ?))";
 
-    db.queryPromise(query_insertToken, [token, user.email]).catch((err) => {
-        console.log(err);
-    });
+    db.query(query_insertToken, [token, user.email]);
 
     return token;
 }
 
-function generateAccessToken(user) {
-    return jwt.sign(user, process.env.JWT_ACCESS_SECRET, { expiresIn: "30m" });
+async function generateAccessToken(user) {
+    const token = jwt.sign(user, process.env.JWT_ACCESS_SECRET, {
+        expiresIn: "30m",
+    });
+    return token;
 }
