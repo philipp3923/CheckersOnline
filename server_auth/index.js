@@ -12,7 +12,7 @@ app.post("/account/login", onLogin);
 app.delete("/account/logout");
 app.delete("/account/delete");
 app.post("/update/refreshToken", onRefreshToken);
-app.post("/update/accessToken");
+app.post("/update/accessToken", onAccessToken);
 
 app.listen(5000, () => console.log("server_auth listening on port 5000"));
 
@@ -46,7 +46,7 @@ async function onLogin(req, res) {
             const user = {
                 email: req.body.email,
             };
-            
+
             const accessToken = generateAccessToken(user);
             const refreshToken = generateRefreshToken(user);
 
@@ -71,7 +71,6 @@ async function onRegister(req, res) {
             if (rows.length > 0) {
                 return res.sendStatus(409);
             }
-            console.log(rows);
 
             const salt = bcrypt.genSaltSync(10);
             const hashed_password = bcrypt.hashSync(req.body.password, salt);
@@ -86,14 +85,20 @@ async function onRegister(req, res) {
             db.queryPromise(query_insertAccount, [
                 req.body.email,
                 hashed_password,
-            ]).catch((err) => {
-                console.log(err);
-            });
+            ])
+                .then((rows) => {
+                    const accessToken = generateAccessToken(user);
+                    const refreshToken = generateRefreshToken(user);
 
-            const accessToken = generateAccessToken(user);
-            const refreshToken = generateRefreshToken(user);
-
-            res.json({ accessToken: accessToken, refreshToken: refreshToken });
+                    res.json({
+                        accessToken: accessToken,
+                        refreshToken: refreshToken,
+                    });
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.sendStatus(500);
+                });
         })
         .catch((err) => {
             console.log(err);
@@ -102,12 +107,59 @@ async function onRegister(req, res) {
 }
 
 async function onRefreshToken(req, res) {
-    const refreshToken = req.body.token;
-    if (refreshToken == null) return res.sendStatus(401);
+    const refreshToken = req.headers.authorization?.split(" ")[1];
+
+    if (!refreshToken) return res.sendStatus(403);
+
+    const decrypted_token = verifyRefreshToken(refreshToken);
+
+    if (!decrypted_token) return res.sendStatus(409);
+
+    console.log(decrypted_token);
+    const user = {
+        email: decrypted_token.email,
+    };
+
+    const newRefreshToken = generateRefreshToken(user);
+
+    const query_deleteToken = "DELETE FROM tokens WHERE content = ?";
+
+    db.queryPromise(query_deleteToken, [refreshToken]).catch((err) =>
+        console.log(err)
+    );
+
+    res.json({
+        refreshToken: newRefreshToken,
+    });
+}
+
+async function onAccessToken(req, res) {}
+
+function verifyRefreshToken(token) {
+    try {
+        var decrypted_token = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+    } catch (err) {
+        return false;
+    }
+
+    const query_getToken = "SELECT * FROM tokens WHERE content = ?";
+
+    db.queryPromise(query_getToken, [token])
+        .then((rows) => {
+            if (rows.length != 1) {
+                decrypted_token = false;
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            decrypted_token = false;
+        });
+
+    return decrypted_token;
 }
 
 function generateRefreshToken(user) {
-    const token = jwt.sign(user, process.env.JWT_ACCESS_SECRET, {
+    const token = jwt.sign(user, process.env.JWT_REFRESH_SECRET, {
         expiresIn: "30d",
     });
     const query_insertToken =
@@ -121,5 +173,5 @@ function generateRefreshToken(user) {
 }
 
 function generateAccessToken(user) {
-    return jwt.sign(user, process.env.JWT_REFRESH_SECRET, { expiresIn: "30m" });
+    return jwt.sign(user, process.env.JWT_ACCESS_SECRET, { expiresIn: "30m" });
 }
