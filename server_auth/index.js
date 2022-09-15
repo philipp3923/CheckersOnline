@@ -108,21 +108,22 @@ async function onRegister(req, res) {
 
 async function onRefreshToken(req, res) {
     const refreshToken = req.headers.authorization?.split(" ")[1];
-
+console.log(refreshToken);
     if (!refreshToken) return res.sendStatus(403);
 
-    const decrypted_token = verifyRefreshToken(refreshToken);
+    const decrypted_token = await verifyRefreshToken(refreshToken);
 
     if (!decrypted_token) return res.sendStatus(409);
 
     console.log(decrypted_token);
+
     const user = {
         email: decrypted_token.email,
     };
 
     const newRefreshToken = generateRefreshToken(user);
 
-    const query_deleteToken = "DELETE FROM tokens WHERE content = ?";
+    const query_deleteToken = "DELETE FROM tokens WHERE content = ?;";
 
     db.queryPromise(query_deleteToken, [refreshToken]).catch((err) =>
         console.log(err)
@@ -135,7 +136,7 @@ async function onRefreshToken(req, res) {
 
 async function onAccessToken(req, res) {}
 
-function verifyRefreshToken(token) {
+async function verifyRefreshToken(token) {
     try {
         var decrypted_token = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
     } catch (err) {
@@ -144,8 +145,9 @@ function verifyRefreshToken(token) {
 
     const query_getToken = "SELECT * FROM tokens WHERE content = ?";
 
-    db.queryPromise(query_getToken, [token])
+    await db.queryPromise(query_getToken, [token])
         .then((rows) => {
+            console.log("ROWS:" +rows);
             if (rows.length != 1) {
                 decrypted_token = false;
             }
