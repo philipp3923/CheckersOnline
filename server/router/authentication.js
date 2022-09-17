@@ -8,12 +8,11 @@ const router = express.Router();
 
 module.exports = router;
 
-router.post("/account/register", handleError(onRegister));
-router.post("/account/login", handleError(onLogin));
-router.delete("/account/logout");
-router.delete("/account/delete");
-router.post("/update/refreshToken", onRefreshToken);
-router.post("/update/accessToken", onAccessToken);
+router.post("/register", handleError(onRegister));
+router.post("/login", handleError(onLogin));
+router.delete("/logout");
+router.post("/update/refreshToken", handleError(onRefreshToken));
+router.post("/update/accessToken", handleError(onAccessToken));
 
 async function onLogin(req, res, next) {
     const email = req.body.email;
@@ -24,18 +23,19 @@ async function onLogin(req, res, next) {
     }
 
     const query_getAccount = "SELECT * FROM accounts WHERE email = ?;";
-    const query_result = await db.query(query_getAccount, [req.body.email]);
+    const result_getAccount = await db.query(query_getAccount, [
+        req.body.email,
+    ]);
 
-    if (query_result.length < 1) {
+    if (result_getAccount.length < 1) {
         return res.sendStatus(404);
     }
-    if (query_result.length > 1) {
+    if (result_getAccount.length > 1) {
         throw "Query returned multiple users with same email address";
     }
 
-    const account = query_result[0];
+    const account = result_getAccount[0];
     const verified = await bcrypt.compare(req.body.password, account.password);
-
 
     if (!verified) {
         return res.sendStatus(403);
@@ -48,72 +48,68 @@ async function onLogin(req, res, next) {
     const accessToken = await generateAccessToken(user);
     const refreshToken = await generateRefreshToken(user);
 
+    cleanUpTokens(user);
+
     res.json({ accessToken: accessToken, refreshToken: refreshToken });
 
     next();
 }
 
-async function onRegister(req, res) {
-    if (!req.body.email || !req.body.password) {
-        return res.sendStatus(406);
+async function onRegister(req, res, next) {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    if (!email || !password) {
+        return res.status(400);
     }
 
-    let query_getAccount = "SELECT * FROM accounts WHERE email = ?;";
+    const query_getAccount = "SELECT * FROM accounts WHERE email = ?;";
 
-    await db
-        .query(query_getAccount, [req.body.email])
-        .then((rows) => {
-            if (rows.length > 0) {
-                return res.sendStatus(409);
-            }
+    const result_getAccount = await db.query(query_getAccount, [email]);
 
-            const salt = bcrypt.genSaltSync(10);
-            const hashed_password = bcrypt.hashSync(req.body.password, salt);
+    if (result_getAccount.length > 0) {
+        return res.sendStatus(409);
+    }
 
-            const user = {
-                email: req.body.email,
-            };
+    const salt = await bcrypt.genSalt(10);
+    const hashed_password = await bcrypt.hash(password, salt);
 
-            const query_insertAccount =
-                "INSERT INTO accounts(email, password, account_creation) VALUES (?,?,NOW());";
+    const user = {
+        email: email,
+    };
 
-            db.query(query_insertAccount, [req.body.email, hashed_password])
-                .then((rows) => {
-                    const accessToken = generateAccessToken(user);
-                    const refreshToken = generateRefreshToken(user);
+    const query_insertAccount =
+        "INSERT INTO accounts(email, password, account_creation) VALUES (?,?,NOW());";
 
-                    res.json({
-                        accessToken: accessToken,
-                        refreshToken: refreshToken,
-                    });
-                })
-                .catch((err) => {
-                    console.log(err);
-                    res.sendStatus(500);
-                });
-        })
-        .catch((err) => {
-            console.log(err);
-            res.sendStatus(500);
-        });
+    const result_insertAccount = await db.query(query_insertAccount, [
+        req.body.email,
+        hashed_password,
+    ]);
+
+    const accessToken = await generateAccessToken(user);
+    const refreshToken = await generateRefreshToken(user);
+
+    res.json({
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+    });
+
+    next();
 }
 
-async function onRefreshToken(req, res) {
+async function onRefreshToken(req, res, next) {
     const refreshToken = req.headers.authorization?.split(" ")[1];
-    console.log(refreshToken);
     if (!refreshToken) return res.sendStatus(403);
 
     const decrypted_token = await verifyRefreshToken(refreshToken);
 
     if (!decrypted_token) return res.sendStatus(409);
 
-    console.log(decrypted_token);
-
     const user = {
         email: decrypted_token.email,
     };
 
-    const newRefreshToken = generateRefreshToken(user);
+    const newRefreshToken = await generateRefreshToken(user);
 
     const query_deleteToken = "DELETE FROM tokens WHERE content = ?;";
 
@@ -124,33 +120,48 @@ async function onRefreshToken(req, res) {
     res.json({
         refreshToken: newRefreshToken,
     });
+
+    next();
 }
 
-async function onAccessToken(req, res) {}
+async function onAccessToken(req, res, next) {
+    const refreshToken = req.headers.authorization?.split(" ")[1];
+    if (!refreshToken) return res.sendStatus(403);
+
+    const decrypted_token = await verifyRefreshToken(refreshToken);
+
+    if (!decrypted_token) return res.sendStatus(409);
+    const user = {
+        email: decrypted_token.email,
+    };
+
+    const newAccessToken = await generateAccessToken(user);
+
+    res.json({
+        accessToken: newAccessToken,
+    });
+
+    next();
+}
 
 async function verifyRefreshToken(token) {
     const start = performance.now();
+
     try {
         var decrypted_token = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
     } catch (err) {
         return false;
     }
-    console.log("Token verification time: " + (performance.now()-start));
+
+    console.log("Token verification time: " + (performance.now() - start));
 
     const query_getToken = "SELECT * FROM tokens WHERE content = ?";
 
-    await db
-        .query(query_getToken, [token])
-        .then((rows) => {
-            console.log("ROWS:" + rows);
-            if (rows.length != 1) {
-                decrypted_token = false;
-            }
-        })
-        .catch((err) => {
-            console.log(err);
-            decrypted_token = false;
-        });
+    const result_getToken = await db.query(query_getToken, [token]);
+
+    if (result_getToken.length != 1) {
+        decrypted_token = false;
+    }
 
     return decrypted_token;
 }
@@ -161,7 +172,7 @@ async function generateRefreshToken(user) {
     });
     const query_insertToken =
         "INSERT INTO tokens(content, token_creation, account_id) VALUES (?, NOW(), (SELECT account_id FROM accounts WHERE email = ?))";
-
+    
     db.query(query_insertToken, [token, user.email]);
 
     return token;
@@ -172,4 +183,17 @@ async function generateAccessToken(user) {
         expiresIn: "30m",
     });
     return token;
+}
+
+async function cleanUpTokens(user){
+    return Promise.resolve().then(async()=>{
+        const query_getTokens = "SELECT content, token_creation FROM tokens WHERE account_id = (SELECT account_id FROM accounts WHERE email = ?)) ORDER BY token_creation;";
+
+        const result_getTokens = await db.query(query_getTokens, [user.email]);
+
+        for(let i = 0; i < result_getTokens.length-process.env.MAX_TOKEN_COUNT; i++){
+
+        }
+
+    });
 }
