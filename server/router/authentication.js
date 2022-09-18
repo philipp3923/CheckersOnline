@@ -10,7 +10,7 @@ module.exports = router;
 
 router.post("/register", handleError(onRegister));
 router.post("/login", handleError(onLogin));
-router.delete("/logout");
+router.post("/logout", handleError(onLogout));
 router.post("/update/refreshToken", handleError(onRefreshToken));
 router.post("/update/accessToken", handleError(onAccessToken));
 
@@ -97,13 +97,32 @@ async function onRegister(req, res, next) {
     next();
 }
 
-async function onRefreshToken(req, res, next) {
+async function onLogout(req, res, next) {
     const refreshToken = req.headers.authorization?.split(" ")[1];
-    if (!refreshToken) return res.sendStatus(403);
+    if (!refreshToken) return res.sendStatus(401);
 
     const decrypted_token = await verifyRefreshToken(refreshToken);
 
-    if (!decrypted_token) return res.sendStatus(409);
+    if (!decrypted_token) return res.sendStatus(403);
+    
+    const query_deleteToken = "DELETE FROM tokens WHERE content = ?;";
+
+    db.query(query_deleteToken, [refreshToken]);
+
+    res.sendStatus(200);
+
+    next();
+}
+
+async function onRefreshToken(req, res, next) {
+    const refreshToken = req.headers.authorization?.split(" ")[1];
+    if (!refreshToken) return res.sendStatus(401);
+
+    const decrypted_token = await verifyRefreshToken(refreshToken);
+
+    if (!decrypted_token) return res.sendStatus(403);
+
+    console.log(decrypted_token);
 
     const user = {
         email: decrypted_token.email,
@@ -113,9 +132,7 @@ async function onRefreshToken(req, res, next) {
 
     const query_deleteToken = "DELETE FROM tokens WHERE content = ?;";
 
-    db.query(query_deleteToken, [refreshToken]).catch((err) =>
-        console.log(err)
-    );
+    db.query(query_deleteToken, [refreshToken]);
 
     res.json({
         refreshToken: newRefreshToken,
@@ -126,11 +143,11 @@ async function onRefreshToken(req, res, next) {
 
 async function onAccessToken(req, res, next) {
     const refreshToken = req.headers.authorization?.split(" ")[1];
-    if (!refreshToken) return res.sendStatus(403);
+    if (!refreshToken) return res.sendStatus(401);
 
     const decrypted_token = await verifyRefreshToken(refreshToken);
 
-    if (!decrypted_token) return res.sendStatus(409);
+    if (!decrypted_token) return res.sendStatus(403);
     const user = {
         email: decrypted_token.email,
     };
@@ -145,15 +162,11 @@ async function onAccessToken(req, res, next) {
 }
 
 async function verifyRefreshToken(token) {
-    const start = performance.now();
-
     try {
         var decrypted_token = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
     } catch (err) {
         return false;
     }
-
-    console.log("Token verification time: " + (performance.now() - start));
 
     const query_getToken = "SELECT * FROM tokens WHERE content = ?";
 
@@ -172,7 +185,7 @@ async function generateRefreshToken(user) {
     });
     const query_insertToken =
         "INSERT INTO tokens(content, token_creation, account_id) VALUES (?, NOW(), (SELECT account_id FROM accounts WHERE email = ?))";
-    
+
     db.query(query_insertToken, [token, user.email]);
 
     return token;
@@ -185,15 +198,21 @@ async function generateAccessToken(user) {
     return token;
 }
 
-async function cleanUpTokens(user){
-    return Promise.resolve().then(async()=>{
-        const query_getTokens = "SELECT content, token_creation FROM tokens WHERE account_id = (SELECT account_id FROM accounts WHERE email = ?)) ORDER BY token_creation;";
+async function cleanUpTokens(user) {
+    return Promise.resolve().then(async () => {
+        const query_getTokens =
+            "SELECT content, token_creation FROM tokens WHERE account_id = (SELECT account_id FROM accounts WHERE email = ?) ORDER BY token_creation;";
 
         const result_getTokens = await db.query(query_getTokens, [user.email]);
 
-        for(let i = 0; i < result_getTokens.length-process.env.MAX_TOKEN_COUNT; i++){
+        for (
+            let i = 0;
+            i < result_getTokens.length - process.env.MAX_TOKEN_COUNT;
+            i++
+        ) {
+            const query_deleteToken = "DELETE FROM tokens WHERE content = ?;";
 
+            db.query(query_deleteToken, [result_getTokens[i].content]);
         }
-
     });
 }
