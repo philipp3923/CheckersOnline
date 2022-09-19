@@ -1,12 +1,12 @@
 const express = require("express");
-const db = require("../db");
+const db = require("../database/connection");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+
 const handleError = require("../error");
+const verifyTokens = require("../tokens/verify");
+const generateTokens = require("../tokens/generate");
 
 const router = express.Router();
-
-module.exports = router;
 
 router.post("/register", handleError(onRegister));
 router.post("/login", handleError(onLogin));
@@ -45,8 +45,8 @@ async function onLogin(req, res, next) {
         email: email,
     };
 
-    const accessToken = await generateAccessToken(user);
-    const refreshToken = await generateRefreshToken(user);
+    const accessToken = await generateTokens.generateAccessToken(user);
+    const refreshToken = await generateTokens.generateRefreshToken(user);
 
     cleanUpTokens(user);
 
@@ -86,8 +86,8 @@ async function onRegister(req, res, next) {
         hashed_password,
     ]);
 
-    const accessToken = await generateAccessToken(user);
-    const refreshToken = await generateRefreshToken(user);
+    const accessToken = await generateTokens.generateAccessToken(user);
+    const refreshToken = await generateTokens.generateRefreshToken(user);
 
     res.json({
         accessToken: accessToken,
@@ -101,7 +101,7 @@ async function onLogout(req, res, next) {
     const refreshToken = req.headers.authorization?.split(" ")[1];
     if (!refreshToken) return res.sendStatus(401);
 
-    const decrypted_token = await verifyRefreshToken(refreshToken);
+    const decrypted_token = await verifyTokens.verifyRefreshToken(refreshToken);
 
     if (!decrypted_token) return res.sendStatus(403);
     
@@ -118,17 +118,15 @@ async function onRefreshToken(req, res, next) {
     const refreshToken = req.headers.authorization?.split(" ")[1];
     if (!refreshToken) return res.sendStatus(401);
 
-    const decrypted_token = await verifyRefreshToken(refreshToken);
+    const decrypted_token = await verifyTokens.verifyRefreshToken(refreshToken);
 
     if (!decrypted_token) return res.sendStatus(403);
-
-    console.log(decrypted_token);
 
     const user = {
         email: decrypted_token.email,
     };
 
-    const newRefreshToken = await generateRefreshToken(user);
+    const newRefreshToken = await generateTokens.generateRefreshToken(user);
 
     const query_deleteToken = "DELETE FROM tokens WHERE content = ?;";
 
@@ -145,57 +143,21 @@ async function onAccessToken(req, res, next) {
     const refreshToken = req.headers.authorization?.split(" ")[1];
     if (!refreshToken) return res.sendStatus(401);
 
-    const decrypted_token = await verifyRefreshToken(refreshToken);
+    const decrypted_token = await verifyTokens.verifyRefreshToken(refreshToken);
 
     if (!decrypted_token) return res.sendStatus(403);
+
     const user = {
         email: decrypted_token.email,
     };
 
-    const newAccessToken = await generateAccessToken(user);
+    const newAccessToken = await generateTokens.generateAccessToken(user);
 
     res.json({
         accessToken: newAccessToken,
     });
 
     next();
-}
-
-async function verifyRefreshToken(token) {
-    try {
-        var decrypted_token = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
-    } catch (err) {
-        return false;
-    }
-
-    const query_getToken = "SELECT * FROM tokens WHERE content = ?";
-
-    const result_getToken = await db.query(query_getToken, [token]);
-
-    if (result_getToken.length != 1) {
-        decrypted_token = false;
-    }
-
-    return decrypted_token;
-}
-
-async function generateRefreshToken(user) {
-    const token = jwt.sign(user, process.env.JWT_REFRESH_SECRET, {
-        expiresIn: "30d",
-    });
-    const query_insertToken =
-        "INSERT INTO tokens(content, token_creation, account_id) VALUES (?, NOW(), (SELECT account_id FROM accounts WHERE email = ?))";
-
-    db.query(query_insertToken, [token, user.email]);
-
-    return token;
-}
-
-async function generateAccessToken(user) {
-    const token = jwt.sign(user, process.env.JWT_ACCESS_SECRET, {
-        expiresIn: "30m",
-    });
-    return token;
 }
 
 async function cleanUpTokens(user) {
@@ -216,3 +178,5 @@ async function cleanUpTokens(user) {
         }
     });
 }
+
+module.exports = router;

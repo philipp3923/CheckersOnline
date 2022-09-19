@@ -3,7 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 
-const authRouter = require("./router/authentication");
+const authRouter = require("./routes/authentication");
 
 app.use(express.json());
 
@@ -15,9 +15,11 @@ app.use((err, req, res, next) => {
     }
 
     console.log("====================");
+    console.table(req);
+    console.log("--------------------");
     console.log(err);
     console.log("====================");
     res.status(500);
 });
 
-app.listen(5000, () => console.log("server_auth listening on port 5000"));
+app.listen(5000, () => console.log("server listening on port 5000"));
