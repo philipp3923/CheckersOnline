@@ -1,12 +1,14 @@
 require("dotenv").config();
 
+const http = require("http");
 const express = require("express");
+
 const app = express();
-
-const server = require("http").createServer(app);
-const io = require('socket.io')(server);
-
 const authRouter = require("./routes/authentication");
+
+const server = http.createServer(app);
+const {Server} = require("socket.io");
+const io = new Server(server);
 
 const onConnection = require("./sockets/connection");
 
@@ -29,6 +31,8 @@ app.use((err, req, res, next) => {
 
 // socketio init
 
-io.on('connection', (socket) => onConnection(io,socket));
+io.on("connection", (socket) => {
+    onConnection(io, socket);
+});
 
-app.listen(5000, () => console.log("server listening on port 5000"));
+server.listen(5000, () => console.log("server listening on port 5000"));
