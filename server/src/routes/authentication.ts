@@ -1,11 +1,10 @@
 import {NextFunction, Request, Response} from "express";
-import User from "../interfaces/User";
 import {MAX_TOKEN_COUNT} from "../env";
 import {generateAccessToken, generateRefreshToken} from "../tokens/generate";
 import {verifyRefreshToken} from "../tokens/verify";
 import {query} from "../database/connection";
-import Account from "../interfaces/sql/Account";
-import Token from "../interfaces/sql/Token";
+import Account from "../types/sql/Account";
+import Token from "../types/sql/Token";
 import {compare, genSalt, hash} from "bcrypt";
 
 const express = require("express");

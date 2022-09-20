@@ -1,5 +1,3 @@
-import User from "../interfaces/User";
-
 const db = require("../database/connection");
 const jwt = require("jsonwebtoken");
 

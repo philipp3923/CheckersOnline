@@ -1,6 +1,7 @@
 import {verifyAccessToken} from "../tokens/verify";
+import {NextFunction, Request, Response} from "express";
 
-export default async function requireAuthentication(req, res, next) {
+export default async function requireAuthentication(req: Request, res: Response, next: NextFunction) {
     const accessToken = req.headers.authorization?.split(" ")[1];
     if (!accessToken) return res.sendStatus(401);
 

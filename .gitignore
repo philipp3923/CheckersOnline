@@ -3,3 +3,4 @@ mariadb/container
 *.idea
 */src/*.js
 *.rest
+server/build
