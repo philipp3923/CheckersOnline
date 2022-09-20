@@ -1,15 +1,16 @@
+import User from "../interfaces/User";
+
 const db = require("../database/connection");
 const jwt = require("jsonwebtoken");
 
-async function generateAccessToken(user) {
-    const token = jwt.sign(user, process.env.JWT_ACCESS_SECRET, {
+export async function generateAccessToken(user: User) {
+    return jwt.sign(user, process.env.JWT_ACCESS_SECRET, {
         expiresIn: "30m",
     });
-    return token;
 }
 
-async function generateRefreshToken(user) {
-    const token = jwt.sign(user, process.env.JWT_REFRESH_SECRET, {
+export async function generateRefreshToken(user: User) {
+    const token: string = jwt.sign(user, process.env.JWT_REFRESH_SECRET, {
         expiresIn: "30d",
     });
     const query_insertToken =
@@ -19,5 +20,3 @@ async function generateRefreshToken(user) {
 
     return token;
 }
-
-module.exports = {generateRefreshToken, generateAccessToken};

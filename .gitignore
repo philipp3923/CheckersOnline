@@ -1,4 +1,5 @@
 */node_modules
-mariadb/container/
-
+mariadb/container
+*.idea
+*/src/*.js
 *.rest
