@@ -13,7 +13,9 @@ export async function verifyRefreshToken(token: string) {
 
     const query_getToken = "SELECT * FROM tokens WHERE content = ?";
 
-    const result_getToken = await db.query(query_getToken, [token]);
+    const result_getToken = await db.query(query_getToken, [token]).catch((err: Error) => {
+        console.log(err);
+    });
 
     if (result_getToken.length != 1) {
         return null;

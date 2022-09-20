@@ -1,5 +1,5 @@
 import {MysqlError} from "mysql";
-import {MARIADB_DB, MARIADB_HOST, MARIADB_PASSWORD, MARIADB_PORT, MARIADB_USER} from "../env";
+import {MARIADB_DATABASE, MARIADB_HOST, MARIADB_PASSWORD, MARIADB_PORT, MARIADB_USER} from "../env";
 
 const mysql = require("mysql");
 
@@ -7,7 +7,7 @@ const pool = mysql.createPool({
     host: MARIADB_HOST,
     port: MARIADB_PORT,
     user: MARIADB_USER,
-    database: MARIADB_DB,
+    database: MARIADB_DATABASE,
     password: MARIADB_PASSWORD,
 });
 
