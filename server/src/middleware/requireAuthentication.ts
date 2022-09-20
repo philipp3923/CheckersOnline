@@ -1,12 +1,12 @@
-const jwt = require("jsonwebtoken");
+import {verifyAccessToken} from "../tokens/verify";
 
-function requireAuthentication(req, res, next) {
+export default async function requireAuthentication(req, res, next) {
     const accessToken = req.headers.authorization?.split(" ")[1];
     if (!accessToken) return res.sendStatus(401);
 
-    try {
-        var decrypted_token = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
-    } catch (err) {
+    const decrypted_token = await verifyAccessToken(accessToken);
+
+    if (decrypted_token === null) {
         return res.sendStatus(403);
     }
 
@@ -18,5 +18,3 @@ function requireAuthentication(req, res, next) {
 
     next();
 }
-
-module.exports = requireAuthentication;

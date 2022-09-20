@@ -1,20 +1,24 @@
-const express = require("express");
-const db = require("../database/connection");
-const bcrypt = require("bcrypt");
+import {NextFunction, Request, Response} from "express";
+import User from "../interfaces/User";
+import {MAX_TOKEN_COUNT} from "../env";
+import {generateAccessToken, generateRefreshToken} from "../tokens/generate";
+import {verifyRefreshToken} from "../tokens/verify";
+import {query} from "../database/connection";
+import Account from "../interfaces/sql/Account";
+import Token from "../interfaces/sql/Token";
 
-const handleError = require("../error");
-const verifyTokens = require("../tokens/verify");
-const generateTokens = require("../tokens/generate");
+const express = require("express");
+const bcrypt = require("bcrypt");
 
 const router = express.Router();
 
-router.post("/register", handleError(onRegister));
-router.post("/login", handleError(onLogin));
-router.post("/logout", handleError(onLogout));
-router.post("/update/refreshToken", handleError(onRefreshToken));
-router.post("/update/accessToken", handleError(onAccessToken));
+router.post("/register", onRegister);
+router.post("/login", onLogin);
+router.post("/logout", onLogout);
+router.post("/update/refreshToken", onRefreshToken);
+router.post("/update/accessToken", onAccessToken);
 
-async function onLogin(req, res, next) {
+async function onLogin(req: Request, res: Response, next: NextFunction) {
     const email = req.body.email;
     const password = req.body.password;
 
@@ -23,7 +27,7 @@ async function onLogin(req, res, next) {
     }
 
     const query_getAccount = "SELECT * FROM accounts WHERE email = ?;";
-    const result_getAccount = await db.query(query_getAccount, [
+    const result_getAccount= <Account[]> await query(query_getAccount, [
         req.body.email,
     ]);
 
@@ -45,17 +49,17 @@ async function onLogin(req, res, next) {
         email: email,
     };
 
-    const accessToken = await generateTokens.generateAccessToken(user);
-    const refreshToken = await generateTokens.generateRefreshToken(user);
+    const accessToken = await generateAccessToken(user);
+    const refreshToken = await generateRefreshToken(user);
 
     cleanUpTokens(user);
 
-    res.json({ accessToken: accessToken, refreshToken: refreshToken });
+    res.json({accessToken: accessToken, refreshToken: refreshToken});
 
     next();
 }
 
-async function onRegister(req, res, next) {
+async function onRegister(req: Request, res: Response, next: NextFunction) {
     const email = req.body.email;
     const password = req.body.password;
 
@@ -65,7 +69,7 @@ async function onRegister(req, res, next) {
 
     const query_getAccount = "SELECT * FROM accounts WHERE email = ?;";
 
-    const result_getAccount = await db.query(query_getAccount, [email]);
+    const result_getAccount = await query(query_getAccount, [email]);
 
     if (result_getAccount.length > 0) {
         return res.sendStatus(409);
@@ -81,13 +85,13 @@ async function onRegister(req, res, next) {
     const query_insertAccount =
         "INSERT INTO accounts(email, password, account_creation) VALUES (?,?,NOW());";
 
-    const result_insertAccount = await db.query(query_insertAccount, [
+    await query(query_insertAccount, [
         req.body.email,
         hashed_password,
     ]);
 
-    const accessToken = await generateTokens.generateAccessToken(user);
-    const refreshToken = await generateTokens.generateRefreshToken(user);
+    const accessToken = await generateAccessToken(user);
+    const refreshToken = await generateRefreshToken(user);
 
     res.json({
         accessToken: accessToken,
@@ -97,28 +101,28 @@ async function onRegister(req, res, next) {
     next();
 }
 
-async function onLogout(req, res, next) {
+async function onLogout(req: Request, res: Response, next: NextFunction) {
     const refreshToken = req.headers.authorization?.split(" ")[1];
     if (!refreshToken) return res.sendStatus(401);
 
-    const decrypted_token = await verifyTokens.verifyRefreshToken(refreshToken);
+    const decrypted_token = await verifyRefreshToken(refreshToken);
 
     if (!decrypted_token) return res.sendStatus(403);
-    
+
     const query_deleteToken = "DELETE FROM tokens WHERE content = ?;";
 
-    db.query(query_deleteToken, [refreshToken]);
+    query(query_deleteToken, [refreshToken]);
 
     res.sendStatus(200);
 
     next();
 }
 
-async function onRefreshToken(req, res, next) {
+async function onRefreshToken(req: Request, res: Response, next: NextFunction) {
     const refreshToken = req.headers.authorization?.split(" ")[1];
     if (!refreshToken) return res.sendStatus(401);
 
-    const decrypted_token = await verifyTokens.verifyRefreshToken(refreshToken);
+    const decrypted_token = await verifyRefreshToken(refreshToken);
 
     if (!decrypted_token) return res.sendStatus(403);
 
@@ -126,11 +130,11 @@ async function onRefreshToken(req, res, next) {
         email: decrypted_token.email,
     };
 
-    const newRefreshToken = await generateTokens.generateRefreshToken(user);
+    const newRefreshToken = await generateRefreshToken(user);
 
     const query_deleteToken = "DELETE FROM tokens WHERE content = ?;";
 
-    db.query(query_deleteToken, [refreshToken]);
+    query(query_deleteToken, [refreshToken]);
 
     res.json({
         refreshToken: newRefreshToken,
@@ -139,11 +143,11 @@ async function onRefreshToken(req, res, next) {
     next();
 }
 
-async function onAccessToken(req, res, next) {
+async function onAccessToken(req: Request, res: Response, next: NextFunction) {
     const refreshToken = req.headers.authorization?.split(" ")[1];
     if (!refreshToken) return res.sendStatus(401);
 
-    const decrypted_token = await verifyTokens.verifyRefreshToken(refreshToken);
+    const decrypted_token = await verifyRefreshToken(refreshToken);
 
     if (!decrypted_token) return res.sendStatus(403);
 
@@ -151,7 +155,7 @@ async function onAccessToken(req, res, next) {
         email: decrypted_token.email,
     };
 
-    const newAccessToken = await generateTokens.generateAccessToken(user);
+    const newAccessToken = await generateAccessToken(user);
 
     res.json({
         accessToken: newAccessToken,
@@ -160,21 +164,21 @@ async function onAccessToken(req, res, next) {
     next();
 }
 
-async function cleanUpTokens(user) {
+async function cleanUpTokens(user: User) {
     return Promise.resolve().then(async () => {
         const query_getTokens =
             "SELECT content, token_creation FROM tokens WHERE account_id = (SELECT account_id FROM accounts WHERE email = ?) ORDER BY token_creation;";
 
-        const result_getTokens = await db.query(query_getTokens, [user.email]);
+        const result_getTokens = <Token[]> await query(query_getTokens, [user.email]);
 
         for (
             let i = 0;
-            i < result_getTokens.length - process.env.MAX_TOKEN_COUNT;
+            i < result_getTokens.length - MAX_TOKEN_COUNT;
             i++
         ) {
             const query_deleteToken = "DELETE FROM tokens WHERE content = ?;";
 
-            db.query(query_deleteToken, [result_getTokens[i].content]);
+            query(query_deleteToken, [result_getTokens[i].content]);
         }
     });
 }
