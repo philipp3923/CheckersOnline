@@ -1,6 +1,5 @@
 import {verifyAccessToken} from "../tokens/verify";
 import {NextFunction, Request, Response} from "express";
-import {Socket} from "socket.io";
 
 export async function requireAuthentication_Express(req: Request, res: Response, next: NextFunction) {
     const accessToken = req.headers.authorization?.split(" ")[1];
@@ -19,7 +18,7 @@ export async function requireAuthentication_Express(req: Request, res: Response,
     next();
 }
 
-export async function requireAuthentication_Socket(socket: Socket, next: Function) {
+export async function requireAuthentication_Socket(socket: AuthSocket, next: Function) {
     const accessToken = socket.handshake.auth.token;
     if (!accessToken) {
         const err = new Error("401");
@@ -35,9 +34,7 @@ export async function requireAuthentication_Socket(socket: Socket, next: Functio
         return;
     }
 
-    console.log(decrypted_token);
-
-    const user: User = {
+    socket.user = {
         email: decrypted_token.email,
     };
 

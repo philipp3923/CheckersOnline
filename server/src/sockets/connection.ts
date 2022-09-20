@@ -1,5 +1,5 @@
-import {Server,Socket} from "socket.io";
+import {Server} from "socket.io";
 
-export default async function connection(io: Server, socket: Socket) {
-    console.log("CONNECTED");
+export default async function connection(io: Server, socket: AuthSocket) {
+    console.log(socket.user);
 }
