@@ -1,14 +1,14 @@
 import {Socket, Server} from "socket.io";
+import authRouter from "./routes/authentication";
+import {createServer} from "http";
 
 require("dotenv").config();
 
-const http = require("http");
 const express = require("express");
 
 const app = express();
-const authRouter = require("./routes/authentication");
 
-const server = http.createServer(app);
+const server = createServer(app);
 const io = new Server(server);
 
 const onConnection = require("./sockets/connection");

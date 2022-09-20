@@ -6,10 +6,9 @@ import {verifyRefreshToken} from "../tokens/verify";
 import {query} from "../database/connection";
 import Account from "../interfaces/sql/Account";
 import Token from "../interfaces/sql/Token";
+import {compare, genSalt, hash} from "bcrypt";
 
 const express = require("express");
-const bcrypt = require("bcrypt");
-
 const router = express.Router();
 
 router.post("/register", onRegister);
@@ -39,7 +38,7 @@ async function onLogin(req: Request, res: Response, next: NextFunction) {
     }
 
     const account = result_getAccount[0];
-    const verified = await bcrypt.compare(req.body.password, account.password);
+    const verified = await compare(req.body.password, account.password);
 
     if (!verified) {
         return res.sendStatus(403);
@@ -75,8 +74,8 @@ async function onRegister(req: Request, res: Response, next: NextFunction) {
         return res.sendStatus(409);
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashed_password = await bcrypt.hash(password, salt);
+    const salt = await genSalt(10);
+    const hashed_password = await hash(password, salt);
 
     const user = {
         email: email,
@@ -183,4 +182,4 @@ async function cleanUpTokens(user: User) {
     });
 }
 
-module.exports = router;
+export default router;
