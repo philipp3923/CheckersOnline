@@ -1,3 +1,5 @@
+import GameHandler from "./checkers/GameHandler";
+
 require("dotenv").config();
 
 import socketConnection from "./sockets/SocketConnection";
@@ -12,6 +14,7 @@ const app = express();
 
 const server = createServer(app);
 const io = new Server(server);
+const gameHandler = new GameHandler();
 
 app.use(express.json());
 
@@ -22,7 +25,7 @@ app.use("/auth", authRouter);
 io.use(requireAuthentication_Socket);
 
 io.on("connection", (socket: Socket) => {
-    socketConnection(io, socket);
+    socketConnection(io, socket, gameHandler);
 });
 
 server.listen(5000, () => console.log("server listening on port 5000"));
