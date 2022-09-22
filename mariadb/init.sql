@@ -1,8 +1,9 @@
 CREATE TABLE accounts(
     account_id int NOT NULL AUTO_INCREMENT,
     email varchar(255),
+    username varchar(255),
     password varchar(255),
-    last_login datetime,
+    last_login datetime NOT NULL,
     account_creation datetime NOT NULL,
     email_verified BOOLEAN DEFAULT false,
     PRIMARY KEY (account_id)

@@ -1,10 +1,10 @@
 require("dotenv").config();
 
-import connection from "./sockets/connection";
+import socketConnection from "./sockets/SocketConnection";
 import {Socket, Server} from "socket.io";
-import authRouter from "./routes/authentication";
+import authRouter from "./routes/Authentication";
 import {createServer} from "http";
-import {requireAuthentication_Socket} from "./middleware/requireAuthentication";
+import {requireAuthentication_Socket} from "./middleware/RequireAuthentication";
 
 const express = require("express");
 
@@ -22,7 +22,7 @@ app.use("/auth", authRouter);
 io.use(requireAuthentication_Socket);
 
 io.on("connection", (socket: Socket) => {
-    connection(io, socket);
+    socketConnection(io, socket);
 });
 
 server.listen(5000, () => console.log("server listening on port 5000"));

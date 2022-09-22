@@ -2,10 +2,9 @@ import {NextFunction, Request, Response} from "express";
 import {MAX_TOKEN_COUNT} from "../env";
 import {generateAccessToken, generateRefreshToken} from "../tokens/generate";
 import {verifyRefreshToken} from "../tokens/verify";
-import {query} from "../database/connection";
-import Account from "../types/sql/Account";
-import Token from "../types/sql/Token";
+import {query} from "../database/SQLConnection";
 import {compare, genSalt, hash} from "bcrypt";
+import tokenToUser from "../utils/TokenToUser";
 
 const express = require("express");
 const router = express.Router();
@@ -15,6 +14,23 @@ router.post("/login", onLogin);
 router.post("/logout", onLogout);
 router.post("/update/refreshToken", onRefreshToken);
 router.post("/update/accessToken", onAccessToken);
+router.get("/username_available", onUsernameAvailable);
+
+async function onUsernameAvailable(req: Request, res: Response, next: NextFunction) {
+    const username = req.body.username;
+
+    if (!username) {
+        return res.status(400);
+    }
+
+    const query_getAccount = "SELECT * FROM accounts WHERE username = ?;";
+    const result_getAccount = <Connection.Account[]>await query(query_getAccount, [
+        username,
+    ]);
+
+    return res.json({exists: result_getAccount.length > 0});
+
+}
 
 async function onLogin(req: Request, res: Response, next: NextFunction) {
     const email = req.body.email;
@@ -25,8 +41,8 @@ async function onLogin(req: Request, res: Response, next: NextFunction) {
     }
 
     const query_getAccount = "SELECT * FROM accounts WHERE email = ?;";
-    const result_getAccount= <Account[]> await query(query_getAccount, [
-        req.body.email,
+    const result_getAccount = <Connection.Account[]>await query(query_getAccount, [
+        email,
     ]);
 
     if (result_getAccount.length < 1) {
@@ -37,20 +53,28 @@ async function onLogin(req: Request, res: Response, next: NextFunction) {
     }
 
     const account = result_getAccount[0];
-    const verified = await compare(req.body.password, account.password);
+    const verified = await compare(password, account.password);
 
     if (!verified) {
         return res.sendStatus(403);
     }
 
-    const user = {
+    const user: User = {
         email: email,
+        username: account.username,
     };
 
     const accessToken = await generateAccessToken(user);
     const refreshToken = await generateRefreshToken(user);
 
     cleanUpTokens(user);
+
+    const query_updateAccount =
+        "UPDATE accounts SET last_login = NOW() WHERE email = ?;";
+
+    query(query_updateAccount, [
+        email
+    ]);
 
     res.json({accessToken: accessToken, refreshToken: refreshToken});
 
@@ -60,14 +84,15 @@ async function onLogin(req: Request, res: Response, next: NextFunction) {
 async function onRegister(req: Request, res: Response, next: NextFunction) {
     const email = req.body.email;
     const password = req.body.password;
+    const username = req.body.username;
 
-    if (!email || !password) {
+    if (!email || !password || !username) {
         return res.status(400);
     }
 
-    const query_getAccount = "SELECT * FROM accounts WHERE email = ?;";
+    const query_getAccount = "SELECT * FROM accounts WHERE email = ? OR username = ?;";
 
-    const result_getAccount = await query(query_getAccount, [email]);
+    const result_getAccount = await query(query_getAccount, [email, username]);
 
     if (result_getAccount.length > 0) {
         return res.sendStatus(409);
@@ -76,15 +101,17 @@ async function onRegister(req: Request, res: Response, next: NextFunction) {
     const salt = await genSalt(10);
     const hashed_password = await hash(password, salt);
 
-    const user = {
+    const user: User = {
         email: email,
+        username: username,
     };
 
     const query_insertAccount =
-        "INSERT INTO accounts(email, password, account_creation) VALUES (?,?,NOW());";
+        "INSERT INTO accounts(email, username, password, account_creation, last_login) VALUES (?,?,?,NOW(), NOW());";
 
     await query(query_insertAccount, [
-        req.body.email,
+        email,
+        username,
         hashed_password,
     ]);
 
@@ -124,9 +151,7 @@ async function onRefreshToken(req: Request, res: Response, next: NextFunction) {
 
     if (!decrypted_token) return res.sendStatus(403);
 
-    const user = {
-        email: decrypted_token.email,
-    };
+    const user = tokenToUser(decrypted_token);
 
     const newRefreshToken = await generateRefreshToken(user);
 
@@ -149,9 +174,7 @@ async function onAccessToken(req: Request, res: Response, next: NextFunction) {
 
     if (!decrypted_token) return res.sendStatus(403);
 
-    const user = {
-        email: decrypted_token.email,
-    };
+    const user: User = tokenToUser(decrypted_token);
 
     const newAccessToken = await generateAccessToken(user);
 
@@ -167,7 +190,7 @@ async function cleanUpTokens(user: User) {
         const query_getTokens =
             "SELECT content, token_creation FROM tokens WHERE account_id = (SELECT account_id FROM accounts WHERE email = ?) ORDER BY token_creation;";
 
-        const result_getTokens = <Token[]> await query(query_getTokens, [user.email]);
+        const result_getTokens = <Connection.Token[]>await query(query_getTokens, [user.email]);
 
         for (
             let i = 0;

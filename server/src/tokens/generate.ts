@@ -1,4 +1,4 @@
-const db = require("../database/connection");
+const db = require("../database/SQLConnection");
 const jwt = require("jsonwebtoken");
 
 export async function generateAccessToken(user: User) {

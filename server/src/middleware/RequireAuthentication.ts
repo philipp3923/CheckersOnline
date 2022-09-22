@@ -1,5 +1,6 @@
 import {verifyAccessToken} from "../tokens/verify";
 import {NextFunction, Request, Response} from "express";
+import tokenToUser from "../utils/TokenToUser";
 
 export async function requireAuthentication_Express(req: Request, res: Response, next: NextFunction) {
     const accessToken = req.headers.authorization?.split(" ")[1];
@@ -11,9 +12,7 @@ export async function requireAuthentication_Express(req: Request, res: Response,
         return res.sendStatus(403);
     }
 
-    req.user = {
-        email: decrypted_token.email,
-    };
+    req.user = tokenToUser(decrypted_token);
 
     next();
 }
@@ -34,9 +33,7 @@ export async function requireAuthentication_Socket(socket: AuthSocket, next: Fun
         return;
     }
 
-    socket.user = {
-        email: decrypted_token.email,
-    };
+    socket.user = tokenToUser(decrypted_token);
 
     next();
 }

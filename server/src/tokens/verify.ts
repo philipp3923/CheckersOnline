@@ -1,9 +1,9 @@
 import {JwtPayload} from "jsonwebtoken";
 
-const db = require("../database/connection");
+const db = require("../database/SQLConnection");
 const jwt = require("jsonwebtoken");
 
-export async function verifyRefreshToken(token: string) {
+export async function verifyRefreshToken(token: string): Promise<Tokens.JSON | null> {
     let decrypted_token: JwtPayload;
     try {
         decrypted_token = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
@@ -21,12 +21,12 @@ export async function verifyRefreshToken(token: string) {
         return null;
     }
 
-    return decrypted_token;
+    return <Tokens.JSON> decrypted_token;
 }
 
-export async function verifyAccessToken(token: string) {
+export async function verifyAccessToken(token: string): Promise<Tokens.JSON | null> {
     try {
-        return jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+        return <Tokens.JSON> jwt.verify(token, process.env.JWT_ACCESS_SECRET);
     } catch (err) {
         return null;
     }
