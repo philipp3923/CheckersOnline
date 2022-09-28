@@ -37,6 +37,7 @@ declare global {
         username: string
     }
 
+
     namespace Checkers {
 
         interface Player {

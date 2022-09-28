@@ -9,14 +9,14 @@ import tokenToUser from "../utils/TokenToUser";
 const express = require("express");
 const router = express.Router();
 
-router.post("/register", onRegister);
-router.post("/login", onLogin);
-router.post("/logout", onLogout);
-router.post("/update/refreshToken", onRefreshToken);
-router.post("/update/accessToken", onAccessToken);
-router.get("/username_available", onUsernameAvailable);
+router.post("/register", post_register);
+router.post("/login", post_login);
+router.post("/logout", post_logout);
+router.post("/update/refresh_token", post_refreshToken);
+router.post("/update/access_token", post_accessToken);
+router.get("/username_available", get_usernameAvailable);
 
-async function onUsernameAvailable(req: Request, res: Response, next: NextFunction) {
+async function get_usernameAvailable(req: Request, res: Response, next: NextFunction) {
     const username = req.body.username;
 
     if (!username) {
@@ -28,11 +28,12 @@ async function onUsernameAvailable(req: Request, res: Response, next: NextFuncti
         username,
     ]);
 
-    return res.json({exists: result_getAccount.length > 0});
+    res.json({exists: result_getAccount.length > 0});
 
+    next();
 }
 
-async function onLogin(req: Request, res: Response, next: NextFunction) {
+async function post_login(req: Request, res: Response, next: NextFunction) {
     const email = req.body.email;
     const password = req.body.password;
 
@@ -76,12 +77,12 @@ async function onLogin(req: Request, res: Response, next: NextFunction) {
         email
     ]);
 
-    res.json({accessToken: accessToken, refreshToken: refreshToken});
+    res.json({accessToken: accessToken, refreshToken: refreshToken, username: user.username});
 
     next();
 }
 
-async function onRegister(req: Request, res: Response, next: NextFunction) {
+async function post_register(req: Request, res: Response, next: NextFunction) {
     const email = req.body.email;
     const password = req.body.password;
     const username = req.body.username;
@@ -121,12 +122,13 @@ async function onRegister(req: Request, res: Response, next: NextFunction) {
     res.json({
         accessToken: accessToken,
         refreshToken: refreshToken,
+        username: user.username
     });
 
     next();
 }
 
-async function onLogout(req: Request, res: Response, next: NextFunction) {
+async function post_logout(req: Request, res: Response, next: NextFunction) {
     const refreshToken = req.headers.authorization?.split(" ")[1];
     if (!refreshToken) return res.sendStatus(401);
 
@@ -143,7 +145,7 @@ async function onLogout(req: Request, res: Response, next: NextFunction) {
     next();
 }
 
-async function onRefreshToken(req: Request, res: Response, next: NextFunction) {
+async function post_refreshToken(req: Request, res: Response, next: NextFunction) {
     const refreshToken = req.headers.authorization?.split(" ")[1];
     if (!refreshToken) return res.sendStatus(401);
 
@@ -166,7 +168,7 @@ async function onRefreshToken(req: Request, res: Response, next: NextFunction) {
     next();
 }
 
-async function onAccessToken(req: Request, res: Response, next: NextFunction) {
+async function post_accessToken(req: Request, res: Response, next: NextFunction) {
     const refreshToken = req.headers.authorization?.split(" ")[1];
     if (!refreshToken) return res.sendStatus(401);
 

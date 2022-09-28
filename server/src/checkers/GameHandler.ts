@@ -22,7 +22,6 @@ export default class GameHandler {
     }
 
     getGameByUser(user: User): Game | null {
-        console.table(this.active_games);
         for (const game of this.active_games.values()) {
             for (const player of game.players) {
                 if (player?.user.email === user.email) {
@@ -31,6 +30,10 @@ export default class GameHandler {
             }
         }
         return null;
+    }
+
+    getGameByID(id: string): Game | null{
+        return this.active_games.get(id) ?? null;
     }
 
     generateGameID() {
