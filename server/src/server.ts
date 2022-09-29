@@ -1,4 +1,4 @@
-import UserSocketMap from "./sockets/UserSocketMap";
+import UserSocketMap from "./sockets/UserSocketDictionary";
 
 require("dotenv").config();
 

@@ -19,7 +19,7 @@ export async function requireAuthentication_Express(req: Request, res: Response,
 
 export async function requireAuthentication_Socket(socket: AuthSocket, next: Function) {
     socket.user = {
-        email: "anonym@mail.com", username: "NOCHECK"
+        id: "AAAA", email: "anonym@mail.com", username: "NOCHECK"
     }
     next();
 

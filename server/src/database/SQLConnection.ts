@@ -19,7 +19,7 @@ const pool = mysql.createPool({
     password: MARIADB_PASSWORD,
 });
 
-export function query(query_str: string, query_var: string[]): Promise<Object[]> {
+export function query(query_str: string, query_var: unknown[]): Promise<Object[]> {
     return new Promise((resolve, reject) => {
         pool.query(query_str, query_var, function (err: MysqlError | null, rows: Object[]) {
             if (err) {

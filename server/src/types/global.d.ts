@@ -1,4 +1,5 @@
 import {Socket} from "socket.io";
+import Game from "../checkers/Game";
 
 export {};
 
@@ -11,6 +12,8 @@ declare global {
 
     namespace Connection {
         interface Account {
+            account_id: number
+            user_id: string
             email: string
             username: string
             password: string
@@ -33,10 +36,10 @@ declare global {
     }
 
     interface User {
+        id: string
         email: string
         username: string
     }
-
 
     namespace Checkers {
 

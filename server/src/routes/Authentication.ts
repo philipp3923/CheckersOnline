@@ -5,6 +5,7 @@ import {verifyRefreshToken} from "../tokens/verify";
 import {query} from "../database/SQLConnection";
 import {compare, genSalt, hash} from "bcrypt";
 import tokenToUser from "../utils/TokenToUser";
+import {generate_pad, generate_random} from "../utils/KeyGeneration";
 
 const express = require("express");
 const router = express.Router();
@@ -61,6 +62,7 @@ async function post_login(req: Request, res: Response, next: NextFunction) {
     }
 
     const user: User = {
+        id: account.user_id,
         email: email,
         username: account.username,
     };
@@ -77,7 +79,7 @@ async function post_login(req: Request, res: Response, next: NextFunction) {
         email
     ]);
 
-    res.json({accessToken: accessToken, refreshToken: refreshToken, username: user.username});
+    res.json({accessToken: accessToken, refreshToken: refreshToken, user: user});
 
     next();
 }
@@ -91,9 +93,9 @@ async function post_register(req: Request, res: Response, next: NextFunction) {
         return res.status(400);
     }
 
-    const query_getAccount = "SELECT * FROM accounts WHERE email = ? OR username = ?;";
+    let query_getAccount = "SELECT * FROM accounts WHERE email = ? OR username = ?;";
 
-    const result_getAccount = await query(query_getAccount, [email, username]);
+    let result_getAccount = await query(query_getAccount, [email, username]);
 
     if (result_getAccount.length > 0) {
         return res.sendStatus(409);
@@ -102,13 +104,11 @@ async function post_register(req: Request, res: Response, next: NextFunction) {
     const salt = await genSalt(10);
     const hashed_password = await hash(password, salt);
 
-    const user: User = {
-        email: email,
-        username: username,
-    };
 
     const query_insertAccount =
         "INSERT INTO accounts(email, username, password, account_creation, last_login) VALUES (?,?,?,NOW(), NOW());";
+    query_getAccount = "SELECT * FROM accounts WHERE email = ?;";
+    const query_updateUserID = "UPDATE accounts SET user_id = ? WHERE account_id = ?;";
 
     await query(query_insertAccount, [
         email,
@@ -116,13 +116,23 @@ async function post_register(req: Request, res: Response, next: NextFunction) {
         hashed_password,
     ]);
 
+    const account = (<Connection.Account[]>await query(query_getAccount, [email]))[0];
+    const user_id = (generate_pad(account.account_id.toString(36), 6) + generate_pad(generate_random(0, 1679616).toString(36), 4)).toUpperCase();
+
+    query(query_updateUserID, [user_id, account.account_id]);
+
+    const user: User = {
+        id: user_id,
+        email: email,
+        username: username,
+    };
     const accessToken = await generateAccessToken(user);
     const refreshToken = await generateRefreshToken(user);
 
     res.json({
         accessToken: accessToken,
         refreshToken: refreshToken,
-        username: user.username
+        user: user
     });
 
     next();

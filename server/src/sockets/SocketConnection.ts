@@ -1,25 +1,22 @@
 import {Server} from "socket.io";
 import GameHandler from "../checkers/GameHandler";
 import Game from "../checkers/Game";
-import UserSocketMap from "./UserSocketMap";
+import UserSocketDictionary from "./UserSocketDictionary";
 
-export default function socketConnection(io: Server, socket: AuthSocket, gameHandler: GameHandler, userSocketMap: UserSocketMap) {
+export default function socketConnection(io: Server, socket: AuthSocket, gameHandler: GameHandler, userSocketDictionary: UserSocketDictionary) {
 
     if (!socket.user) {
         return;
     }
-    //#TODO handle if map has a socket id already saved => other device is connected! => disconnect other device
-    userSocketMap.set(socket.user, socket.id);
-    console.log(socket.user.username + " CONNECTED")
 
-    let current_game: Game | null = gameHandler.getGameByUser(socket.user);
+    userSocketDictionary.add(socket.user, socket.id);
 
-    if(current_game !== null){
+
+    for (const current_game of gameHandler.getGamesByUser(socket.user)) {
         socket.join(current_game.id);
-
-        io.in(current_game.id).emit("lobby", response({status: "reconnect", user: socket.user.username}))
     }
 
+/*
     socket.on("disconnect", on_disconnect);
     socket.on("createGame", on_createGame);
     socket.on("joinGame", on_joinGame);
@@ -27,104 +24,103 @@ export default function socketConnection(io: Server, socket: AuthSocket, gameHan
     socket.on("message", on_message);
 
     function on_joinGame(gameid: unknown) {
-        if (current_game !== null) {
-            io.to(socket.id).emit("joinGame", error(1, "You are in a game."));
+        if (gameHandler.getGamesByUser(<User>socket.user).length >= 10) {
+            emit_to(<User>socket.user, "joinGame", error(1, "You are in the maximum amount of concurrent games (10)."));
             return;
         }
 
-        if(typeof gameid !== "string"){
-            io.to(socket.id).emit("joinGame", error(1, "GameID is not a string."));
+        if (typeof gameid !== "string") {
+            emit_to(<User>socket.user, "joinGame", error(1, "GameID is not a string."));
             return;
         }
 
-        current_game = gameHandler.getGameByID(gameid);
+        current_games.push(gameHandler.getGameByID(gameid));
 
-        if(current_game === null){
-            io.to(socket.id).emit("joinGame", error(1, "Game "+gameid+" does not exist."));
+        if (current_games === null) {
+            emit_to(<User>socket.user, "joinGame", error(1, "Game " + gameid + " does not exist."));
             return;
         }
 
-        if(current_game.isFull()){
-            io.to(socket.id).emit("joinGame", error(1, "Game "+gameid+" is full."));
+        if (current_games.isFull()) {
+            emit_to(<User>socket.user, "joinGame", error(1, "Game " + gameid + " is full."));
             return;
         }
 
-        current_game.addPlayer(<User>socket.user);
-        current_game.start();
+        current_games.addPlayer(<User>socket.user);
+        current_games.start();
 
-        socket.join(current_game.id);
+        socket.join(current_games.id);
 
-        io.in(current_game.id).emit("lobby", response({status: "connect", user: socket.user?.username}))
+        emit_in(current_games.id, "lobby", response({status: "connect", user: socket.user?.username}))
 
         //#TODO send game state to players
     }
 
 
-
     function on_playGame() {
-        if (current_game !== null) {
-            io.to(socket.id).emit("playGame", error(1, "You are in a game."));
+        if (current_games !== null) {
+            emit_to(<User>socket.user, "playGame", error(1, "You are in a game."));
             return;
         }
     }
 
     function on_createGame(time: unknown) {
-        if (current_game !== null) {
-            io.to(socket.id).emit("createGame", error(1, "You are in a game."));
+        if (current_games !== null) {
+            emit_to(<User>socket.user, "createGame", error(1, "You are in a game."));
             return;
         }
 
         if (!Number.isInteger(time) || <number>time < 0) {
-            io.to(socket.id).emit("createGame", error(2, "Time is not a number."));
+            emit_to(<User>socket.user, "createGame", error(2, "Time is not a number."));
             return;
         }
 
         const safe_time: number = Math.round(<number>time);
 
         if (safe_time < 0) {
-            io.to(socket.id).emit("createGame", error(3, "Time is a negative number."));
+            emit_to(<User>socket.user, "createGame", error(3, "Time is a negative number."));
             return;
         }
 
         if (safe_time != 0 && safe_time < 30 || safe_time > 3000000) {
-            io.to(socket.id).emit("createGame", error(2, "Time is not 0 or between 30 and 3.000.000"));
+            emit_to(<User>socket.user, "createGame", error(2, "Time is not 0 or between 30 and 3.000.000"));
             return;
         }
 
-        current_game = new Game(gameHandler.generateGameID(), safe_time);
+        current_games = new Game(gameHandler.generateGameID(), safe_time);
 
-        current_game.addPlayer(<User>socket.user);
+        current_games.addPlayer(<User>socket.user);
 
-        gameHandler.addGame(current_game, false);
+        gameHandler.addGame(current_games, false);
 
-        io.to(socket.id).emit("createGame", response({id: current_game.id}));
+        emit_to(<User>socket.user, "createGame", response({id: current_games.id}));
 
-        socket.join(current_game.id);
-        io.in(current_game.id).emit("lobby", response({status: "connect", user: socket.user?.username}))
+        socket.join(current_games.id);
+        emit_in(current_games.id, "lobby", response({status: "connect", user: socket.user?.username}))
 
 
     }
 
     function on_disconnect() {
-        if(current_game !== null){
-            io.in(current_game.id).emit("lobby", response({status: "disconnect", user: socket.user?.username}))
+        if (current_games !== null) {
+            emit_in(current_games.id, "lobby", response({status: "disconnect", user: socket.user?.username}))
         }
 
-        userSocketMap.delete(<User>socket.user);
+        userSocketDictionary.delete(<User>socket.user, socket.id);
     }
 
-    function on_message(message: unknown){
-        if(current_game === null){
-            io.to(socket.id).emit("message", error(1, "You are not in a game."));
+    function on_message(message: unknown) {
+        if (current_games === null) {
+            emit_to(<User>socket.user, "message", error(1, "You are not in a game."));
             return;
         }
 
-        if(typeof message !== "string"){
-            io.to(socket.id).emit("message", error(1, "Message is not a string."));
+        if (typeof message !== "string") {
+            emit_to(<User>socket.user, "message", error(1, "Message is not a string."));
             return;
         }
 
-        io.in(current_game.id).emit("message", response({message: message, user: socket.user?.username}))
+        emit_in(current_games.id, "message", response({message: message, user: socket.user?.username}))
 
 
     }
@@ -136,5 +132,18 @@ export default function socketConnection(io: Server, socket: AuthSocket, gameHan
     function response(args: Object) {
         return {timestamp: Date.now(), type: "success", content: args};
     }
+*/
+
+    function emit_to(user: User, channel: string, message: Object) {
+        for (const id in userSocketDictionary.get(user)) {
+            io.to(id).emit(channel, message);
+        }
+    }
+
+    function emit_in(id: string, channel: string, message: Object) {
+        io.in(id).emit(channel, message);
+    }
+
+
 
 }
