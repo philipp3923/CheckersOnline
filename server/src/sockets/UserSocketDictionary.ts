@@ -10,29 +10,29 @@ export default class UserSocketDictionary {
     }
 
     add(user: User, socket_id: string) {
-        if (this.dict[user.username] == null) {
-            this.dict[user.username] = [socket_id];
+        if (this.dict[user.id] == null) {
+            this.dict[user.id] = [socket_id];
         } else {
-            this.dict[user.username].push(socket_id);
+            this.dict[user.id].push(socket_id);
         }
     }
 
     get(user: User): string[] | null {
-        return this.dict[user.username] ?? null;
+        return this.dict[user.id] ?? null;
     }
 
     delete(user: User, socket_id: string) {
-        if (this.dict[user.username] == null) {
+        if (this.dict[user.id] == null) {
             return;
         }
 
-        const index = this.dict[user.username].indexOf(socket_id);
+        const index = this.dict[user.id].indexOf(socket_id);
         if (index > -1) {
-            this.dict[user.username].splice(index, 1);
+            this.dict[user.id].splice(index, 1);
         }
 
-        if(this.dict[user.username].length < 1){
-            delete this.dict[user.username];
+        if(this.dict[user.id].length < 1){
+            delete this.dict[user.id];
         }
     }
 

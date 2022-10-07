@@ -11,7 +11,6 @@ export default function socketConnection(io: Server, socket: AuthSocket, gameHan
 
     userSocketDictionary.add(socket.user, socket.id);
 
-
     for (const current_game of gameHandler.getGamesByUser(socket.user)) {
         socket.join(current_game.id);
     }

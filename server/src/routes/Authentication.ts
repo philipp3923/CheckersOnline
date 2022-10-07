@@ -61,10 +61,14 @@ async function post_login(req: Request, res: Response, next: NextFunction) {
         return res.sendStatus(403);
     }
 
+    console.log(account);
+
+    console.log(account.account_id_ext);
+
     const user: User = {
-        id: account.user_id,
+        id: account.account_id_ext,
         email: email,
-        username: account.username,
+        username: account.username + "ASLLLLLLL",
     };
 
     const accessToken = await generateAccessToken(user);
@@ -108,7 +112,7 @@ async function post_register(req: Request, res: Response, next: NextFunction) {
     const query_insertAccount =
         "INSERT INTO accounts(email, username, password, account_creation, last_login) VALUES (?,?,?,NOW(), NOW());";
     query_getAccount = "SELECT * FROM accounts WHERE email = ?;";
-    const query_updateUserID = "UPDATE accounts SET user_id = ? WHERE account_id = ?;";
+    const query_updateUserID = "UPDATE accounts SET account_id_ext = ? WHERE account_id = ?;";
 
     await query(query_insertAccount, [
         email,

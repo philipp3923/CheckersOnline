@@ -13,7 +13,7 @@ declare global {
     namespace Connection {
         interface Account {
             account_id: number
-            user_id: string
+            account_id_ext: string
             email: string
             username: string
             password: string
@@ -50,7 +50,8 @@ declare global {
 
         interface Turn {
             player:  1 | 2 | null
-            hit: boolean
+            capture: boolean
+            timestamp: number
             start: Checkers.Location
             end: Checkers.Location
         }
