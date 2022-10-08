@@ -21,7 +21,7 @@ async function get_usernameAvailable(req: Request, res: Response, next: NextFunc
     const username = req.body.username;
 
     if (!username) {
-        return res.status(400);
+        return res.sendStatus(400);
     }
 
     const query_getAccount = "SELECT * FROM accounts WHERE username = ?;";
@@ -38,8 +38,10 @@ async function post_login(req: Request, res: Response, next: NextFunction) {
     const email = req.body.email;
     const password = req.body.password;
 
+    console.log(`LOGIN ${email} : ${password}`)
+
     if (!email || !password) {
-        return res.status(400);
+        return res.sendStatus(400);
     }
 
     const query_getAccount = "SELECT * FROM accounts WHERE email = ?;";
@@ -61,14 +63,10 @@ async function post_login(req: Request, res: Response, next: NextFunction) {
         return res.sendStatus(403);
     }
 
-    console.log(account);
-
-    console.log(account.account_id_ext);
-
     const user: User = {
         id: account.account_id_ext,
         email: email,
-        username: account.username + "ASLLLLLLL",
+        username: account.username,
     };
 
     const accessToken = await generateAccessToken(user);
@@ -94,7 +92,7 @@ async function post_register(req: Request, res: Response, next: NextFunction) {
     const username = req.body.username;
 
     if (!email || !password || !username) {
-        return res.status(400);
+        return res.sendStatus(400);
     }
 
     let query_getAccount = "SELECT * FROM accounts WHERE email = ? OR username = ?;";

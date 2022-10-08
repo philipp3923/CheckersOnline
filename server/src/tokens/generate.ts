@@ -1,13 +1,21 @@
 const db = require("../database/SQLConnection");
 const jwt = require("jsonwebtoken");
 
-export async function generateAccessToken(user: User) {
-    return jwt.sign(user, process.env.JWT_ACCESS_SECRET, {
-        expiresIn: "30m",
-    });
+export interface TokenObject {
+    token: string,
+    creation: number
 }
 
-export async function generateRefreshToken(user: User) {
+export async function generateAccessToken(user: User): Promise<TokenObject> {
+    return {
+        token: jwt.sign(user, process.env.JWT_ACCESS_SECRET, {
+            expiresIn: "30m",
+        }),
+        creation: Date.now()-5000
+    };
+}
+
+export async function generateRefreshToken(user: User): Promise<TokenObject> {
     const token: string = jwt.sign(user, process.env.JWT_REFRESH_SECRET, {
         expiresIn: "30d",
     });
@@ -16,5 +24,5 @@ export async function generateRefreshToken(user: User) {
 
     db.query(query_insertToken, [token, user.email]);
 
-    return token;
+    return {token: token, creation: Date.now()-5000};
 }
