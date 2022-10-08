@@ -37,8 +37,9 @@ declare global {
 
     interface User {
         id: string
-        email: string
-        username: string
+        email?: string
+        username?: string
+        guest?: boolean
     }
 
     namespace Checkers {

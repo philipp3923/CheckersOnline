@@ -8,6 +8,7 @@ export default function socketConnection(io: Server, socket: AuthSocket, gameHan
     if (!socket.user) {
         return;
     }
+    console.log("SOCKET CONNECTED: "+ socket.user.id);
 
     userSocketDictionary.add(socket.user, socket.id);
 

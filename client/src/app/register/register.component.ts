@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ApiService} from "../_services/api.service";
 import {DataService} from "../_services/data.service";
 import {StorageService} from "../_services/storage.service";
+import {SocketService} from "../_services/socket.service";
 
 @Component({
   selector: 'app-register',
@@ -15,7 +16,7 @@ export class RegisterComponent implements OnInit {
     password: null
   };
 
-  constructor(private apiService: ApiService, private dataService: DataService, private storageService: StorageService) { }
+  constructor(private apiService: ApiService, private dataService: DataService, private storageService: StorageService, private socketService: SocketService) { }
 
   ngOnInit(): void {
   }
@@ -34,17 +35,7 @@ export class RegisterComponent implements OnInit {
       return;
     }
 
-    this.apiService.register(this.form.username, this.form.email, this.form.password).subscribe({
-      next: (res) => {
-        this.dataService.changeUser(res.user);
-        this.storageService.saveUser(res.user);
-        this.storageService.saveRefreshToken(res.refreshToken);
-        this.storageService.saveAccessToken(res.accessToken);
-      },
-      error: (err) => {
-        console.table(err)
-      },
-    });
+    this.apiService.register(this.form.username, this.form.email, this.form.password);
   }
 
 }

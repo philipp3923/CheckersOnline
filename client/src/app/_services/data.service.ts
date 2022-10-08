@@ -14,6 +14,5 @@ export class DataService {
 
   changeUser(user: User | null) {
     this.userSource.next(user);
-    console.log(user);
   }
 }

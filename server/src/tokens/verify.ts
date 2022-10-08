@@ -4,24 +4,27 @@ const db = require("../database/SQLConnection");
 const jwt = require("jsonwebtoken");
 
 export async function verifyRefreshToken(token: string): Promise<Tokens.JSON | null> {
-    let decrypted_token: JwtPayload;
+    let decrypted_token: Tokens.JSON;
+
     try {
-        decrypted_token = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+        decrypted_token = <Tokens.JSON>jwt.verify(token, process.env.JWT_REFRESH_SECRET);
     } catch (err) {
         return null;
     }
 
-    const query_getToken = "SELECT * FROM tokens WHERE content = ?";
+    if(!decrypted_token.guest) {
+        const query_getToken = "SELECT * FROM tokens WHERE content = ?";
 
-    const result_getToken = await db.query(query_getToken, [token]).catch((err: Error) => {
-        console.log(err);
-    });
+        const result_getToken = await db.query(query_getToken, [token]).catch((err: Error) => {
+            console.log(err);
+        });
 
-    if (result_getToken.length != 1) {
-        return null;
+        if (result_getToken.length != 1) {
+            return null;
+        }
     }
 
-    return <Tokens.JSON> decrypted_token;
+    return decrypted_token;
 }
 
 export async function verifyAccessToken(token: string): Promise<Tokens.JSON | null> {

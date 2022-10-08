@@ -3,6 +3,7 @@ import {ApiService} from "../_services/api.service";
 import {catchError, EMPTY} from "rxjs";
 import {DataService} from "../_services/data.service";
 import {StorageService} from "../_services/storage.service";
+import {SocketService} from "../_services/socket.service";
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,7 @@ export class LoginComponent implements OnInit {
   };
 
 
-  constructor(private apiService: ApiService, private dataService: DataService, private storageService: StorageService) {
+  constructor(private apiService: ApiService, private dataService: DataService, private storageService: StorageService,private socketService: SocketService) {
   }
 
   ngOnInit(): void {
@@ -36,17 +37,7 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    this.apiService.login(this.form.email, this.form.password).subscribe({
-      next: (res) => {
-        this.dataService.changeUser(res.user);
-        this.storageService.saveUser(res.user);
-        this.storageService.saveRefreshToken(res.refreshToken);
-        this.storageService.saveAccessToken(res.accessToken);
-      },
-      error: (err) => {
-        console.table(err)
-      },
-  });
+    this.apiService.login(this.form.email, this.form.password);
   }
 
 }

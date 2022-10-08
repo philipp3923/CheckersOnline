@@ -4,5 +4,10 @@
     "secure": false,
     "logLevel": "debug",
     "pathRewrite": { "^/api": "" }
+  },
+
+  "/socket.io/*": {
+    "target": "http://localhost:5000",
+    "ws": true
   }
 }

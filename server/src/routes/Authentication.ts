@@ -5,7 +5,7 @@ import {verifyRefreshToken} from "../tokens/verify";
 import {query} from "../database/SQLConnection";
 import {compare, genSalt, hash} from "bcrypt";
 import tokenToUser from "../utils/TokenToUser";
-import {generate_pad, generate_random} from "../utils/KeyGeneration";
+import {generate_guestid, generate_pad, generate_random, generate_userid} from "../utils/KeyGeneration";
 
 const express = require("express");
 const router = express.Router();
@@ -13,9 +13,11 @@ const router = express.Router();
 router.post("/register", post_register);
 router.post("/login", post_login);
 router.post("/logout", post_logout);
+router.post("/guest", post_guest);
 router.post("/update/refresh_token", post_refreshToken);
 router.post("/update/access_token", post_accessToken);
 router.get("/username_available", get_usernameAvailable);
+
 
 async function get_usernameAvailable(req: Request, res: Response, next: NextFunction) {
     const username = req.body.username;
@@ -119,8 +121,7 @@ async function post_register(req: Request, res: Response, next: NextFunction) {
     ]);
 
     const account = (<Connection.Account[]>await query(query_getAccount, [email]))[0];
-    const user_id = (generate_pad(account.account_id.toString(36), 6) + generate_pad(generate_random(0, 1679616).toString(36), 4)).toUpperCase();
-
+    const user_id = generate_userid(account.account_id);
     query(query_updateUserID, [user_id, account.account_id]);
 
     const user: User = {
@@ -128,6 +129,25 @@ async function post_register(req: Request, res: Response, next: NextFunction) {
         email: email,
         username: username,
     };
+    const accessToken = await generateAccessToken(user);
+    const refreshToken = await generateRefreshToken(user);
+
+    res.json({
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        user: user
+    });
+
+    next();
+}
+
+async function post_guest(req: Request, res: Response, next: NextFunction) {
+
+    const user: User = {
+        id: generate_guestid(),
+        guest: true,
+    };
+
     const accessToken = await generateAccessToken(user);
     const refreshToken = await generateRefreshToken(user);
 
@@ -169,9 +189,12 @@ async function post_refreshToken(req: Request, res: Response, next: NextFunction
 
     const newRefreshToken = await generateRefreshToken(user);
 
-    const query_deleteToken = "DELETE FROM tokens WHERE content = ?;";
+    if(!user.guest) {
+        const query_deleteToken = "DELETE FROM tokens WHERE content = ?;";
 
-    query(query_deleteToken, [refreshToken]);
+        query(query_deleteToken, [refreshToken]);
+
+    }
 
     res.json({
         refreshToken: newRefreshToken,
