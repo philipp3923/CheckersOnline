@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model accounts {
+  id             Int              @id @default(autoincrement())
+  ext_id         String           @db.MediumText
+  creation       DateTime         @default(now()) @db.Timestamp(0)
+  last_login     DateTime?        @db.Timestamp(0)
+  active         Boolean
+  guest          Boolean
+  players        players[]
+  refresh_tokens refresh_tokens[]
+  users          users[]
+}
+
+model friends {
+  id                             Int      @id @default(autoincrement())
+  creation                       DateTime @default(now()) @db.Timestamp(0)
+  id_user                        Int
+  id_friend                      Int
+  users_friends_id_userTousers   users   @relation("friends_id_userTousers", fields: [id_user], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "friends_ibfk_1")
+  users_friends_id_friendTousers users   @relation("friends_id_friendTousers", fields: [id_friend], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "friends_ibfk_2")
+
+  @@index([id_friend], map: "id_friend")
+  @@index([id_user], map: "id_user")
+}
+
+model games {
+  id         Int       @id @default(autoincrement())
+  ext_id     String    @db.MediumText
+  time_limit Int
+  start      DateTime  @default(now()) @db.Timestamp(0)
+  finish     DateTime? @db.Timestamp(0)
+  winner     Int?
+  players    players[]
+  turns      turns[]
+}
+
+model players {
+  id          Int       @id @default(autoincrement())
+  id_games    Int
+  id_accounts Int
+  number      Int
+  games       games   @relation(fields: [id_games], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "players_ibfk_1")
+  accounts    accounts @relation(fields: [id_accounts], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "players_ibfk_2")
+
+  @@index([id_accounts], map: "id_accounts")
+  @@index([id_games], map: "id_games")
+}
+
+model refresh_tokens {
+  id          Int       @id @default(autoincrement())
+  content     String   @db.MediumText
+  creation    DateTime  @default(now()) @db.Timestamp(0)
+  id_accounts Int
+  accounts    accounts @relation(fields: [id_accounts], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "refresh_tokens_ibfk_1")
+
+  @@index([id_accounts], map: "id_accounts")
+}
+
+model turns {
+  id       Int      @id @default(autoincrement())
+  creation DateTime @default(now()) @db.Timestamp(0)
+  capture  Boolean
+  player   Int
+  start_x  Int
+  start_y  Int
+  end_x    Int
+  end_y    Int
+  id_games Int
+  games    games  @relation(fields: [id_games], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "turns_ibfk_1")
+
+  @@index([id_games], map: "id_games")
+}
+
+model users {
+  id                               Int       @id @default(autoincrement())
+  username                         String    @db.MediumText
+  email                            String    @db.MediumText
+  password                         String    @db.MediumText
+  id_accounts                      Int
+  accounts                         accounts @relation(fields: [id_accounts], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "users_ibfk_1")
+  friends_friends_id_userTousers   friends[] @relation("friends_id_userTousers")
+  friends_friends_id_friendTousers friends[] @relation("friends_id_friendTousers")
+
+  @@index([id_accounts], map: "id_accounts")
+}

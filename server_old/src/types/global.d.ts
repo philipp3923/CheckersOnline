@@ -35,7 +35,7 @@ declare global {
         user?: User
     }
 
-    interface User {
+    interface XX_User {
         id: string
         email?: string
         username?: string
