@@ -55,7 +55,7 @@ async function post_login(req: Request, res: Response, next: NextFunction) {
         return res.sendStatus(404);
     }
     if (result_getAccount.length > 1) {
-        throw "Query returned multiple users with same email address";
+        throw "Query returned multiple user with same email address";
     }
 
     const account = result_getAccount[0];

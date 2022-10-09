@@ -55,7 +55,7 @@ export class ApiService {
   }
 
   public guest(): Subscription {
-    return this.http.post<AuthResponse>(API + 'auth/guest', {}, httpOptions).subscribe(this.authObserver);;
+    return this.http.post<AuthResponse>(API + 'auth/guest', {}, httpOptions).subscribe(this.authObserver);
   }
 
   //#TODO implement logout request

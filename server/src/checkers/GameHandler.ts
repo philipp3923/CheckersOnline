@@ -22,11 +22,11 @@ export default class GameHandler {
         }
     }
 
-    getGamesByUser(user: User): Game[] {
+    getGamesByUserID(user_id: string): Game[] {
         const games: Game[] = [];
         for (const game of this.active_games.values()) {
             for (const player of game.players) {
-                if (player.user.email === user.email) {
+                if (player.user.id === user_id) {
                     games.push(game);
                 }
             }
@@ -38,12 +38,12 @@ export default class GameHandler {
         return this.active_games.get(id) ?? null;
     }
 
-    getGameByIDWithUser(id: string,user: User): Game | null{
+    getGameByIDWithUserID(id: string,user_id: string): Game | null{
         const game = this.getGameByID(id);
 
         if(game !== null){
             for (const player of game.players) {
-                if (player.user.email === user.email) {
+                if (player.user.id === user_id) {
                     return game;
                 }
             }
