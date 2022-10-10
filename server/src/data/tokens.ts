@@ -1,79 +1,100 @@
 import prisma from "../db/client";
-
-const db = require("../database/SQLConnection");
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
+import logmsg, {LogStatus, LogType} from "../utils/logmsg";
 
 //#TODO move constants to central file
 const JWT_REFRESH_SECRET = "aNMkyXrdEgGCQw6OpdnTsh1XEEKb5pbMaA1mfEfGLD6GHyAQriU4qWVsbpp5RsMCXIiCT27LnDCb72OUUX6xFCmdp1rB1eSxlW6A6XVZeprS681oFLaEKnWQOAQsNEhY";
 const JWT_ACCESS_SECRET = "ZdTytDiVUWcSfVh62VfiQ5mcV3JCT6exTHTNCOZH9XOdMXft82UiMToVtyfIsOenSE5BAullDJJqwOJSVVN1pvSsyOfjK7w8pLzgtznLxp5rGUG58D17rS7Ryltf8yIA";
+const JWT_TOKEN_COUNT = 10;
 
-
+export enum Role {
+    ADMIN = "ADMIN", USER = "USER", GUEST = "GUEST"
+}
 export interface DecryptedToken {
     account_id: string,
-    guest?: boolean
+    role: Role,
+    iat?: number,
+    exp?: number
 }
 
 export interface EncryptedToken {
     token: string,
-    creation: number,
+    creation: number
 }
 
 export async function decryptRefreshToken(token: string): Promise<DecryptedToken | null> {
-    let decrypted_token: DecryptedToken;
+    let decryptedToken: DecryptedToken;
 
     try {
-        decrypted_token = <DecryptedToken>jwt.verify(token, JWT_REFRESH_SECRET);
+        decryptedToken = <DecryptedToken>jwt.verify(token, JWT_REFRESH_SECRET);
     } catch (err) {
         return null;
     }
 
-    if (!decrypted_token.guest) {
-        const db_token = await prisma.refresh_tokens.findFirst({where: {content: token}});
+    if (decryptedToken.role !== Role.GUEST) {
+        const db_token = await prisma.refreshToken.findFirst({where: {content: token}});
 
         if (db_token === null) {
             return null;
         }
     }
 
-    return decrypted_token;
+    delete decryptedToken.iat;
+    delete decryptedToken.exp;
+    return decryptedToken;
 }
 
 export async function decryptAccessToken(token: string): Promise<DecryptedToken | null> {
     try {
-        return <DecryptedToken>jwt.verify(token, JWT_ACCESS_SECRET);
+        const decryptedToken = <DecryptedToken>jwt.verify(token, JWT_ACCESS_SECRET);
+        delete decryptedToken.iat;
+        delete decryptedToken.exp;
+        return decryptedToken;
     } catch (err) {
         return null;
     }
 }
 
-
 export async function encryptAccessToken(decryptedToken: DecryptedToken): Promise<EncryptedToken> {
-    return {
-        token: jwt.sign(decryptedToken, process.env.JWT_ACCESS_SECRET, {
-            expiresIn: "30m",
-        }),
-        creation: Date.now() - 5000
-    };
+    delete decryptedToken.iat;
+    delete decryptedToken.exp;
+
+    const encryptedToken = jwt.sign({...decryptedToken}, JWT_ACCESS_SECRET, {
+        expiresIn: "30m",
+    });
+
+    return {token: encryptedToken, creation: Date.now() - 5000};
 }
 
 export async function encryptRefreshToken(decryptedToken: DecryptedToken): Promise<EncryptedToken> {
-    const encryptedToken: string = jwt.sign(decryptedToken, process.env.JWT_REFRESH_SECRET, {
+    delete decryptedToken.iat;
+    delete decryptedToken.exp;
+
+    const encryptedToken: string = jwt.sign({...decryptedToken}, JWT_REFRESH_SECRET, {
         expiresIn: "30d",
     });
 
-    if (!decryptedToken.guest) {
-        const account = await prisma.accounts.findFirst({where: {ext_id: decryptedToken.account_id}});
-
-        if (account === null) {
-            throw new Error("Account does not exist. ext_id: " + decryptedToken.account_id);
-        }
-
-        prisma.refresh_tokens.create({
-            data: {
-                content: encryptedToken, id_accounts: account.id
-            }
-        });
-    }
-
     return {token: encryptedToken, creation: Date.now() - 5000};
+}
+
+export async function updateRefreshToken(oldToken: string, newToken: string) {
+    await prisma.refreshToken.update({data: {content: newToken}, where: {content: oldToken}});
+}
+
+export async function saveRefreshToken(id_account: number, token: string) {
+    try {
+        await prisma.refreshToken.create({data: {content: token, id_account: id_account}});
+    }catch (e){
+        logmsg(LogType.DB, LogStatus.WARNING, "refreshToken was already in Database");
+    }
+    await cleanUpRefreshTokens(id_account);
+}
+
+async function cleanUpRefreshTokens(id_account: number) {
+
+    const tokens = await prisma.refreshToken.findMany({where: {id_account: id_account}, orderBy: {createdAt: "asc"}});
+
+    for (let i = 0; i < tokens.length - JWT_TOKEN_COUNT; i++) {
+        await prisma.refreshToken.delete({where: {id: tokens[i].id}});
+    }
 }

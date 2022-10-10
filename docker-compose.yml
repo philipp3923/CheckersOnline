@@ -3,9 +3,7 @@ version: '3.1'
 services:
 
   mariadb:
-    build: 
-      context: ./mariadb
-      dockerfile: Dockerfile
+    image: mariadb
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: EypJBYzXAGZ3CoZPANUQ

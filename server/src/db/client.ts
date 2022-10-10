@@ -1,7 +1,8 @@
 import {PrismaClient} from "@prisma/client";
+import logmsg, {LogStatus, LogType} from "../utils/logmsg";
 
 const prisma = new PrismaClient();
 
-console.log("DB: loaded");
+logmsg(LogType.DB, LogStatus.SUCCESS, "loaded");
 
 export default prisma;

@@ -7,87 +7,86 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model accounts {
-  id             Int              @id @default(autoincrement())
-  ext_id         String           @db.MediumText
-  creation       DateTime         @default(now()) @db.Timestamp(0)
-  last_login     DateTime?        @db.Timestamp(0)
+model Account {
+  id             Int            @id @default(autoincrement())
+  ext_id         String         @unique
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  loginAt        DateTime?
   active         Boolean
-  guest          Boolean
-  players        players[]
-  refresh_tokens refresh_tokens[]
-  users          users[]
+  role           Role
+  refresh_tokens RefreshToken[]
+  white_games    Game[]         @relation(name: "white")
+  black_games    Game[]         @relation(name: "black")
+  user           User?
 }
 
-model friends {
-  id                             Int      @id @default(autoincrement())
-  creation                       DateTime @default(now()) @db.Timestamp(0)
-  id_user                        Int
-  id_friend                      Int
-  users_friends_id_userTousers   users   @relation("friends_id_userTousers", fields: [id_user], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "friends_ibfk_1")
-  users_friends_id_friendTousers users   @relation("friends_id_friendTousers", fields: [id_friend], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "friends_ibfk_2")
-
-  @@index([id_friend], map: "id_friend")
-  @@index([id_user], map: "id_user")
-}
-
-model games {
+model Game {
   id         Int       @id @default(autoincrement())
-  ext_id     String    @db.MediumText
+  ext_id     String    @unique
   time_limit Int
-  start      DateTime  @default(now()) @db.Timestamp(0)
-  finish     DateTime? @db.Timestamp(0)
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
   winner     Int?
-  players    players[]
-  turns      turns[]
+  id_white   Int
+  id_black   Int
+  white      Account   @relation(name: "white", fields: [id_white], references: [id])
+  black      Account   @relation(name: "black", fields: [id_black], references: [id])
+  turns      Turn[]
 }
 
-model players {
-  id          Int       @id @default(autoincrement())
-  id_games    Int
-  id_accounts Int
-  number      Int
-  games       games   @relation(fields: [id_games], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "players_ibfk_1")
-  accounts    accounts @relation(fields: [id_accounts], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "players_ibfk_2")
-
-  @@index([id_accounts], map: "id_accounts")
-  @@index([id_games], map: "id_games")
+model RefreshToken {
+  id         Int      @id @default(autoincrement())
+  content    String   @unique @db.VarChar(1000)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  id_account Int
+  account    Account  @relation(fields: [id_account], references: [id])
 }
 
-model refresh_tokens {
-  id          Int       @id @default(autoincrement())
-  content     String   @db.MediumText
-  creation    DateTime  @default(now()) @db.Timestamp(0)
-  id_accounts Int
-  accounts    accounts @relation(fields: [id_accounts], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "refresh_tokens_ibfk_1")
-
-  @@index([id_accounts], map: "id_accounts")
+model Turn {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  capture   Boolean
+  player    Player
+  start_x   Int
+  start_y   Int
+  end_x     Int
+  end_y     Int
+  id_game   Int
+  games     Game     @relation(fields: [id_game], references: [id])
 }
 
-model turns {
-  id       Int      @id @default(autoincrement())
-  creation DateTime @default(now()) @db.Timestamp(0)
-  capture  Boolean
-  player   Int
-  start_x  Int
-  start_y  Int
-  end_x    Int
-  end_y    Int
-  id_games Int
-  games    games  @relation(fields: [id_games], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "turns_ibfk_1")
-
-  @@index([id_games], map: "id_games")
+model User {
+  id         Int      @id @default(autoincrement())
+  username   String   @unique
+  email      String   @unique
+  password   String
+  id_account Int      @unique
+  account    Account  @relation(fields: [id_account], references: [id])
+  user       Friend[] @relation(name: "user")
+  friend     Friend[] @relation(name: "friend")
 }
 
-model users {
-  id                               Int       @id @default(autoincrement())
-  username                         String    @db.MediumText
-  email                            String    @db.MediumText
-  password                         String    @db.MediumText
-  id_accounts                      Int
-  accounts                         accounts @relation(fields: [id_accounts], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "users_ibfk_1")
-  friends_friends_id_userTousers   friends[] @relation("friends_id_userTousers")
-  friends_friends_id_friendTousers friends[] @relation("friends_id_friendTousers")
+model Friend {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  id_user   Int
+  id_friend Int
+  user      User     @relation(name: "user", fields: [id_user], references: [id])
+  friend    User     @relation(name: "friend", fields: [id_friend], references: [id])
 
-  @@index([id_accounts], map: "id_accounts")
+  @@unique([id_user, id_friend])
+}
+
+enum Role {
+  USER
+  GUEST
+  ADMIN
+}
+
+enum Player {
+  WHITE
+  BLACK
 }

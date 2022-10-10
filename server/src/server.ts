@@ -1,6 +1,7 @@
 import {Server} from "socket.io";
 import {createServer} from "http";
 import authRouter from "./routes/auth";
+import logmsg, {LogStatus, LogType} from "./utils/logmsg";
 
 const express = require("express");
 
@@ -14,4 +15,4 @@ app.use(express.json());
 app.use("/auth", authRouter);
 
 
-server.listen(5000, () => console.log("START: listening on port 5000"));
+server.listen(5000, () => logmsg(LogType.START, LogStatus.SUCCESS, "listening on port 5000"));
