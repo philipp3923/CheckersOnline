@@ -13,6 +13,8 @@ import SocketRepository from "./repositories/Socket.repository";
 import SocketService from "./services/Socket.service";
 import PlayEvent from "./events/Play.event";
 import AuthenticateSocketMiddleware from "./middleware/AuthenticateSocket.middleware";
+import ApiRepository from "./repositories/Api.repository";
+import ApiService from "./services/Api.service";
 
 //#TODO move constants to central file
 const JWT_REFRESH_SECRET = "aNMkyXrdEgGCQw6OpdnTsh1XEEKb5pbMaA1mfEfGLD6GHyAQriU4qWVsbpp5RsMCXIiCT27LnDCb72OUUX6xFCmdp1rB1eSxlW6A6XVZeprS681oFLaEKnWQOAQsNEhY";
@@ -25,27 +27,26 @@ const server = createServer(app);
 const io = new Server(server);
 const prismaClient = new PrismaClient();
 
-app.use(express.json());
 
 const userRepository = new UserRepository(prismaClient);
 const identRepository = new IdentityRepository(prismaClient);
 const encryptionRepository = new EncryptionRepository(10);
 const tokenRepository = new TokenRepository(prismaClient);
 const socketRepository = new SocketRepository(io);
+const apiRepository = new ApiRepository(app);
 
 const userService = new UserService(userRepository, encryptionRepository, identRepository);
 const tokenService = new TokenService(tokenRepository, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET, JWT_TOKEN_COUNT);
 const socketService = new SocketService(socketRepository);
+const apiService = new ApiService(apiRepository);
 
 const authRouter = new AuthRouter(userService, tokenService, app, "/auth");
+
+
 const authenticateSocketMiddleware = new AuthenticateSocketMiddleware(socketService, tokenService);
+
 const playEvent = new PlayEvent(socketService, "play");
 
-/*
-io.use(authentication);
-io.on("connection", (socket: Socket) => {
-    connection(io, <AuthenticatedSocket>socket);
-});*/
 
 server.listen(5000, () => console.log("listening on port 5000"));
 socketService.start();

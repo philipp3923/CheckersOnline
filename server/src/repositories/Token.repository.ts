@@ -10,15 +10,19 @@ export default class TokenRepository {
     }
 
     public generateToken(payload: Object, secret: string, expiration: string) {
-        return jwt.sign(payload, secret, {
+        const token = jwt.sign(payload, secret, {
             expiresIn: expiration,
         });
+        return token;
     }
 
     public decryptToken(token: string, secret: string): DecryptedToken | null {
         try {
-            const {account_id, role} = <DecryptedToken>jwt.verify(token, secret);
-            return {account_id: account_id, role: role};
+            const decryptedToken = <DecryptedToken>jwt.verify(token, secret);
+            if(!decryptedToken){
+                throw new Error();
+            }
+            return {account_id: decryptedToken.account_id, role: decryptedToken.role};
         } catch (err) {
             return null;
         }
@@ -43,7 +47,10 @@ export default class TokenRepository {
     }
 
     public async updateRefreshToken(oldToken: string, newToken: string) {
-        await this.prismaClient.refreshToken.update({data: {content: newToken}, where: {content: oldToken}});
+        try {
+            await this.prismaClient.refreshToken.update({data: {content: newToken}, where: {content: oldToken}});
+        }catch (e) {
+        }
     }
     public async deleteRefreshToken(token: string){
         await this.prismaClient.refreshToken.delete({where: {content: token}});

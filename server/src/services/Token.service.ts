@@ -28,7 +28,7 @@ export default class TokenService {
     }
 
     public async generateRefreshToken(decryptedToken: DecryptedToken): Promise<EncryptedToken> {
-        const encryptedToken: string = this.tokenRepository.generateToken({decryptedToken}, this.refreshTokenSecret, "30d");
+        const encryptedToken: string = this.tokenRepository.generateToken(decryptedToken, this.refreshTokenSecret, "30d");
         await this.tokenRepository.saveRefreshToken(decryptedToken.account_id, encryptedToken);
         return this.wrapToken(encryptedToken);
     }

@@ -24,6 +24,7 @@ export default class AuthenticateSocketMiddleware {
             next(err);
             return;
         }
+
         socket.decryptedToken = decryptedToken;
         next();
     }

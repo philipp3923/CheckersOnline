@@ -47,9 +47,9 @@ export class ApiService {
   constructor(private http: HttpClient, private storageService: StorageService, private dataService: DataService, private socketService: SocketService) {
   }
 
-  public login(email: string, password: string): Subscription {
+  public login(name: string, password: string): Subscription {
     return this.http.post<AuthResponse>(API + 'auth/login', {
-      email,
+      name,
       password
     }, httpOptions).subscribe(this.authObserver);
   }
@@ -69,7 +69,7 @@ export class ApiService {
   }
 
   public updateAccessToken() {
-    return this.http.post<AccessTokenResponse>(API + "auth/update/access_token", {}, this.httpOptions_useRefreshToken()).subscribe({
+    return this.http.post<AccessTokenResponse>(API + "auth/update/accessToken", {}, this.httpOptions_useRefreshToken()).subscribe({
       next: (res) => {
         this.storageService.saveAccessToken(res.accessToken);
       },
@@ -80,7 +80,7 @@ export class ApiService {
   }
 
   public updateRefreshToken() {
-    return this.http.post<RefreshTokenResponse>(API + "auth/update/refresh_token", {}, this.httpOptions_useRefreshToken()).subscribe({
+    return this.http.post<RefreshTokenResponse>(API + "auth/update/refreshToken", {}, this.httpOptions_useRefreshToken()).subscribe({
       next: (res) => {
         this.storageService.saveRefreshToken(res.refreshToken);
       },
