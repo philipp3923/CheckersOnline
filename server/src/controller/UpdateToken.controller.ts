@@ -1,6 +1,6 @@
 import UserService from "../services/User.service";
 import TokenService from "../services/Token.service";
-import Response from "../data/Response";
+import {Response} from "./Abstract.controller";
 
 export default class UpdateTokenController {
 

@@ -1,6 +1,6 @@
-import UserService from "../service/User.service";
-import Response from "../data/Response";
+import UserService from "../services/User.service";
 import TokenService, {Role} from "../services/Token.service";
+import {Response} from "./Abstract.controller";
 
 export default class LoginController {
 

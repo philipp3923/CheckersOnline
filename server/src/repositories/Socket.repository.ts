@@ -3,18 +3,22 @@ import {AuthenticatedSocket, SocketEventListener} from "../services/Socket.servi
 import {DecryptedToken} from "../services/Token.service";
 
 export interface ExtendedAuthenticatedSocket extends Socket{
-    decryptedToken?: DecryptedToken
+    decryptedToken?: DecryptedToken,
+    accessToken?: string
 }
 
 export default class SocketRepository{
-    private eventListeners: SocketEventListener[];
+    private readonly eventListeners: SocketEventListener[];
 
     constructor(private io: Server){
         this.eventListeners=[];
     }
 
     public addMiddleware(fn: (socket: AuthenticatedSocket, next: Function) => void){
-        this.io.use((socket, next) => fn(<AuthenticatedSocket>socket, next));
+        this.io.use((socket, next) => {
+            (<AuthenticatedSocket>socket).accessToken = socket.handshake.auth.token;
+            fn(<AuthenticatedSocket>socket, next);
+        });
     }
 
     //#TODO CHANGE AS LIST AND ADD LATER

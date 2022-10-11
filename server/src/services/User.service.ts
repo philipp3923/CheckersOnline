@@ -1,10 +1,10 @@
 import UserRepository from "../repositories/User.repository";
 import EncryptionRepository from "../repositories/Encryption.repository";
-import IdentRepository from "../repositories/Ident.repository";
+import IdentityRepository from "../repositories/Identity.repository";
 
 export default class UserService{
 
-    constructor(private userRepository: UserRepository, private encryptionRepository: EncryptionRepository, private identRepository: IdentRepository) {}
+    constructor(private userRepository: UserRepository, private encryptionRepository: EncryptionRepository, private identRepository: IdentityRepository) {}
 
     public async create(email: string, username: string, password: string): Promise<string>{
         if(!this.validatePassword(password) || !this.validateUsername(username) || !this.validateEmail(email)){

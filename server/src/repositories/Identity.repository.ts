@@ -1,25 +1,24 @@
 import {PrismaClient} from "@prisma/client";
-import prisma from "../db/client";
 
-export default class IdentRepository{
+export default class IdentityRepository {
 
     constructor(private prismaClient: PrismaClient) {}
 
     public async generateUserID(){
-        let id: string = "GUEST-" +this.generateID();
+        let id: string = "USER-" +this.generateID();
 
-        while (await prisma.account.findUnique({where: {ext_id: id}}) !== null) {
-            id = "GUEST-" +this.generateID();
+        while (await this.prismaClient.account.findUnique({where: {ext_id: id}}) !== null) {
+            id = "USER-" +this.generateID();
         }
 
         return id;
     }
 
     public async generateGuestID(){
-        let id: string = "USER-" +this.generateID();
+        let id: string = "GUEST-" +this.generateID();
 
-        while (await prisma.account.findUnique({where: {ext_id: id}}) !== null) {
-            id = "USER-" +this.generateID();
+        while (await this.prismaClient.account.findUnique({where: {ext_id: id}}) !== null) {
+            id = "GUEST-" +this.generateID();
         }
 
         return id;
@@ -28,7 +27,7 @@ export default class IdentRepository{
     public async generateGameID(){
         let id: string = "GAME-" +this.generateID();
 
-        while (await prisma.game.findUnique({where: {ext_id: id}}) !== null) {
+        while (await this.prismaClient.game.findUnique({where: {ext_id: id}}) !== null) {
             id = "GAME-" +this.generateID();
         }
 

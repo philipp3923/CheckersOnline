@@ -3,7 +3,8 @@ import SocketRepository from "../repositories/Socket.repository";
 
 
 export interface AuthenticatedSocket{
-    decryptedToken?: DecryptedToken
+    decryptedToken?: DecryptedToken,
+    accessToken?: string
 }
 
 export interface SocketEventListener{
@@ -17,7 +18,7 @@ export default class SocketService{
 
     }
 
-    private addMiddleware(fn: (socket: AuthenticatedSocket, next: Function) => void){
+    public addMiddleware(fn: (socket: AuthenticatedSocket, next: Function) => void){
         this.socketRepository.addMiddleware(fn);
     }
 

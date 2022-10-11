@@ -1,5 +1,5 @@
 import UserService from "../services/User.service";
-import Response from "../data/Response";
+import {Response} from "./Abstract.controller";
 
 export default class RegisterController {
 

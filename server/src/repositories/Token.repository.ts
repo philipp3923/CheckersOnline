@@ -1,6 +1,6 @@
 import {PrismaClient} from "@prisma/client";
 import jwt from "jsonwebtoken";
-import {DecryptedToken} from "../service/Token.service";
+import {DecryptedToken} from "../services/Token.service";
 
 export default class TokenRepository {
     private refreshTokenCount: number;
