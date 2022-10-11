@@ -16,6 +16,7 @@ import logmsg, {loghttp, LogStatus, LogType} from "../utils/logmsg";
 const express = require("express");
 const router = express.Router();
 
+/*
 router.post("/register", post_register, post_login);
 router.post("/login", post_login);
 router.post("/logout", post_logout);
@@ -23,7 +24,7 @@ router.post("/guest", post_guest);
 router.post("/update/refresh_token", post_refreshToken);
 router.post("/update/access_token", post_accessToken);
 router.get("/username_available", get_usernameAvailable);
-
+*/
 
 async function get_usernameAvailable(req: Request, res: Response, next: NextFunction) {
     const username = req.body.username;
@@ -90,6 +91,7 @@ async function post_register(req: Request, res: Response, next: NextFunction) {
     if (!email || !password || !username) {
         return res.sendStatus(400);
     }
+
 
     //#TODO check password quality
 
@@ -170,7 +172,7 @@ async function post_refreshToken(req: Request, res: Response, next: NextFunction
     const decrypted_token = await decryptRefreshToken(refreshToken);
 
     if (!decrypted_token) {
-        loghttp(req, LogStatus.WARNING, {}, "invalid token submitted");
+        loghttp(req, LogStatus.WARNING, undefined, "invalid token submitted");
         return res.sendStatus(403);
     }
 
