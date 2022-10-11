@@ -1,14 +1,17 @@
 import UserService from "../services/User.service";
 import TokenService from "../services/Token.service";
-import {Response} from "./Abstract.controller";
+import AbstractController, {RequestType, Response} from "./Abstract.controller";
+import Router from "../router/Router";
 
-export default class UpdateTokenController {
+export class UpdateAccessTokenController extends AbstractController {
 
-    constructor(private userService: UserService, private tokenService: TokenService) {
+    constructor(private userService: UserService, private tokenService: TokenService, router : Router) {
+        super(router, RequestType.POST, "/update/accessToken");
     }
 
 
-    public async updateAccessToken(token?: string): Promise<Response>{
+    public async handle(headers: any, body: any): Promise<Response>{
+        const token = headers.authorization?.split(" ")[1];
         let response: Response = {status: 200};
 
         if (!token) {
@@ -18,7 +21,7 @@ export default class UpdateTokenController {
 
         const oldDecryptedToken = await this.tokenService.decryptRefreshToken(token);
 
-        if(!oldDecryptedToken){
+        if (!oldDecryptedToken) {
             response.status = 403;
             return response;
         }
@@ -28,8 +31,15 @@ export default class UpdateTokenController {
         response.json = {accessToken: newEncryptedToken};
         return response;
     }
+}
+export class UpdateRefreshTokenController extends AbstractController{
 
-    public async updateRefreshToken(token?: string): Promise<Response>{
+    constructor(private userService: UserService, private tokenService: TokenService, router: Router) {
+        super(router, RequestType.POST, "/update/refreshToken");
+    }
+
+    public async handle(headers: any, body: any): Promise<Response>{
+        const token = headers.authorization?.split(" ")[1];
         let response: Response = {status: 200};
 
         if (!token) {
@@ -50,3 +60,4 @@ export default class UpdateTokenController {
         return response;
     }
 }
+

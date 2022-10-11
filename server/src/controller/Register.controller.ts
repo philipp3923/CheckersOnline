@@ -1,13 +1,16 @@
 import UserService from "../services/User.service";
-import {Response} from "./Abstract.controller";
+import AbstractController, {RequestType, Response} from "./Abstract.controller";
+import Router from "../router/Router";
 
-export default class RegisterController {
+export default class RegisterController extends AbstractController{
 
 
-    constructor(private userService: UserService) {
+    constructor(private userService: UserService, router: Router) {
+        super(router, RequestType.POST, "/register");
     }
 
-    public async register(username?: string , email?: string, password?: string): Promise<Response> {
+    public async handle(headers: any, body: any): Promise<Response> {
+        const {username, email, password} = body;
         let response: Response = {status: 200};
 
         if (!email || !password || !username) {

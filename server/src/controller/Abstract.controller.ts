@@ -18,7 +18,7 @@ export default abstract class AbstractController{
         return this.requestType;
     }
 
-    public abstract handle(body: unknown): Promise<Response>;
+    public abstract handle(headers: any, body: any): Promise<Response>;
 
     public getPath(){
         return this.path;

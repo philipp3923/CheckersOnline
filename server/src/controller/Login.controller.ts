@@ -1,14 +1,16 @@
 import UserService from "../services/User.service";
 import TokenService, {Role} from "../services/Token.service";
-import {Response} from "./Abstract.controller";
+import AbstractController, {RequestType, Response} from "./Abstract.controller";
+import Router from "../router/Router";
 
-export default class LoginController {
+export default class LoginController extends AbstractController{
 
-
-    constructor(private userService: UserService, private tokenService: TokenService) {
+    constructor(private userService: UserService, private tokenService: TokenService, router: Router) {
+        super(router, RequestType.POST, "/login");
     }
 
-    public async login(name?: string, password?: string): Promise<Response> {
+    public async handle(headers: any, body: any): Promise<Response> {
+        const {name, password} = body;
         let response: Response = {status: 200};
 
         if (!name|| !password) {
