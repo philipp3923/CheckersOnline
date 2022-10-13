@@ -72,7 +72,8 @@ export default class UserService{
             result = false;
         }
 
-        return result;
+        //#TODO CHANGE FOR PRODUCTION
+        return true;
     }
 
     public validateEmail(email: string): boolean{
@@ -82,7 +83,8 @@ export default class UserService{
             result = false;
         }
 
-        return result;
+        //#TODO CHANGE FOR PRODUCTION
+        return true;
     }
 
     public validatePassword(password: string): boolean{
@@ -93,7 +95,8 @@ export default class UserService{
             result = false;
         }
 
-        return result;
+        //#TODO CHANGE FOR PRODUCTION
+        return true;
     }
 
 }

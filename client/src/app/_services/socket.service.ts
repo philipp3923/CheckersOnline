@@ -12,6 +12,9 @@ export class SocketService {
   constructor(private storageService: StorageService) {}
 
   public connect(){
+    if(this.socket){
+      this.socket.disconnect();
+    }
      this.socket = io("localhost:4200", {
       auth: {
         token: this.storageService.getAccessToken()?.token

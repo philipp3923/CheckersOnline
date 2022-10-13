@@ -18,6 +18,8 @@ import Router from "./router/Router";
 import LoginController from "./controller/Login.controller";
 import {UpdateAccessTokenController, UpdateRefreshTokenController} from "./controller/UpdateToken.controller";
 import RegisterController from "./controller/Register.controller";
+import IdentityService from "./services/Identitity.service";
+import GuestController from "./controller/Guest.controller";
 
 //#TODO move constants to central file
 const JWT_REFRESH_SECRET = "aNMkyXrdEgGCQw6OpdnTsh1XEEKb5pbMaA1mfEfGLD6GHyAQriU4qWVsbpp5RsMCXIiCT27LnDCb72OUUX6xFCmdp1rB1eSxlW6A6XVZeprS681oFLaEKnWQOAQsNEhY";
@@ -29,25 +31,27 @@ const server = createServer(app);
 const io = new Server(server);
 const prismaClient = new PrismaClient();
 
-
 const userRepository = new UserRepository(prismaClient);
-const identRepository = new IdentityRepository(prismaClient);
+const identityRepository = new IdentityRepository(prismaClient);
 const encryptionRepository = new EncryptionRepository(10);
 const tokenRepository = new TokenRepository(prismaClient);
 const socketRepository = new SocketRepository(io);
 const apiRepository = new ApiRepository(app);
 
-const userService = new UserService(userRepository, encryptionRepository, identRepository);
+const userService = new UserService(userRepository, encryptionRepository, identityRepository);
 const tokenService = new TokenService(tokenRepository, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET, JWT_TOKEN_COUNT);
 const socketService = new SocketService(socketRepository);
 const apiService = new ApiService(apiRepository);
+const identityService = new IdentityService(identityRepository);
 
 const authRouter = new Router(apiService, "/auth");
+const updateRouter = new Router(apiService, "/auth/update");
 
 const loginController = new LoginController(userService,tokenService, authRouter);
 const registerController = new RegisterController(userService, authRouter);
-const updateAccessTokenController = new UpdateAccessTokenController(userService,tokenService,authRouter);
-const updateRefreshTokenController = new UpdateRefreshTokenController(userService,tokenService,authRouter);
+const guestController = new GuestController(tokenService, identityService, authRouter);
+const updateAccessTokenController = new UpdateAccessTokenController(userService,tokenService,updateRouter);
+const updateRefreshTokenController = new UpdateRefreshTokenController(userService,tokenService,updateRouter);
 
 const authenticateSocketMiddleware = new AuthenticateSocketMiddleware(socketService, tokenService);
 

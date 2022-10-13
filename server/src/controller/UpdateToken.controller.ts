@@ -6,7 +6,7 @@ import Router from "../router/Router";
 export class UpdateAccessTokenController extends AbstractController {
 
     constructor(private userService: UserService, private tokenService: TokenService, router : Router) {
-        super(router, RequestType.POST, "/update/accessToken");
+        super(router, RequestType.POST, "/accessToken");
     }
 
 
@@ -35,7 +35,7 @@ export class UpdateAccessTokenController extends AbstractController {
 export class UpdateRefreshTokenController extends AbstractController{
 
     constructor(private userService: UserService, private tokenService: TokenService, router: Router) {
-        super(router, RequestType.POST, "/update/refreshToken");
+        super(router, RequestType.POST, "/refreshToken");
     }
 
     public async handle(headers: any, body: any): Promise<Response>{

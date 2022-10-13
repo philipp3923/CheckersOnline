@@ -31,10 +31,7 @@ export default class LoginController extends AbstractController{
 
         const decryptedToken = {account_id: account_id, role: Role.USER};
 
-        const accessToken = await this.tokenService.generateAccessToken(decryptedToken);
-        const refreshToken = await this.tokenService.generateRefreshToken(decryptedToken);
-
-        response.json = {accessToken: accessToken, refreshToken: refreshToken, user: decryptedToken};
+        response.json = await this.tokenService.createTokenResponse(decryptedToken);
         return response;
     }
 }

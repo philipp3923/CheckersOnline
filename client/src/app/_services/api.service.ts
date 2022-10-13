@@ -32,6 +32,7 @@ export class ApiService {
 
   private authObserver: Observer<AuthResponse> = {
     next: (res) => {
+      console.log(res);
       this.dataService.changeUser(res.user);
       this.storageService.saveUser(res.user);
       this.storageService.saveRefreshToken(res.refreshToken);
@@ -65,7 +66,9 @@ export class ApiService {
       username,
       email,
       password
-    }, httpOptions).subscribe(this.authObserver);;
+    }, httpOptions).subscribe({next: (res)=>{
+      this.login(email, password);
+      }});
   }
 
   public updateAccessToken() {

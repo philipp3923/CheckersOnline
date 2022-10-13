@@ -52,14 +52,23 @@ export default class TokenService {
     }
 
     public async decryptRefreshToken(token: string): Promise<DecryptedToken | null> {
-        if(!await this.tokenRepository.isRefreshTokenSaved(token)){
+        const decryptedToken = await this.tokenRepository.decryptToken(token, this.refreshTokenSecret);
+        if(decryptedToken?.role !== Role.GUEST && !await this.tokenRepository.isRefreshTokenSaved(token)){
             return null;
         }
-        return this.tokenRepository.decryptToken(token, this.refreshTokenSecret);
+        return decryptedToken;
     }
 
     public decryptAccessToken(token: string): DecryptedToken | null {
         return this.tokenRepository.decryptToken(token, this.accessTokenSecret);
+    }
+
+    public async createTokenResponse(decryptedToken: DecryptedToken){
+        const accessToken = await this.generateAccessToken(decryptedToken);
+        const refreshToken = await this.generateRefreshToken(decryptedToken);
+
+        const response = {accessToken: accessToken, refreshToken: refreshToken, user: decryptedToken};
+        return response;
     }
 
     private wrapToken(token: string): EncryptedToken{

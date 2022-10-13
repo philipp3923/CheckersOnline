@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ApiService} from "../_services/api.service";
 import {DataService} from "../_services/data.service";
 import {StorageService} from "../_services/storage.service";
@@ -29,7 +29,7 @@ export class RegisterComponent implements OnInit {
       return;
     }
 
-    if(this.storageService.getUser() !== null){
+    if(this.storageService.getUser()?.role !== "GUEST"){
       //#TODO Display error message
       console.log("ERROR: already logged in");
       return;

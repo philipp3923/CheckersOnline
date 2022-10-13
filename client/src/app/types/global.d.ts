@@ -3,9 +3,13 @@ export {};
 declare global{
   interface User {
     id: string
+    role: Role
     email?: string
     username?: string
-    guest?: boolean
+  }
+
+  export enum Role {
+    ADMIN = "ADMIN", USER = "USER", GUEST = "GUEST"
   }
 
   export interface TokenObject {
