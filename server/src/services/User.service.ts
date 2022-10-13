@@ -26,6 +26,13 @@ export default class UserService{
         return id;
     }
 
+    public async login(id: string){
+        await this.userRepository.login(id);
+    }
+
+    /**
+     * @deprecated The method is not implemented
+     */
     public delete(id: string){
 
     }

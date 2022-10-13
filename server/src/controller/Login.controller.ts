@@ -31,6 +31,8 @@ export default class LoginController extends AbstractController{
 
         const decryptedToken = {account_id: account_id, role: Role.USER};
 
+        await this.userService.login(account_id);
+
         response.json = await this.tokenService.createTokenResponse(decryptedToken);
         return response;
     }

@@ -1,5 +1,8 @@
 import IdentityRepository from "../repositories/Identity.repository";
 
+/**
+ * @deprecated The class should not be used
+ */
 export default class IdentityService{
 
     constructor(private identityRepository: IdentityRepository) {

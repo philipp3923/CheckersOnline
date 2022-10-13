@@ -1,20 +1,26 @@
 import {PrismaClient} from "@prisma/client";
+import {Role} from "../services/Token.service";
+import AccountRepository from "./AccountRepository";
 
 export default class UserRepository {
 
-    constructor(private prismaClient: PrismaClient) {
+    constructor(private prismaClient: PrismaClient, private accountRepository: AccountRepository) {
     }
 
     public async create(id: string, email: string, username: string, password: string){
-            const account = await this.prismaClient.account.create({data: {ext_id: id, active: true, role: "USER"}});
+            await this.accountRepository.create(id, Role.GUEST);
             const user = await this.prismaClient.user.create({
                 data: {
                     username: username,
                     email: email,
                     password: password,
-                    account: {connect: {id: account.id}}
+                    account: {connect: {ext_id: id}}
                 }
             });
+    }
+
+    public async login(id: string){
+        this.accountRepository.login(id);
     }
 
     public async getByUsername(username: string): Promise<string | null>{
