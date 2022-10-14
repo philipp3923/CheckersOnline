@@ -34,8 +34,12 @@ export default class IdentityRepository {
         return id;
     }
 
+    public generateKey(){
+        return this.generateRandom(0, 2176782336).toString(36).toUpperCase();
+    }
+
     private generateID(){
-        return `${Date.now().toString(36)}${this.generatePad(this.generateRandom(0, 1679616).toString(36), 8)}`.toUpperCase();
+        return `${Date.now().toString(36)}${this.generatePad(this.generateRandom(0, 2176782336).toString(36), 6)}`.toUpperCase();
     }
 
     private generatePad(word: string, size: number) {

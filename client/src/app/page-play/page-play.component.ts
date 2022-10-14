@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {SocketService} from "../_services/socket.service";
 
 @Component({
   selector: 'app-page-play',
@@ -6,10 +7,29 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./page-play.component.css']
 })
 export class PagePlayComponent implements OnInit {
-
-  constructor() { }
+  form = {
+    time: null,
+    id: null
+  }
+  constructor(private socketService: SocketService) { }
 
   ngOnInit(): void {
+  }
+
+  onCreateCustom(){
+    if(this.form.time === null){
+      return
+    }
+
+    this.socketService.createCustom(Math.floor(+this.form.time));
+  }
+
+  onJoinCustom(){
+    if(this.form.id === null){
+      return
+    }
+    this.socketService.joinCustom(this.form.id);
+
   }
 
 }

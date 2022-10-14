@@ -24,6 +24,7 @@ model Account {
 model Game {
   id         Int       @id @default(autoincrement())
   ext_id     String    @unique
+  type       GameType
   time_limit Int
   startedAt  DateTime  @default(now())
   finishedAt DateTime?
@@ -89,4 +90,11 @@ enum Role {
 enum Player {
   WHITE
   BLACK
+}
+
+enum GameType {
+  FRIEND
+  CASUAL
+  RANKED
+  CUSTOM
 }

@@ -1,5 +1,5 @@
 import ApiRepository from "../repositories/Api.repository";
-import Router from "../router/Router";
+import Router from "../objects/Router";
 
 export default class ApiService{
 

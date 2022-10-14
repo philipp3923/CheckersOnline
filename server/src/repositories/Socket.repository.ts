@@ -1,80 +1,75 @@
 import {Server, Socket} from "socket.io";
-import {AuthenticatedSocket, SocketEventListener} from "../services/Socket.service";
-import {DecryptedToken} from "../services/Token.service";
+import {AuthenticatableSocket, SocketEventListener,Socket as ConnectionSocket} from "../services/Socket.service";
+import GameRepository from "./Game.repository";
+import Connection from "../objects/Connection";
 
 export interface ExtendedAuthenticatedSocket extends Socket{
-    decryptedToken?: DecryptedToken,
-    accessToken?: string
+    connection?: Connection,
 }
 
-export default class SocketRepository{
+export default class SocketRepository {
     private readonly eventListeners: SocketEventListener[];
-    private readonly connections: { [ext_id: string]: string[] };
+    private readonly connections: { [ext_id: string]: Connection };
 
-    constructor(private io: Server){
-        this.eventListeners=[];
+    constructor(private io: Server, private gameRepository: GameRepository) {
+        this.eventListeners = [];
         this.connections = {};
     }
 
-    public addMiddleware(fn: (socket: AuthenticatedSocket, next: Function) => void){
+    public addMiddleware(fn: (socket: AuthenticatableSocket, next: Function) => void) {
         this.io.use((socket, next) => {
-            (<AuthenticatedSocket>socket).accessToken = socket.handshake.auth.token;
-            fn(<AuthenticatedSocket>socket, next);
+            (<AuthenticatableSocket>socket).token = socket.handshake.auth.token;
+            fn(<AuthenticatableSocket>socket, next);
         });
     }
 
-    //#TODO CHANGE AS LIST AND ADD LATER
-    public addEvent(socketEventListener: SocketEventListener){
+    public addEvent(socketEventListener: SocketEventListener) {
         this.eventListeners.push(socketEventListener);
     }
 
-    public onConnection(){
-        this.io.on("connection", (socket: ExtendedAuthenticatedSocket)=> {
-            if(typeof socket.decryptedToken === "undefined" || typeof socket.accessToken === "undefined"){
-                throw new Error("Socket without token connected");
+    public onConnection() {
+        this.io.on("connection", async (socket: ExtendedAuthenticatedSocket) => {
+            if (typeof socket.connection === "undefined") {
+                throw new Error("Socket without account connected");
             }
 
-            this.connect(socket.decryptedToken.account_id, socket.id);
+            const connectionSocket: ConnectionSocket = {
+              id: socket.id,
+              join: (room: string) => socket.join(room),
+              leave: (room: string)=> socket.leave(room),
+              respond: (msg: Object) => socket.send(msg)
+            };
 
-            for(const eventListener of this.eventListeners){
-                socket.on(eventListener.event, (args) => eventListener.fn(<DecryptedToken>socket.decryptedToken, args));
+            socket.connection.addSocket(connectionSocket);
+
+            for (const eventListener of this.eventListeners) {
+                socket.on(eventListener.event, (args, callback) => {
+                    eventListener.fn(<Connection>socket.connection, args, callback)
+                });
             }
 
-            socket.on("disconnect", ()=>this.disconnect(socket.decryptedToken?.account_id ?? "", socket.id));
+            socket.on("disconnect", () => socket.connection?.removeSocket(socket.id));
         });
     }
 
-    private connect(accountID: string, socketID: string){
-        if (typeof this.connections[accountID] === "undefined") {
-            this.connections[accountID] = [];
-        }
-        this.connections[accountID].push(socketID);
-        console.log(this.connections);
+    public addConnection(connection: Connection) {
+        this.connections[connection.getID()] = connection;
     }
 
-    private disconnect(accountID: string, socketID: string){
-        const result = this.connections[accountID];
-        const index = result?.indexOf(socketID);
-
-        if (index < 0 || typeof index === "undefined") {
-            throw new Error("Trying to disconnect non existent account connection");
-        }
-
-        result.splice(index, 1);
-
-        if (result.length < 1) {
-            delete this.connections[accountID];
-        }
-        console.log(this.connections);
+    public removeConnection(connection: string) {
+        delete this.connections[connection];
     }
 
-    private getConnections(accountID: string){
-        const result = this.connections[accountID];
-
-        if (typeof result === "undefined") {
-            throw new Error("Trying to access non existent account connections");
-        }
-
-        return result;
+    public getConnection(id: string): Connection | null {
+        return this.connections[id] ?? null;
     }
+
+    public emitIn(room: string, event: string, msg: any){
+        this.io.in(room).emit(event, msg);
+    }
+
+    public emitTo(id: string, event: string, msg: any){
+        this.io.to(id).emit(event,msg);
+    }
+
 }

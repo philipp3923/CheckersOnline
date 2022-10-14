@@ -1,4 +1,4 @@
-import Router from "../router/Router";
+import Router from "../objects/Router";
 
 export interface Response{
     status: number, json?: Object

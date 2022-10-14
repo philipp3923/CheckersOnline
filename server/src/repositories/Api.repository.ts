@@ -1,5 +1,5 @@
 import express, {Express, NextFunction, Request} from "express";
-import Router from "../router/Router";
+import Router from "../objects/Router";
 import AbstractController, {RequestType, Response} from "../controller/Abstract.controller";
 
 export default class ApiRepository{

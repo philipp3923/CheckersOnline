@@ -1,6 +1,6 @@
 import UserService from "../services/User.service";
 import AbstractController, {RequestType, Response} from "./Abstract.controller";
-import Router from "../router/Router";
+import Router from "../objects/Router";
 
 export default class RegisterController extends AbstractController{
 

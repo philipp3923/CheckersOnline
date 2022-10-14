@@ -1,14 +1,16 @@
-import SocketService, {AuthenticatedSocket} from "../services/Socket.service";
+import SocketService, {AuthenticatableSocket, AuthenticatedSocket} from "../services/Socket.service";
 import TokenService from "../services/Token.service";
+import Connection from "../objects/Connection";
+import GameService from "../services/Game.service";
 
 export default class AuthenticateSocketMiddleware {
 
-    constructor(private socketService: SocketService, private tokenService : TokenService) {
+    constructor(private socketService: SocketService, private tokenService : TokenService, private gameService: GameService) {
         this.socketService.addMiddleware((socket, next) => this.authenticate(socket, next));
     }
 
-    private async authenticate(socket: AuthenticatedSocket, next: Function) {
-        const accessToken = socket.accessToken;
+    private async authenticate(socket: AuthenticatableSocket, next: Function) {
+        const accessToken = socket.token;
 
         if (!accessToken) {
             const err = new Error("401");
@@ -24,8 +26,15 @@ export default class AuthenticateSocketMiddleware {
             next(err);
             return;
         }
+        const connection = this.socketService.getConnection(decryptedToken);
 
-        socket.decryptedToken = decryptedToken;
+        if(connection === null){
+            socket.connection = new Connection(this.socketService, decryptedToken);
+             this.socketService.addConnection(socket.connection);
+        }else{
+            socket.connection = connection;
+        }
+
         next();
     }
 }

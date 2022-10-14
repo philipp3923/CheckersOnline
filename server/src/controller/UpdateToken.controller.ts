@@ -1,7 +1,7 @@
 import UserService from "../services/User.service";
 import TokenService from "../services/Token.service";
 import AbstractController, {RequestType, Response} from "./Abstract.controller";
-import Router from "../router/Router";
+import Router from "../objects/Router";
 
 export class UpdateAccessTokenController extends AbstractController {
 
