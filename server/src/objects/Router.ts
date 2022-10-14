@@ -1,7 +1,7 @@
 import ApiService from "../services/Api.service";
 import AbstractController from "../controller/Abstract.controller";
 
-export default class Router{
+export default class Router {
     private readonly controller: AbstractController[];
 
     constructor(private apiService : ApiService, private path : string) {

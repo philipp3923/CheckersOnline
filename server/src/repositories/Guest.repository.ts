@@ -1,6 +1,6 @@
 import {PrismaClient} from "@prisma/client";
 import {Role} from "../services/Token.service";
-import AccountRepository from "./AccountRepository";
+import AccountRepository from "./Account.repository";
 
 export default class GuestRepository{
 

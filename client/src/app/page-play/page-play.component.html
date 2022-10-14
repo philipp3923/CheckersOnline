@@ -1,1 +1,21 @@
 <p>page-play works!</p>
+<form (ngSubmit)="onCreateCustom()">
+  <input
+    #email="ngModel"
+    [(ngModel)]="form.time"
+    name="time-input"
+    required
+    type="text"
+  />
+  <button>Create Custom Game</button>
+</form>
+<form (ngSubmit)="onJoinCustom()">
+  <input
+    #email="ngModel"
+    [(ngModel)]="form.id"
+    name="id-input"
+    required
+    type="text"
+  />
+  <button>Join Custom Game</button>
+</form>

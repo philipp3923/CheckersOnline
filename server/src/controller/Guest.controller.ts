@@ -1,8 +1,6 @@
 import AbstractController, {RequestType, Response} from "./Abstract.controller";
-import UserService from "../services/User.service";
 import TokenService, {Role} from "../services/Token.service";
-import Router from "../router/Router";
-import IdentityService from "../services/Identitity.service";
+import Router from "../objects/Router";
 import GuestService from "../services/Guest.service";
 
 export default class GuestController extends AbstractController{
