@@ -22,18 +22,17 @@ model Account {
 }
 
 model Game {
-  id         Int       @id @default(autoincrement())
-  ext_id     String    @unique
+  id         Int      @id @default(autoincrement())
+  ext_id     String   @unique
   type       GameType
   time_limit Int
-  startedAt  DateTime  @default(now())
-  finishedAt DateTime?
-  winner     Int?
+  startedAt  DateTime @default(now())
+  winner     Color?
   id_white   Int
   id_black   Int
-  white      Account   @relation(name: "white", fields: [id_white], references: [id])
-  black      Account   @relation(name: "black", fields: [id_black], references: [id])
-  turns      Turn[]
+  white      Account  @relation(name: "white", fields: [id_white], references: [id])
+  black      Account  @relation(name: "black", fields: [id_black], references: [id])
+  plays      Play[]
 }
 
 model RefreshToken {
@@ -45,17 +44,18 @@ model RefreshToken {
   account    Account  @relation(fields: [id_account], references: [id])
 }
 
-model Turn {
+model Play {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   capture   Boolean
-  player    Player
+  color     Color
+  index     Int
   start_x   Int
   start_y   Int
-  end_x     Int
-  end_y     Int
+  target_x  Int
+  target_y  Int
   id_game   Int
-  games     Game     @relation(fields: [id_game], references: [id])
+  game      Game     @relation(fields: [id_game], references: [id])
 }
 
 model User {
@@ -87,9 +87,10 @@ enum Role {
   ADMIN
 }
 
-enum Player {
+enum Color {
   WHITE
   BLACK
+  NONE
 }
 
 enum GameType {

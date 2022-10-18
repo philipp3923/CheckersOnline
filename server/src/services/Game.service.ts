@@ -1,40 +1,90 @@
 import GameRepository from "../repositories/Game.repository";
-import Game, {GameType} from "../objects/Game";
 import IdentityRepository from "../repositories/Identity.repository";
+import SocketService from "./Socket.service";
+import {Play} from "../objects/Board";
+import UserGame from "../objects/UserGame";
+import StaticGame from "../objects/StaticGame";
+import Game, {GameType} from "../objects/Game";
+import DynamicGame from "../objects/DynamicGame";
+
+export enum TimeType{
+    STATIC, DYNAMIC, DYNAMIC_INCREMENT
+}
 
 export default class GameService{
-    private readonly games: {[key: string]: Game};
+    private readonly games: {[key: string]: UserGame};
 
-    constructor(private gameRepository: GameRepository, private identityRepository: IdentityRepository) {
+    constructor(private gameRepository: GameRepository, private identityRepository: IdentityRepository, private socketService: SocketService) {
         this.games= {};
     }
 
-    public start(game: Game){
+    public async start(game: UserGame){
         const white = game.getWhite();
         const black = game.getBlack();
         if(white === null || black === null){
             throw new Error("Not full game cannot be started");
         }
-        this.gameRepository.saveGame(white, black, game.getID(), game.getType(), game.getTime());
+        await this.gameRepository.saveGame(white.id, black.id, game.getID(), game.getType(), game.getTime());
     }
 
+    public async finish(game: UserGame){
+        const winner = game.getWinner();
+        if(winner === null){
+            throw new Error("Game has no winner!");
+        }
+        await this.gameRepository.finishGame(game.getID(), winner);
+    }
     /**
      * @deprecated Memory leak when removing game, as game persists in Connection object of each player until these players both disconnect
      */
-    public remove(game: Game){
+    public remove(game: UserGame){
 
     }
 
-    public async createCustom(time: number){
+    public async savePlay(game: UserGame, play : Play, index: number){
+        await this.gameRepository.savePlay(game.getID(), play.color, play.capture, play.start, play.target, index);
+    }
+
+    private async createUserGame(gameType: GameType, timeType: TimeType, time: number, increment?: number){
         const id = await this.identityRepository.generateGameID();
         const key = this.generateKey();
-        const game = new Game(this, id, key, GameType.CUSTOM, time);
+        let game = null;
+        if(gameType === GameType.COMPUTER){throw new Error("Cannot create ComputerGame as UserGame")};
+        switch (timeType){
+            case TimeType.STATIC:
+                game = new StaticGame(this, id, key, gameType, time);
+                break
+            case TimeType.DYNAMIC:
+                game = new DynamicGame(this, id, key, gameType, time, 0);
+                break
+            case TimeType.DYNAMIC_INCREMENT:
+                if(typeof increment === "undefined"){throw new Error("Increment undefined");}
+                game = new DynamicGame(this, id, key, gameType, time, increment);
+                break
+            default:
+                throw new Error("Illegal timeType");
+        }
         this.games[key] = game;
         return game;
     }
 
-    public getCustom(key: string): Game | null{
-        return this.games[key]?.getType() === GameType.CUSTOM ? this.games[key] : null;
+    public async createGame(gameType: GameType, timeType: number, time?: number, increment?: number): Promise<Game>{
+        if(gameType === GameType.COMPUTER){
+            throw new Error("Not yet implemented");
+        }else{
+            if( typeof time !== "number" || typeof  increment !== "number"){throw new Error("time or increment not defined");}
+            const game = await this.createUserGame(GameType.CUSTOM, timeType, time, increment);
+            return game;
+        }
+
+    }
+
+    public getGame(key: string): Game | null{
+        return this.games[key] ?? null;
+    }
+
+    public emitGameState(game: UserGame){
+        this.socketService.emitIn(game.getKey(), "gameState", game.getGameState());
     }
 
     private generateKey(): string{

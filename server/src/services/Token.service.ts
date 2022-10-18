@@ -53,7 +53,7 @@ export default class TokenService {
 
     public async decryptRefreshToken(token: string): Promise<DecryptedToken | null> {
         const decryptedToken = await this.tokenRepository.decryptToken(token, this.refreshTokenSecret);
-        if(decryptedToken?.role !== Role.GUEST && !await this.tokenRepository.isRefreshTokenSaved(token)){
+        if(!await this.tokenRepository.isRefreshTokenSaved(token)){
             return null;
         }
         return decryptedToken;

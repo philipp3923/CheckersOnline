@@ -2,11 +2,10 @@ import AbstractEvent from "./Abstract.event";
 import SocketService, {SocketResponse} from "../services/Socket.service";
 import GameService from "../services/Game.service";
 import Connection from "../objects/Connection";
-import {gameTimeLimits} from "../objects/Game";
 
-export default class CreateCustomGameEvent extends AbstractEvent {
+export default class JoinGameEvent extends AbstractEvent {
     public constructor(socketService: SocketService, private gameService: GameService) {
-        super(socketService, "createCustomGame");
+        super(socketService, "joinGame");
     }
 
     public async on(connection: Connection, args: any, respond: SocketResponse) {
@@ -15,25 +14,24 @@ export default class CreateCustomGameEvent extends AbstractEvent {
             return;
         }
 
-        if(!gameTimeLimits.includes(args.time)){
+        if(typeof args.key !== "string"){
             respond({error: "Invalid argument type"});
             return;
         }
 
-        const game = await this.gameService.createCustom(args.time);
+        const game = this.gameService.getGame(args.key);
 
         if (game === null) {
-            respond({error: "Invalid arguments provided"});
+            respond({error: "Game does not exist"});
             return;
         }
 
-        if(game.getWhite() === connection.getID() || game.getBlack() === connection.getID()){
+        try {
+            await connection.joinGame(game);
+        }catch (e) {
             respond({error: "Cannot join the same game twice"});
             return;
         }
 
-        connection.joinGame(game);
-
-        respond({key: game.getKey()});
     }
 }
