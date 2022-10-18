@@ -13,6 +13,7 @@ model Account {
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
   loginAt        DateTime?
+  logoutAt       DateTime?
   active         Boolean
   role           Role
   refresh_tokens RefreshToken[]
@@ -47,6 +48,7 @@ model RefreshToken {
 model Play {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
+  time      Int
   capture   Boolean
   color     Color
   index     Int
