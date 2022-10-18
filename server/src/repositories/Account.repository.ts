@@ -14,4 +14,8 @@ export default class AccountRepository{
         await this.prismaClient.account.update({data: {loginAt: new Date()},where : {ext_id: id}});
     }
 
+    public async getByID(id: number){
+        return await this.prismaClient.account.findUnique({where: {id: id}});
+    }
+
 }

@@ -15,7 +15,7 @@ export interface AuthenticatableSocket{
 
 export interface Socket{
     id: string,
-    respond: (event: string, msg: any) => void,
+    send: (event: string, msg: any) => void,
     join: (room: string) => void,
     leave: (room: string) => void
 }
@@ -57,12 +57,12 @@ export default class SocketService{
         this.socketRepository.removeConnection(connection.getID());
     }
 
-    public emitIn(room: string, event: string, msg: any){
+    public sendIn(room: string, event: string, msg: any){
         this.socketRepository.emitIn(room, event, msg);
     }
 
-    public emitTo(id: string, event: string, msg: any){
-        this.socketRepository.emitTo(id,event,msg);
+    public sendTo(id: string, event: string, msg: any){
+        this.socketRepository.emitIn(id,event,msg);
     }
 
 }

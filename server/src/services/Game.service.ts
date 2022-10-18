@@ -42,7 +42,8 @@ export default class GameService{
     }
 
     public async savePlay(game: UserGame, play : Play, index: number){
-        await this.gameRepository.savePlay(game.getID(), play.color, play.capture, play.start, play.target, index);
+        if(typeof play.time === "undefined"){throw new Error("play.time is not defined");}
+        await this.gameRepository.savePlay(game.getID(), play.color, play.capture, play.start, play.target, play.time, index);
     }
 
     private async createUserGame(gameType: GameType, timeType: TimeType, time: number, increment?: number){
@@ -84,7 +85,7 @@ export default class GameService{
     }
 
     public emitGameState(game: UserGame){
-        this.socketService.emitIn(game.getKey(), "gameState", game.getGameState());
+        this.socketService.sendIn(game.getKey(), "gameState", game.getGameState());
     }
 
     private generateKey(): string{

@@ -59,6 +59,7 @@ export default class TokenService {
         return decryptedToken;
     }
 
+    // #TODO implement check for last logout
     public decryptAccessToken(token: string): DecryptedToken | null {
         return this.tokenRepository.decryptToken(token, this.accessTokenSecret);
     }

@@ -37,10 +37,10 @@ export default class SocketRepository {
               id: socket.id,
               join: (room: string) => socket.join(room),
               leave: (room: string)=> socket.leave(room),
-              respond: (msg: Object) => socket.send(msg)
+              send: (event: string, msg: any) => socket.emit(event, msg)
             };
 
-            socket.connection.addSocket(connectionSocket);
+            await socket.connection.addSocket(connectionSocket);
 
             for (const eventListener of this.eventListeners) {
                 socket.on(eventListener.event, (args, callback) => {
