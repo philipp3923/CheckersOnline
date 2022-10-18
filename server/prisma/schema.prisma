@@ -75,6 +75,7 @@ model Friend {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  type      FriendType
   id_user   Int
   id_friend Int
   user      User     @relation(name: "user", fields: [id_user], references: [id])
@@ -100,4 +101,9 @@ enum GameType {
   CASUAL
   RANKED
   CUSTOM
+}
+
+enum FriendType{
+    ACTIVE
+    REQUEST
 }

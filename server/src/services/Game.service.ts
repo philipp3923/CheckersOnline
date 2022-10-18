@@ -85,7 +85,7 @@ export default class GameService{
     }
 
     public emitGameState(game: UserGame){
-        this.socketService.emitIn(game.getKey(), "gameState", game.getGameState());
+        this.socketService.sendIn(game.getKey(), "gameState", game.getGameState());
     }
 
     private generateKey(): string{

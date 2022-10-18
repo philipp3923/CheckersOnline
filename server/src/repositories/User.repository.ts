@@ -20,12 +20,20 @@ export default class UserRepository {
     }
 
     public async login(id: string){
-        this.accountRepository.login(id);
+        await this.accountRepository.login(id);
     }
 
     public async getByUsername(username: string): Promise<string | null>{
         const user =  await this.prismaClient.user.findUnique({where: {username: username}, include: {account: true}});
         return user ? user.account.ext_id : null;
+    }
+
+    public async getByAccountID(id: string){
+        const account = await this.prismaClient.account.findUnique({
+            where: {ext_id: id},
+            include: {user: true}
+        });
+        return account?.user ?? null;
     }
 
     public async getByEmail(email: string): Promise<string | null>{

@@ -21,6 +21,9 @@ export class SocketService {
         token: this.storageService.getAccessToken()?.token
       },
     });
+
+    this.socket.on("welcome", (args)=>console.log(args));
+
     setTimeout(() => {
       this.socket?.emit("ping", {msg: "Hallo!"}, (response: Object) => {
         console.log(response);

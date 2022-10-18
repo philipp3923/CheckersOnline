@@ -1,20 +1,24 @@
-import {DecryptedToken} from "../services/Token.service";
+import {DecryptedToken, Role} from "../services/Token.service";
 import SocketService, {Socket} from "../services/Socket.service";
-import GameService from "../services/Game.service";
 import UserGame from "./UserGame";
 import Game from "./Game";
+import FriendshipService from "../services/Friendship.service";
 
 export default class Connection {
-    private sockets: Socket[];
-    private games: {[id: string]: Game};
+    private readonly sockets: Socket[];
+    private readonly games: {[id: string]: Game};
 
-    constructor(private socketService: SocketService, private decryptedToken: DecryptedToken) {
+    constructor(private socketService: SocketService, private friendshipService: FriendshipService, private decryptedToken: DecryptedToken) {
         this.sockets = [];
         this.games = {};
     }
 
-    public addSocket(socket: Socket){
+    public async addSocket(socket: Socket){
         this.sockets.push(socket);
+        socket.join(this.decryptedToken.account_id);
+        if(this.decryptedToken.role !== Role.GUEST){
+            socket.send("welcome", {friends: await this.friendshipService.getFriends(this.decryptedToken.account_id)});
+        }
     }
 
     public removeSocket(id: string){
@@ -55,10 +59,8 @@ export default class Connection {
         return this.decryptedToken.account_id;
     }
 
-
-
     public send(event: string, msg: any){
-        this.socketService.emitIn(this.decryptedToken.account_id,event,msg);
+        this.socketService.sendIn(this.decryptedToken.account_id,event,msg);
 
     }
 

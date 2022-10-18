@@ -16,27 +16,46 @@ export class BoardComponent implements AfterViewInit {
   private tileSize = 0;
 
   @ViewChild("canvas")
-  private canvas: ElementRef<HTMLCanvasElement> | null  = null;
-  private context: CanvasRenderingContext2D | null  =null;
+  private canvas: ElementRef<HTMLCanvasElement> | null = null;
+  private context: CanvasRenderingContext2D | null = null;
   private boundingRect: DOMRect | null = null;
   private board: HTMLCanvasElement | null = null;
+  private state: number[][] = [
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+  ];
 
-  constructor() { }
+  @ViewChild("whitePawnImage") private whitePawnImage: ElementRef<HTMLImageElement> | null = null;
+  @ViewChild("blackPawnImage") private blackPawnImage: ElementRef<HTMLImageElement> | null = null;
+  @ViewChild("whiteDameImage") private whiteDameImage: ElementRef<HTMLImageElement> | null = null;
+  @ViewChild("blackDameImage") private blackDameImage: ElementRef<HTMLImageElement> | null = null;
+
+
+  constructor() {
+  }
 
   ngAfterViewInit(): void {
-    if(this.canvas === null){
+    if (this.canvas === null || this.whiteDameImage === null || this.blackDameImage === null || this.blackPawnImage === null || this.whitePawnImage === null) {
       throw new Error("Board attributes not initialized");
     }
     this.context = <CanvasRenderingContext2D>this.canvas.nativeElement.getContext('2d');
     this.board = this.canvas.nativeElement;
     this.boundingRect = this.canvas.nativeElement.getBoundingClientRect();
-
     this.tileSize = Math.min(this.board.width, this.board.height) / this.tiles;
-
   }
 
-  onMouseDown(event: MouseEvent){
+  onMouseDown(event: MouseEvent) {
     console.log(event);
+  }
+  
+  private draw(state: number[][]){
+
   }
 
 }

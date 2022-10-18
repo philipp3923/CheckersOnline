@@ -3,7 +3,7 @@ import SocketService, {SocketResponse} from "../services/Socket.service";
 import GameService from "../services/Game.service";
 import Connection from "../objects/Connection";
 
-export default class GameTurnEvent extends AbstractEvent{
+export default class TurnEvent extends AbstractEvent{
 
     public constructor(socketService: SocketService) {
         super(socketService, "gameTurn");
