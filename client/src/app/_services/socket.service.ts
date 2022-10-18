@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {io, Socket} from "socket.io-client";
 import {StorageService} from "./storage.service";
 
@@ -9,13 +9,14 @@ export class SocketService {
 
   private socket: Socket | null = null;
 
-  constructor(private storageService: StorageService) {}
+  constructor(private storageService: StorageService) {
+  }
 
-  public connect(){
-    if(this.socket){
+  public connect() {
+    if (this.socket) {
       this.socket.disconnect();
     }
-     this.socket = io("localhost:4200", {
+    this.socket = io("localhost:4200", {
       auth: {
         token: this.storageService.getAccessToken()?.token
       },
@@ -25,21 +26,44 @@ export class SocketService {
         console.log(response);
       });
     }, 1000);
+
+    this.socket.on("gameState", (args) => {
+      console.log(args);
+      setTimeout(() => {
+        const user = this.storageService.getUser()?.account_id;
+        if ((user === args.black.id && args.nextColor === 1) || (user === args.white.id && args.nextColor === -1)) {
+          const index = this.generateRandom(0, args.possibleTurns.length - 1);
+          console.log("playing... " + index);
+          this.gameTurn(args.key, index);
+        }else{
+          console.log("waiting...");
+          return;
+        }
+      }, 2000);
+    });
   }
 
-  public disconnect(){
+  public disconnect() {
     this.socket?.disconnect();
     this.socket = null;
   }
 
-  public createCustom(time: number){
+  public createCustom(time: number) {
     console.log(this.socket?.id);
-    this.socket?.emit("createCustomGame", {time: time}, (res: any) => console.log(res));
+    this.socket?.emit("createGame", {gameType: "CUSTOM", timeType: "STATIC", time: 60000, increment: 0}, (res: any) => console.log(res));
   }
 
-  public joinCustom(key: string){
+  public joinCustom(key: string) {
     console.log(this.socket?.id);
-    this.socket?.emit("joinCustomGame", {key: key}, (res: any) => console.log(res));
+    this.socket?.emit("joinGame", {key: key}, (res: any) => console.log(res));
+  }
+
+  public gameTurn(key: number, index: number) {
+    this.socket?.emit("gameTurn", {key: key, index: index}, (res: any) => console.log(res));
+  }
+
+  private generateRandom(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min + 1) + min)
   }
 
 

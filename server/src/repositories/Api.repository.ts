@@ -1,9 +1,9 @@
 import express, {Express, NextFunction, Request} from "express";
 import Router from "../objects/Router";
-import AbstractController, {RequestType, Response} from "../controller/Abstract.controller";
+import AbstractController, {RequestType} from "../controller/Abstract.controller";
 
 export default class ApiRepository{
-    private router: Router[];
+    private readonly router: Router[];
 
     constructor(private api : Express) {
         this.api.use(express.json());

@@ -1,58 +1,32 @@
-import GameRepository from "../repositories/Game.repository";
-import GameService from "../services/Game.service";
+import Board, {Color, Play} from "./Board";
 
 export enum GameType{
-    FRIEND, CASUAL, RANKED, CUSTOM
+    FRIEND, CASUAL, RANKED, CUSTOM, COMPUTER
 }
 
-export const gameTimeLimits =[
-    0,
-    1,
-    3,
-    5,
-    10,
-    20,
-    30,
-    60,
-    120,
-    3600,
-    25200
-];
+export default abstract class Game{
+    protected timestamp: number;
+    protected readonly plays: Play[];
+    protected board: Board;
+    protected finished: boolean;
 
-export interface Player{
-    id: string,
-    time: number
-}
-
-export default class Game {
-    private player: Player[];
-
-    constructor(private gameService: GameService, private id: string, private key: string, private type: GameType, private time: number) {
-        this.player = [];
+    constructor(private id: string, private key: string, private type: GameType) {
+        this.plays = [];
+        this.board = new Board();
+        this.finished = false;
+        this.timestamp = Date.now();
     }
 
-    public join(player: string){
-        if (this.player.length >= 2) {
-            return;
-        }
-        if (Math.random() >= 0.5) {
-            this.player.push({id: player, time: this.time});
-        } else {
-            this.player.unshift({id: player, time: this.time});
-        }
-        if (this.player.length >= 2) {
-            this.start();
-        }
-        console.log(this.player);
-    }
+    protected abstract start(): void;
 
-    private start(){
-        this.gameService.start(this);
-        console.log(this);
-    }
+    protected abstract finish(): void;
 
-    public finish(){
+    public abstract play(index: number): Promise<boolean>;
 
+    public abstract getWinner(): Color | null;
+
+    public getType(){
+        return this.type;
     }
 
     public getID(){
@@ -63,20 +37,14 @@ export default class Game {
         return this.key;
     }
 
-    public getType(){
-        return this.type;
+    public abstract getNext(): string | null;
+
+    public getGameState(){
+        return {key: this.getKey(), id: this.getID(), board: this.board.getState(), possibleTurns: this.board.getPossibleTurns(), nextColor: this.board.getNextTurn(), winner: this.board.getWinner(), plays: this.plays, timestamp: this.timestamp};
     }
 
-    public getBlack(): string | null{
-        return this.player[1]?.id ?? null;
-    }
-
-    public getWhite(): string | null{
-        return this.player[0]?.id ?? null;
-    }
-
-    public getTime(){
-        return this.time;
+    protected switchColor(color: Color): Color{
+        return color === Color.BLACK ? Color.WHITE : Color.BLACK;
     }
 
 }

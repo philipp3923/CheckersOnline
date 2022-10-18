@@ -2,10 +2,8 @@ export {};
 
 declare global{
   interface User {
-    id: string
+    account_id: string
     role: Role
-    email?: string
-    username?: string
   }
 
   export enum Role {

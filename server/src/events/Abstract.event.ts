@@ -12,6 +12,6 @@ export default abstract class AbstractEvent {
         return this.event;
     }
 
-    public abstract on(socket: Connection, args: Object, respond?: SocketResponse): void;
+    public abstract on(connection: Connection, args: any, respond?: SocketResponse): void;
 
 }

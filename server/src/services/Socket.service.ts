@@ -1,9 +1,7 @@
 import {DecryptedToken} from "./Token.service";
 import SocketRepository from "../repositories/Socket.repository";
-import Game from "../objects/Game";
 import Connection from "../objects/Connection";
 import AbstractEvent from "../events/Abstract.event";
-import GameService from "./Game.service";
 
 
 export interface AuthenticatedSocket{
@@ -48,8 +46,7 @@ export default class SocketService{
     }
 
     public getConnection(decryptedToken: DecryptedToken): Connection | null{
-        const connection = this.socketRepository.getConnection(decryptedToken.account_id);
-        return connection;
+        return this.socketRepository.getConnection(decryptedToken.account_id);
     }
 
     public addConnection(connection: Connection){

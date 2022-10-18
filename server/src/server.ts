@@ -24,8 +24,9 @@ import AccountRepository from "./repositories/Account.repository";
 import GameRepository from "./repositories/Game.repository";
 import GameService from "./services/Game.service";
 import PingEvent from "./events/Ping.event";
-import JoinCustomGameEvent from "./events/JoinCustomGame.event";
-import CreateCustomGameEvent from "./events/CreateCustomGame.event";
+import JoinGameEvent from "./events/JoinGame.event";
+import CreateGameEvent from "./events/CreateGame.event";
+import GameTurnEvent from "./events/GameTurn.event";
 
 //#TODO move constants to central file
 const JWT_REFRESH_SECRET = "aNMkyXrdEgGCQw6OpdnTsh1XEEKb5pbMaA1mfEfGLD6GHyAQriU4qWVsbpp5RsMCXIiCT27LnDCb72OUUX6xFCmdp1rB1eSxlW6A6XVZeprS681oFLaEKnWQOAQsNEhY";
@@ -52,7 +53,7 @@ const tokenService = new TokenService(tokenRepository, JWT_ACCESS_SECRET, JWT_RE
 const socketService = new SocketService(socketRepository);
 const apiService = new ApiService(apiRepository);
 const guestService = new GuestService(guestRepository, identityRepository);
-const gameService = new GameService(gameRepository, identityRepository);
+const gameService = new GameService(gameRepository, identityRepository, socketService);
 
 const authRouter = new Router(apiService, "/auth");
 const updateRouter = new Router(apiService, "/auth/update");
@@ -65,8 +66,9 @@ const updateRefreshTokenController = new UpdateRefreshTokenController(userServic
 
 const authenticateSocketMiddleware = new AuthenticateSocketMiddleware(socketService, tokenService, gameService);
 
-const joinCustomGame = new JoinCustomGameEvent(socketService, gameService);
-const createCustomGame = new CreateCustomGameEvent(socketService, gameService);
+const joinCustomGameEvent = new JoinGameEvent(socketService, gameService);
+const createCustomGameEvent = new CreateGameEvent(socketService, gameService);
+const gameTurnEvent = new GameTurnEvent(socketService);
 const pingEvent = new PingEvent(socketService);
 
 server.listen(5000, () => console.log("listening on port 5000"));

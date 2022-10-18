@@ -1,7 +1,8 @@
-import Game, {GameType} from "./Game";
 import {DecryptedToken} from "../services/Token.service";
 import SocketService, {Socket} from "../services/Socket.service";
 import GameService from "../services/Game.service";
+import UserGame from "./UserGame";
+import Game from "./Game";
 
 export default class Connection {
     private sockets: Socket[];
@@ -25,23 +26,25 @@ export default class Connection {
         }
     }
 
-    public joinGame(game: Game){
-        this.games[game.getID()] = game;
+    public async joinGame(game: Game){
+        this.games[game.getKey()] = game;
         for(const socket of this.sockets){
-            socket.join(game.getID());
+            socket.join(game.getKey());
         }
-        game.join(this.decryptedToken.account_id);
-    }
-
-    public leaveGame(game: Game) {
-        delete this.games[game.getID()];
-        for(const socket of this.sockets){
-            socket.leave(game.getID());
+        if(game instanceof UserGame){
+            await game.join(this.decryptedToken.account_id);
         }
     }
 
-    public getGame(id: string){
-        return this.games[id] ?? null;
+    public leaveGame(game: UserGame) {
+        delete this.games[game.getKey()];
+        for(const socket of this.sockets){
+            socket.leave(game.getKey());
+        }
+    }
+
+    public getGame(key: string){
+        return this.games[key] ?? null;
     }
 
     public getGameCount(){
