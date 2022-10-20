@@ -29,6 +29,7 @@ import CreateGameEvent from "./events/CreateGame.event";
 import TurnEvent from "./events/Turn.event";
 import FriendshipRepository from "./repositories/Friendship.repository";
 import FriendshipService from "./services/Friendship.service";
+import FriendEvent from "./events/Friend.event";
 
 //#TODO move constants to central file
 const JWT_REFRESH_SECRET = "aNMkyXrdEgGCQw6OpdnTsh1XEEKb5pbMaA1mfEfGLD6GHyAQriU4qWVsbpp5RsMCXIiCT27LnDCb72OUUX6xFCmdp1rB1eSxlW6A6XVZeprS681oFLaEKnWQOAQsNEhY";
@@ -38,6 +39,7 @@ const JWT_TOKEN_COUNT = 10;
 const app = express();
 const server = createServer(app);
 const io = new Server(server);
+
 const prismaClient = new PrismaClient();
 
 const accountRepository = new AccountRepository(prismaClient);
@@ -71,9 +73,10 @@ const updateRefreshTokenController = new UpdateRefreshTokenController(userServic
 const authenticateSocketMiddleware = new AuthenticateSocketMiddleware(socketService, tokenService, gameService, friendshipService);
 
 const joinCustomGameEvent = new JoinGameEvent(socketService, gameService);
-const createCustomGameEvent = new CreateGameEvent(socketService, gameService);
-const gameTurnEvent = new TurnEvent(socketService);
+const createCustomGameEvent = new CreateGameEvent(socketService, gameService, friendshipService);
+const turnEvent = new TurnEvent(socketService);
 const pingEvent = new PingEvent(socketService);
+const friendEvent = new FriendEvent(socketService, friendshipService);
 
 server.listen(5000, () => console.log("listening on port 5000"));
 socketService.start();

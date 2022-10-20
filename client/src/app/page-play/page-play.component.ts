@@ -32,4 +32,10 @@ export class PagePlayComponent implements OnInit {
 
   }
 
+  onCreateFriend() {
+    if(this.form.id === null){
+      return
+    }
+    this.socketService.createFriendGame(this.form.id);
+  }
 }

@@ -24,12 +24,6 @@ export class SocketService {
 
     this.socket.on("welcome", (args)=>console.log(args));
 
-    setTimeout(() => {
-      this.socket?.emit("ping", {msg: "Hallo!"}, (response: Object) => {
-        console.log(response);
-      });
-    }, 1000);
-
     this.socket.on("gameState", (args) => {
       console.log(args);
       setTimeout(() => {
@@ -44,6 +38,16 @@ export class SocketService {
         }
       }, 2000);
     });
+
+    this.socket.on("online", (args)=>console.log(args));
+    this.socket.on("offline", (args)=>console.log(args));
+    this.socket.on("friendRequest", (args)=>console.log(args));
+    this.socket.on("friendAccept", (args)=>console.log(args));
+    this.socket.on("friendDelete", (args)=>console.log(args));
+    this.socket.on("friendDeny", (args)=>console.log(args));
+    this.socket.on("friendCancel", (args)=>console.log(args));
+
+
   }
 
   public disconnect() {
@@ -52,12 +56,14 @@ export class SocketService {
   }
 
   public createCustom(time: number) {
-    console.log(this.socket?.id);
     this.socket?.emit("createGame", {gameType: "CUSTOM", timeType: "STATIC", time: 60000, increment: 0}, (res: any) => console.log(res));
   }
 
+  public createFriendGame(id: string){
+    this.socket?.emit("createGame", {gameType: "FRIEND", timeType: "STATIC", time: 60000, increment: 0, invitation: id}, (res: any) => console.log(res));
+  }
+
   public joinCustom(key: string) {
-    console.log(this.socket?.id);
     this.socket?.emit("joinGame", {key: key}, (res: any) => console.log(res));
   }
 
@@ -69,5 +75,15 @@ export class SocketService {
     return Math.floor(Math.random() * (max - min + 1) + min)
   }
 
+  public requestFriend(id: string){
+    this.socket?.emit("friend", {type: "REQUEST", friend: id}, (res: any) => console.log(res));
+  }
 
+  public acceptFriend(id: string){
+    this.socket?.emit("friend", {type: "ACCEPT", friend: id}, (res: any) => console.log(res));
+  }
+
+  public deleteFriend(id: string){
+    this.socket?.emit("friend", {type: "DELETE", friend: id}, (res: any) => console.log(res));
+  }
 }

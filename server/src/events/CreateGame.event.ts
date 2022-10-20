@@ -33,6 +33,11 @@ export default class CreateGameEvent extends AbstractEvent {
             return;
         }
 
+        if(gameType === GameType.RANKED || gameType === GameType.CASUAL || gameType === GameType.COMPUTER){
+            respond({error: "Not implemented"});
+            return;
+        }
+
         if(gameType === GameType.FRIEND && !(await this.friendshipService.exists(connection.getID(), args.invitation))){
             respond({error: "Friendship does not exist"});
             return;

@@ -1,1 +1,10 @@
-<p>page-friends works!</p>
+<input
+  #email="ngModel"
+  [(ngModel)]="friend"
+  name="email-input"
+  required
+  type="text"
+/>
+<button (click)="onAccept()">ACCEPT FRIEND</button>
+<button (click)="onRequest()">REQUEST FRIEND</button>
+<button (click)="onDelete()">DELETE FRIEND</button>

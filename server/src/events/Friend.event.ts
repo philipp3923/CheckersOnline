@@ -24,14 +24,8 @@ export default class FriendEvent extends AbstractEvent{
                 case "ACCEPT":
                     await this.friendshipService.accept(connection.getID(), args.friend);
                     break
-                case "DENY":
-                    await this.friendshipService.deny(connection.getID(), args.friend);
-                    break
                 case "DELETE":
                     await this.friendshipService.delete(connection.getID(), args.friend);
-                    break
-                case "CANCEL":
-                    await this.friendshipService.cancel(connection.getID(), args.friend);
                     break
                 default:
                     throw new Error();

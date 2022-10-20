@@ -14,15 +14,17 @@ export default class Connection {
     }
 
     public async goOnline(){
+        if(this.decryptedToken.role === Role.GUEST){return}
         for(const friendship of await this.friendshipService.getFriends(this.decryptedToken.account_id)){
-            if(friendship.friend === this.decryptedToken.account_id){continue}
+            if(friendship.friend === this.decryptedToken.account_id || friendship.status !== "ACTIVE"){continue}
             this.socketService.sendTo(friendship.friend, "online", this.decryptedToken.account_id);
         }
     }
 
     public async goOffline(){
+        if(this.decryptedToken.role === Role.GUEST){return}
         for(const friendship of await this.friendshipService.getFriends(this.decryptedToken.account_id)){
-            if(friendship.friend === this.decryptedToken.account_id){continue}
+            if(friendship.friend === this.decryptedToken.account_id || friendship.status !== "ACTIVE"){continue}
             this.socketService.sendTo(friendship.friend, "offline", this.decryptedToken.account_id);
         }
     }

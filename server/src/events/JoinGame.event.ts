@@ -29,7 +29,7 @@ export default class JoinGameEvent extends AbstractEvent {
         try {
             await connection.joinGame(game);
         }catch (e) {
-            respond({error: "Cannot join the same game twice"});
+            respond({error: "Cannot join game"});
             return;
         }
 

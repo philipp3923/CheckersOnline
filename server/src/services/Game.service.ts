@@ -104,6 +104,7 @@ export default class GameService {
     }
 
     public invitePlayer(game: UserGame, invitation: string){
+        game.invite(invitation);
         this.socketService.sendTo(invitation, "invite", game.getKey());
     }
 

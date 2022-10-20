@@ -30,35 +30,17 @@ export default class FriendshipService {
             throw new Error("A User cannot be a friend of himself");
         }
 
+        if(await this.exists(user_id, friend_id)){
+            throw new Error("Cannot deny active friendship");
+        }
+
         await this.friendshipRepository.acceptFriend(user_id, friend_id);
-        const friendship: Friendship = {user: user_id, friend: friend_id, status: "ACTIVE"};
+        const friendship_user: Friendship = {user: user_id, friend: friend_id, status: "ACTIVE"};
+        const friendship_friend: Friendship = {user: friend_id, friend: user_id, status: "ACTIVE"};
 
-        this.socketService.sendTo(user_id, "friendAccept", friendship);
-        this.socketService.sendTo(friend_id, "friendAccept", friendship);
-    }
 
-    public async cancel(user_id: string, friend_id: string) {
-        if (user_id === friend_id) {
-            throw new Error("A User cannot be a friend of himself");
-        }
-
-        await this.friendshipRepository.removeRequest(user_id, friend_id);
-        const friendship: Friendship = {user: user_id, friend: friend_id, status: "DELETED"};
-
-        this.socketService.sendTo(user_id, "friendCancel", friendship);
-        this.socketService.sendTo(friend_id, "friendCancel", friendship);
-    }
-
-    public async deny(user_id: string, friend_id: string) {
-        if (user_id === friend_id) {
-            throw new Error("A User cannot be a friend of himself");
-        }
-
-        await this.friendshipRepository.removeRequest(friend_id, user_id);
-        const friendship: Friendship = {user: user_id, friend: friend_id, status: "DELETED"};
-
-        this.socketService.sendTo(user_id, "friendDeny", friendship);
-        this.socketService.sendTo(friend_id, "friendDeny", friendship);
+        this.socketService.sendTo(user_id, "friendAccept", friendship_user);
+        this.socketService.sendTo(friend_id, "friendAccept", friendship_friend);
     }
 
     public async delete(user_id: string, friend_id: string) {
@@ -94,7 +76,7 @@ export default class FriendshipService {
     }
 
     public async exists(user_id: string, friend_id: string){
-        return this.friendshipRepository.friendshipExists(user_id, friend_id);
+        return await this.friendshipRepository.friendshipExists(user_id, friend_id);
     }
 
 }
