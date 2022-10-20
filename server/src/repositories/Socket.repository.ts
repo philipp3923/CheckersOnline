@@ -48,7 +48,7 @@ export default class SocketRepository {
                 });
             }
 
-            socket.on("disconnect", () => socket.connection?.removeSocket(socket.id));
+            socket.on("disconnect", async () => await socket.connection?.removeSocket(socket.id));
         });
     }
 

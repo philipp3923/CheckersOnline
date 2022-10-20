@@ -125,4 +125,15 @@ export default class FriendshipRepository {
         });
     }
 
+    public async friendshipExists(user_id_ext: string, friend_id_ext: string){
+        const user = await this.userRepository.getByAccountID(user_id_ext);
+        const friend = await this.userRepository.getByAccountID(friend_id_ext);
+
+        if (user === null || friend === null) {
+            return false;
+        }
+
+        return (await this.getFriend(user.id, friend.id)).length > 0 && (await this.getFriend(user.id, friend.id)).length > 0;
+    }
+
 }

@@ -13,6 +13,20 @@ export default class Connection {
         this.games = {};
     }
 
+    public async goOnline(){
+        for(const friendship of await this.friendshipService.getFriends(this.decryptedToken.account_id)){
+            if(friendship.friend === this.decryptedToken.account_id){continue}
+            this.socketService.sendTo(friendship.friend, "online", this.decryptedToken.account_id);
+        }
+    }
+
+    public async goOffline(){
+        for(const friendship of await this.friendshipService.getFriends(this.decryptedToken.account_id)){
+            if(friendship.friend === this.decryptedToken.account_id){continue}
+            this.socketService.sendTo(friendship.friend, "offline", this.decryptedToken.account_id);
+        }
+    }
+
     public async addSocket(socket: Socket){
         this.sockets.push(socket);
         socket.join(this.decryptedToken.account_id);
@@ -21,12 +35,12 @@ export default class Connection {
         }
     }
 
-    public removeSocket(id: string){
+    public async removeSocket(id: string){
         const index = this.sockets?.map(socket=>socket.id).indexOf(id);
         this.sockets.splice(index, 1);
 
         if(this.sockets.length <= 0){
-            this.socketService.removeConnection(this);
+            await this.socketService.removeConnection(this);
         }
     }
 
@@ -60,8 +74,7 @@ export default class Connection {
     }
 
     public send(event: string, msg: any){
-        this.socketService.sendIn(this.decryptedToken.account_id,event,msg);
-
+        this.socketService.sendTo(this.decryptedToken.account_id,event,msg);
     }
 
 

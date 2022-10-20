@@ -93,4 +93,8 @@ export default class FriendshipService {
         ));
     }
 
+    public async exists(user_id: string, friend_id: string){
+        return this.friendshipRepository.friendshipExists(user_id, friend_id);
+    }
+
 }

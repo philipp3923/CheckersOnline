@@ -31,7 +31,7 @@ export default class AuthenticateSocketMiddleware {
 
         if(connection === null){
             socket.connection = new Connection(this.socketService, this.friendshipService, decryptedToken);
-             this.socketService.addConnection(socket.connection);
+             await this.socketService.addConnection(socket.connection);
         }else{
             socket.connection = connection;
         }

@@ -49,12 +49,18 @@ export default class SocketService{
         return this.socketRepository.getConnection(decryptedToken.account_id);
     }
 
-    public addConnection(connection: Connection){
+    public async addConnection(connection: Connection){
+        await connection.goOnline();
         this.socketRepository.addConnection(connection);
     }
 
-    public removeConnection(connection: Connection){
+    public async removeConnection(connection: Connection){
+        await connection.goOffline();
         this.socketRepository.removeConnection(connection.getID());
+    }
+
+    public isOnline(id: string): boolean{
+        return !!this.socketRepository.getConnection(id);
     }
 
     public sendIn(room: string, event: string, msg: any){

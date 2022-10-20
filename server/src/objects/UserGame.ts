@@ -10,11 +10,17 @@ export interface Player {
 export default abstract class UserGame extends Game {
     private readonly player: Player[];
     private timeout: any | null;
+    private invitation: string | null;
 
     constructor(private gameService: GameService, id: string, key: string, type: GameType, private time: number) {
         super(id, key, type);
         this.player = [];
         this.timeout = null;
+        this.invitation = null;
+    }
+
+    public async invite(id: string){
+        this.invitation = id;
     }
 
     public async join(player: string): Promise<void> {
@@ -23,6 +29,9 @@ export default abstract class UserGame extends Game {
         }
         if(this.player[0]?.id === player || this.player[1]?.id === player){
             throw new Error("Cannot join the same game twice");
+        }
+        if(this.invitation !== null && this.invitation !== player){
+            throw new Error("Uninvited player cannot join game");
         }
         if (Math.random() >= 0.5) {
             this.player.push({id: player, time: this.time});

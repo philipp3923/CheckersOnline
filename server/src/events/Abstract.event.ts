@@ -4,7 +4,7 @@ import Connection from "../objects/Connection";
 
 export default abstract class AbstractEvent {
 
-    public constructor(private socketService: SocketService, private event: string) {
+    public constructor(protected socketService: SocketService, private event: string) {
         this.socketService.addEvent(this);
     }
 

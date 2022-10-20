@@ -3,6 +3,8 @@ import SocketService, {SocketResponse} from "../services/Socket.service";
 import GameService, {TimeType} from "../services/Game.service";
 import Connection from "../objects/Connection";
 import Game, {GameType} from "../objects/Game";
+import FriendshipService from "../services/Friendship.service";
+import UserGame from "../objects/UserGame";
 
 export interface TimeDict{
     [id: string]: {time: number, increment: number}
@@ -13,7 +15,7 @@ export interface TimeObject{
 }
 
 export default class CreateGameEvent extends AbstractEvent {
-    public constructor(socketService: SocketService, private gameService: GameService) {
+    public constructor(socketService: SocketService, private gameService: GameService, private friendshipService: FriendshipService) {
         super(socketService, "createGame");
     }
 
@@ -26,8 +28,18 @@ export default class CreateGameEvent extends AbstractEvent {
         const timeType = this.getTimeTypeKeyByValue(args.timeType);
         const gameType = this.getGameTypeKeyByValue(args.gameType);
 
-        if(typeof gameType === "undefined" || typeof timeType === "undefined"){
+        if(typeof gameType === "undefined" || typeof timeType === "undefined" || (typeof args.invitation !== "string" && gameType === GameType.FRIEND)){
             respond({error: "Required arguments not provided"});
+            return;
+        }
+
+        if(gameType === GameType.FRIEND && !(await this.friendshipService.exists(connection.getID(), args.invitation))){
+            respond({error: "Friendship does not exist"});
+            return;
+        }
+
+        if(!this.socketService.isOnline(args.invitation)){
+            respond({error: "Friend is not online"});
             return;
         }
 
@@ -45,6 +57,10 @@ export default class CreateGameEvent extends AbstractEvent {
         }catch (e) {
             respond({error: "Game is full"});
             return;
+        }
+
+        if(gameType === GameType.FRIEND){
+            this.gameService.invitePlayer(<UserGame>game, args.invitation);
         }
 
         respond({key: game.getKey()});
