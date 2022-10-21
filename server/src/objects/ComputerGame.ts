@@ -4,6 +4,13 @@ import Game, {GameType} from "./Game";
 export default class ComputerGame extends Game{
     private readonly player: Color;
 
+    /**
+     *
+     * @param id
+     * @param key
+     * @param difficulty
+     * @deprecated Not implemented!
+     */
     constructor(id: string, key: string, difficulty: number) {
         super(id, key, GameType.COMPUTER);
         this.player = Math.random() >= 0.5 ? Color.WHITE : Color.BLACK;
