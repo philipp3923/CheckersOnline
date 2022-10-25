@@ -1,0 +1,530 @@
+openapi: 3.0.3
+info:
+  title: Checkers Online
+  description: |-
+    This API handles all the non socket based Communication between the Client and the Server of the Checkers Online Web Application.
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+tags:
+  - name: users
+    description: Secured User-only calls
+  - name: guests
+    description: Secured Guest-only calls
+paths:
+  /auth/login:
+    post:
+      summary: log in User
+      operationId: LoginUser
+      description: |
+        By passing in the appropriate options, you can login a User
+      parameters:
+        - in: query
+          name: user
+          description: username or email address associated with the user
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: password
+          description: password associated with the user
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: access token, refresh token and account information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication'
+        '400':
+          description: bad input parameter
+        '409':
+          description: authentication failed
+
+  /auth/register:
+    post:
+      summary: register new User
+      operationId: RegisterUser
+      description: |
+        By passing in the appropriate options, you can register a User
+      parameters:
+        - in: query
+          name: username
+          description: username associated with the user
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: email
+          description: email associated with the user
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: password
+          description: password associated with the user
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: register successful
+        '400':
+          description: bad input parameter
+        '409':
+          description: user with username or email already exists
+
+  /auth/guest:
+    post:
+      summary: register new Guest
+      operationId: RegisterGuest
+      description: |
+        Generates a new random Guest account
+      responses:
+        '200':
+          description: register successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication'
+
+  /auth/logout:
+    post:
+      security:
+        - auth: []
+      tags:
+        - users
+      summary: logout a User
+      operationId: LogoutUser
+      description: |
+        Removes refresh token from server and prevents old access tokens from accessing data
+      responses:
+        '204':
+          description: Logout successful
+        '401':
+          description: Access token is missing or invalid
+
+
+  /auth/token/access:
+    post:
+      security:
+        - auth: []
+      tags:
+        - users
+        - guests
+      summary: generate a new access token
+      operationId: UpdateAccessToken
+      description: |
+        Generates a new user specific access token by providing a valid refresh token as bearer
+      responses:
+        '200':
+          description: update successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '401':
+          description: Access token is missing or invalid
+
+
+  /auth/token/refresh:
+    post:
+      security:
+        - auth: []
+      tags:
+        - users
+        - guests
+      summary: generate a new refresh token
+      operationId: UpdateRefreshToken
+      description: |
+        Generates a new user specific refresh token and deletes the old refresh token by providing a valid refresh token as bearer
+      responses:
+        '200':
+          description: update successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '401':
+          description: Access token is missing or invalid
+
+  /user/{id}/password:
+    patch:
+      security:
+        - auth: []
+      tags:
+        - users
+      summary: update email of user
+      operationId: UpdateUserPassword
+      description: |
+        Update user password. Only possible if request is authenticated as the same user
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the user
+        - in: query
+          name: password
+          schema:
+            type: string
+          required: true
+          description: password of the user
+      responses:
+        '204':
+          description: update successful
+        '401':
+          description: Access token is missing or invalid
+        '409':
+          description: unauthorized
+
+  /user/{id}/username:
+    patch:
+      security:
+        - auth: []
+      tags:
+        - users
+      summary: update email of user
+      operationId: UpdateUserUsername
+      description: |
+        Update user username. Only possible if request is authenticated as the same user
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the user
+      responses:
+        '204':
+          description: update successful
+        '401':
+          description: Access token is missing or invalid
+        '409':
+          description: unauthorized
+
+  /user/{id}/email:
+    get:
+      security:
+        - auth: []
+      tags:
+        - users
+      summary: get email of user
+      operationId: GetUserEmail
+      description: |
+        Get user email. Only possible if request is authenticated as the same user
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the user
+      responses:
+        '200':
+          description: email
+          content:
+            application/json:
+              schema:
+               type: string
+               example: "max-muste@gmail.com"
+        '401':
+          description: Access token is missing or invalid
+        '409':
+          description: unauthorized
+    patch:
+      security:
+        - auth: []
+      tags:
+        - users
+      summary: update email of user
+      operationId: UpdateUserEmail
+      description: |
+        Update user email. Only possible if request is authenticated as the same user
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the user
+      responses:
+        '204':
+          description: update successful
+        '401':
+          description: Access token is missing or invalid
+        '409':
+          description: unauthorized
+
+  /user/{id}/games:
+    get:
+      summary: get finished games of a user
+      operationId: GetUserGames
+      description: |
+        Get last finished games played by a user. Maximum amount of 30
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the user
+      responses:
+        '200':
+          description: finished games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+        '404':
+          description: user not found
+
+  /user/{id}:
+    get:
+      summary: get a user by id
+      operationId: GetUser
+      description: |
+        Get user information about an existing user by passing his id
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the user
+      responses:
+        '200':
+          description: user information
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/User'
+        '404':
+          description: user not found
+    delete:
+      security:
+        - auth: []
+      tags:
+        - users
+      summary: delete user account
+      operationId: DeleteUser
+      description: |
+        Delete user account. Only possible if request is authenticated as the same user
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the user
+      responses:
+        '201':
+          description: user deleted
+        '401':
+          description: Access token is missing or invalid
+        '409':
+          description: unauthorized
+
+  /user:
+    get:
+      summary: get users by email or username
+      operationId: GetUsers
+      description: |
+        Get user information matching the given username or email address
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+          required: false
+          description: email to match users to
+        - in: query
+          name: username
+          schema:
+            type: string
+          required: false
+          description: username to match users to
+      responses:
+        '200':
+          description: matching users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '400':
+          description: neither username nor email provided
+        '404':
+          description: no user found
+
+  /game/{id}:
+    get:
+      summary: get a game by id
+      operationId: GetGame
+      description: |
+        Get game information by passing its id
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the game
+      responses:
+        '200':
+          description: game information
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Game'
+                type: object
+                required:
+                  - plays
+                properties:
+                  plays:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Play'
+        '404':
+          description: game not found
+
+components:
+  securitySchemes:
+    auth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT 
+
+  schemas:
+    Token:
+      type: object
+      required:
+        - string
+        - timestamp
+      properties:
+        string:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJh22NvdW50X2lkIjoiVVNFUi1MOU5aVUdYMDFdWDY5SwIsInJvbGUiOiJ2U0VSIiwialF0IxoxNjY2Njg1NDQzLCyleHAiOjE2NjY2OTEiND69uWGOhh7WjDnWluWsnK0cKGsmw-qMkRu3GZAs4sZc3kU0
+        timestamp:
+          type: integer
+          example: 1616689428325
+
+
+    Authentication:
+      type: object
+      required:
+        - accessToken
+        - refreshToken
+        - user
+      properties:
+        accessToken:
+          $ref: "#/components/schemas/Token"
+        refreshToken:
+          $ref: "#/components/schemas/Token"
+        account:
+          type: object
+          required:
+            - id
+            - role
+          properties:
+            id:
+              type: string
+              example: USER-L9NZUGX01JX69K
+            role:
+              type: string
+              enum: [USER, GUEST]
+    
+    User:
+      type: object
+      required:
+        - id
+        - username
+      properties:
+        id:
+          type: string
+          example: USER-L9NZUGX01JX69K
+        username:
+          type: string
+          example: MaxMuster23
+
+
+    Game:
+      type: object
+      required:
+        - id
+        - type
+        - start
+        - finish
+        - winner
+        - white
+        - black
+      properties:
+        id:
+          type: string
+          example: GAME-GH2ZNGX0X23F9R
+        type:
+          type: string
+          enum: [FRIEND, CASUAL, CUSTOM]
+        start:
+          type: integer
+          example: 1313289426592
+        finish:
+          type: integer
+          example: 1313292325517
+        won:
+          type: string
+          enum: [BLACK, WHITE]
+        white:
+          type: string
+          example: USER-L9NZUGX01JX69K
+        black:
+          type: string
+          example: USER-L9OFA6QR1WRHPB
+    
+    Coordinate:
+      type: object
+      required:
+        - x
+        - y
+      properties:
+        x:
+          type: integer
+          example: 4
+        y: 
+          type: integer
+          example: 1
+    
+    Play:
+      type: object
+      required:
+        - index
+        - time
+        - capture
+        - color
+        - start
+        - target
+      properties:
+        index:
+          type: integer
+          example: 21
+        time:
+          type: integer
+          example: 1313292324221
+        capture:
+          type: boolean
+          example: true
+        color:
+          type: string
+          enum: [BLACK, WHITE]
+        start:
+          $ref: '#/components/schemas/Coordinate'
+        target:
+          $ref: '#/components/schemas/Coordinate'
