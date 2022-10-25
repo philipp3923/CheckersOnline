@@ -1,6 +1,6 @@
 import SocketService, {AuthenticatableSocket, AuthenticatedSocket} from "../services/Socket.service";
 import TokenService from "../services/Token.service";
-import Connection from "../objects/Connection";
+import Connection from "../models/Connection.model";
 import GameService from "../services/Game.service";
 import FriendshipService from "../services/Friendship.service";
 
@@ -31,7 +31,7 @@ export default class AuthenticateSocketMiddleware {
 
         if(connection === null){
             socket.connection = new Connection(this.socketService, this.friendshipService, decryptedToken);
-             this.socketService.addConnection(socket.connection);
+             await this.socketService.addConnection(socket.connection);
         }else{
             socket.connection = connection;
         }

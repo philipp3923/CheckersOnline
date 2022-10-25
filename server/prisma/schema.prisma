@@ -17,12 +17,12 @@ model Account {
   active         Boolean
   role           Role
   refresh_tokens RefreshToken[]
-  white_games    Game[]         @relation(name: "white")
-  black_games    Game[]         @relation(name: "black")
+  white_games    GameModel[]         @relation(name: "white")
+  black_games    GameModel[]         @relation(name: "black")
   user           User?
 }
 
-model Game {
+model GameModel {
   id         Int      @id @default(autoincrement())
   ext_id     String   @unique
   type       GameType
@@ -57,7 +57,7 @@ model Play {
   target_x  Int
   target_y  Int
   id_game   Int
-  game      Game     @relation(fields: [id_game], references: [id])
+  game      GameModel     @relation(fields: [id_game], references: [id])
 }
 
 model User {

@@ -1,7 +1,7 @@
 import AbstractEvent from "./Abstract.event";
 import SocketService, {SocketResponse} from "../services/Socket.service";
 import GameService from "../services/Game.service";
-import Connection from "../objects/Connection";
+import Connection from "../models/Connection.model";
 
 export default class JoinGameEvent extends AbstractEvent {
     public constructor(socketService: SocketService, private gameService: GameService) {
@@ -29,7 +29,7 @@ export default class JoinGameEvent extends AbstractEvent {
         try {
             await connection.joinGame(game);
         }catch (e) {
-            respond({error: "Cannot join the same game twice"});
+            respond({error: "Cannot join game"});
             return;
         }
 

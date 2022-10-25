@@ -1,0 +1,20 @@
+
+<form (ngSubmit)="onSubmit()">
+  <input
+    #name="ngModel"
+    [(ngModel)]="form.user"
+    name="user"
+    required
+    type="text"
+  />
+  <input
+    #password="ngModel"
+    [(ngModel)]="form.password"
+    minlength="6"
+    name="password"
+    required
+    type="password"
+  />
+  <button>Login</button>
+</form>
+<a routerLink="/profile/register">Register here</a>

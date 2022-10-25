@@ -47,7 +47,7 @@ export default class FriendshipRepository {
             }
         });
 
-        return this.prismaClient.friend.updateMany({
+        return await this.prismaClient.friend.updateMany({
             data: {
                 updatedAt: new Date(),
                 type: "ACTIVE"
@@ -61,20 +61,6 @@ export default class FriendshipRepository {
         })
     }
 
-    public async removeRequest(user_id_ext: string, friend_id_ext: string) {
-        const user = await this.userRepository.getByAccountID(user_id_ext);
-        const friend = await this.userRepository.getByAccountID(friend_id_ext);
-
-        if (user === null || friend === null) {
-            throw new Error("User does not exist");
-        }
-
-        this.prismaClient.friend.deleteMany({
-            where:
-                {AND: [{id_user: user.id}, {id_friend: friend.id}]}
-        });
-    }
-
     public async deleteFriend(user_id_ext: string, friend_id_ext: string) {
         const user = await this.userRepository.getByAccountID(user_id_ext);
         const friend = await this.userRepository.getByAccountID(friend_id_ext);
@@ -83,14 +69,20 @@ export default class FriendshipRepository {
             throw new Error("User does not exist");
         }
 
-        this.prismaClient.friend.deleteMany({
-            where: {
-                OR: [
-                    {AND: [{id_user: user.id}, {id_friend: friend.id}]},
-                    {AND: [{id_user: friend.id}, {id_friend: user.id}]}
-                ]
-            }
+        console.log(user);
+        console.log(friend);
+
+        await this.prismaClient.friend.deleteMany({
+            where:
+                {AND: [{id_user: user.id}, {id_friend: friend.id}]},
         });
+
+        await this.prismaClient.friend.deleteMany({
+            where:
+                {AND: [{id_user: friend.id}, {id_friend: user.id}]}
+        });
+
+
     }
 
     public async getFriends(user_id_ext: string) {
@@ -117,6 +109,17 @@ export default class FriendshipRepository {
                 friend: true
             }
         });
+    }
+
+    public async friendshipExists(user_id_ext: string, friend_id_ext: string) {
+        const user = await this.userRepository.getByAccountID(user_id_ext);
+        const friend = await this.userRepository.getByAccountID(friend_id_ext);
+
+        if (user === null || friend === null) {
+            return false;
+        }
+
+        return (await this.getFriend(user.id, friend.id)).length > 0 && (await this.getFriend(user.id, friend.id)).length > 0;
     }
 
     private async getFriend(user_id: number, friend_id: number) {

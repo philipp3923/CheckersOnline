@@ -1,10 +1,10 @@
 import SocketService, {AuthenticatedSocket, SocketResponse} from "../services/Socket.service";
 import {DecryptedToken} from "../services/Token.service";
-import Connection from "../objects/Connection";
+import Connection from "../models/Connection.model";
 
 export default abstract class AbstractEvent {
 
-    public constructor(private socketService: SocketService, private event: string) {
+    public constructor(protected socketService: SocketService, private event: string) {
         this.socketService.addEvent(this);
     }
 

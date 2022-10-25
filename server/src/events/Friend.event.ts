@@ -1,5 +1,5 @@
 import AbstractEvent from "./Abstract.event";
-import Connection from "../objects/Connection";
+import Connection from "../models/Connection.model";
 import SocketService, {SocketResponse} from "../services/Socket.service";
 import GameService from "../services/Game.service";
 import FriendshipService from "../services/Friendship.service";
@@ -24,14 +24,8 @@ export default class FriendEvent extends AbstractEvent{
                 case "ACCEPT":
                     await this.friendshipService.accept(connection.getID(), args.friend);
                     break
-                case "DENY":
-                    await this.friendshipService.deny(connection.getID(), args.friend);
-                    break
                 case "DELETE":
                     await this.friendshipService.delete(connection.getID(), args.friend);
-                    break
-                case "CANCEL":
-                    await this.friendshipService.cancel(connection.getID(), args.friend);
                     break
                 default:
                     throw new Error();

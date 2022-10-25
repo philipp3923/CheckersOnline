@@ -1,0 +1,3 @@
+<ul *ngFor="let error of errors">
+  <li><app-error [message]=error (removeEvent)="remove(error)"></app-error></li>
+</ul>
