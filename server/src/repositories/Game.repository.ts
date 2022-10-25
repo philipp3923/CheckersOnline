@@ -1,6 +1,6 @@
 import {PrismaClient} from "@prisma/client";
-import {Color, Location} from "../objects/Board";
-import {GameType} from "../objects/Game";
+import {Color, Location} from "../models/Board.model";
+import {GameType} from "../models/Game.model";
 
 export default class GameRepository{
 

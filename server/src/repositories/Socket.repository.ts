@@ -1,7 +1,7 @@
 import {Server, Socket} from "socket.io";
 import {AuthenticatableSocket, SocketEventListener,Socket as ConnectionSocket} from "../services/Socket.service";
 import GameRepository from "./Game.repository";
-import Connection from "../objects/Connection";
+import Connection from "../models/Connection.model";
 
 export interface ExtendedAuthenticatedSocket extends Socket{
     connection?: Connection,

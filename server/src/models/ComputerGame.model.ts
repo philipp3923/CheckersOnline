@@ -1,7 +1,7 @@
-import {Color} from "./Board";
-import Game, {GameType} from "./Game";
+import {Color} from "./Board.model";
+import GameModel, {GameType} from "./Game.model";
 
-export default class ComputerGame extends Game{
+export default class ComputerGameModel extends GameModel{
     private readonly player: Color;
 
     /**

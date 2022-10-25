@@ -1,4 +1,7 @@
 openapi: 3.0.3
+servers:
+  - url: localhost:5000
+    description: Development server (uses development data)
 info:
   title: Checkers Online
   description: |-

@@ -1,8 +1,6 @@
-import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {Component} from '@angular/core';
 import {LoginRequest} from "../../models/login-request.model";
-import {AuthErrorModel} from "../../models/auth-error.model";
-import {LoginService} from "../../services/login.service";
-import {ErrorContainerComponent} from "../../../shared/features/error-container/error-container.component";
+import {UserService} from "../../../shared/services/user.service";
 
 @Component({
   selector: 'app-login',
@@ -12,18 +10,17 @@ import {ErrorContainerComponent} from "../../../shared/features/error-container/
 export class LoginComponent {
   form: LoginRequest;
 
-  @ViewChild(ErrorContainerComponent) errorContainer : ErrorContainerComponent | undefined;
-
-  constructor(private loginService: LoginService) {
+  constructor(private userService: UserService) {
     this.form = {user: "", password: ""};
   }
 
+  //#TODO display REQUIRED in UI
   onSubmit() {
     if(this.form.user.length < 1 || this.form.password.length < 1){
-      this.errorContainer?.add(AuthErrorModel[AuthErrorModel.REQUIRED]);
+      console.log("REQUIRED");
       return;
     }
-    this.loginService.login(this.form, (error) => {this.errorContainer?.add(AuthErrorModel[error])});
+    this.userService.login(this.form);
 
   }
 }

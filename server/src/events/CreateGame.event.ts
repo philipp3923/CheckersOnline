@@ -1,10 +1,10 @@
 import AbstractEvent from "./Abstract.event";
 import SocketService, {SocketResponse} from "../services/Socket.service";
 import GameService, {TimeType} from "../services/Game.service";
-import Connection from "../objects/Connection";
-import Game, {GameType} from "../objects/Game";
+import Connection from "../models/Connection.model";
+import Game, {GameType} from "../models/Game.model";
 import FriendshipService from "../services/Friendship.service";
-import UserGame from "../objects/UserGame";
+import UserGame from "../models/UserGame.model";
 
 export interface TimeDict{
     [id: string]: {time: number, increment: number}

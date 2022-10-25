@@ -1,13 +1,13 @@
 import GameService from "../services/Game.service";
-import {Color, Play} from "./Board";
-import Game, {GameType} from "./Game";
+import {Color, Play} from "./Board.model";
+import GameModel, {GameType} from "./Game.model";
 
 export interface Player {
     id: string,
     time: number
 }
 
-export default abstract class UserGame extends Game {
+export default abstract class UserGameModel extends GameModel {
     private readonly player: Player[];
     private timeout: any | null;
     private invitation: string | null;

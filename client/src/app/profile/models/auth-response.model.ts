@@ -1,8 +1,8 @@
-import {User} from "../../shared/models/user.model";
-import {Token} from "../../shared/models/token.model";
+import {UserModel} from "../../shared/models/user.model";
+import {TokenModel} from "../../shared/models/token.model";
 
 export interface AuthResponse {
-  accessToken: Token,
-  refreshToken: Token,
-  user: User,
+  accessToken: TokenModel,
+  refreshToken: TokenModel,
+  user: UserModel,
 }

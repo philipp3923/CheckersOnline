@@ -1,12 +1,12 @@
 import {DecryptedToken, Role} from "../services/Token.service";
 import SocketService, {Socket} from "../services/Socket.service";
-import UserGame from "./UserGame";
-import Game from "./Game";
+import UserGameModel from "./UserGame.model";
+import GameModel from "./Game.model";
 import FriendshipService from "../services/Friendship.service";
 
-export default class Connection {
+export default class ConnectionModel {
     private readonly sockets: Socket[];
-    private readonly games: {[id: string]: Game};
+    private readonly games: {[id: string]: GameModel};
 
     constructor(private socketService: SocketService, private friendshipService: FriendshipService, private decryptedToken: DecryptedToken) {
         this.sockets = [];
@@ -46,17 +46,17 @@ export default class Connection {
         }
     }
 
-    public async joinGame(game: Game){
+    public async joinGame(game: GameModel){
         this.games[game.getKey()] = game;
         for(const socket of this.sockets){
             socket.join(game.getKey());
         }
-        if(game instanceof UserGame){
+        if(game instanceof UserGameModel){
             await game.join(this.decryptedToken.account_id);
         }
     }
 
-    public leaveGame(game: UserGame) {
+    public leaveGame(game: UserGameModel) {
         delete this.games[game.getKey()];
         for(const socket of this.sockets){
             socket.leave(game.getKey());

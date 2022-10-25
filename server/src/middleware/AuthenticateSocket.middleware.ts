@@ -1,6 +1,6 @@
 import SocketService, {AuthenticatableSocket, AuthenticatedSocket} from "../services/Socket.service";
 import TokenService from "../services/Token.service";
-import Connection from "../objects/Connection";
+import Connection from "../models/Connection.model";
 import GameService from "../services/Game.service";
 import FriendshipService from "../services/Friendship.service";
 

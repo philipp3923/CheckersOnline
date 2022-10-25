@@ -1,18 +1,18 @@
-import Board, {Color, Play} from "./Board";
+import BoardModel, {Color, Play} from "./Board.model";
 
 export enum GameType{
     FRIEND, CASUAL, RANKED, CUSTOM, COMPUTER
 }
 
-export default abstract class Game{
+export default abstract class GameModel {
     protected timestamp: number;
     protected readonly plays: Play[];
-    protected board: Board;
+    protected board: BoardModel;
     protected finished: boolean;
 
     constructor(private id: string, private key: string, private type: GameType) {
         this.plays = [];
-        this.board = new Board();
+        this.board = new BoardModel();
         this.finished = false;
         this.timestamp = Date.now();
     }

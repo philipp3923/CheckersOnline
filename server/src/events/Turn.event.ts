@@ -1,7 +1,7 @@
 import AbstractEvent from "./Abstract.event";
 import SocketService, {SocketResponse} from "../services/Socket.service";
 import GameService from "../services/Game.service";
-import Connection from "../objects/Connection";
+import Connection from "../models/Connection.model";
 
 export default class TurnEvent extends AbstractEvent{
 

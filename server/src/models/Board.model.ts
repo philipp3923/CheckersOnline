@@ -20,7 +20,7 @@ export enum Color{
     WHITE= -1, BLACK=1
 }
 
-export default class Board {
+export default class BoardModel {
     private state: Values[][];
     private lastTurn: Play | null;
     private possibleTurns: Play[];

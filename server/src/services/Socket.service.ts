@@ -1,6 +1,6 @@
 import {DecryptedToken} from "./Token.service";
 import SocketRepository from "../repositories/Socket.repository";
-import Connection from "../objects/Connection";
+import Connection from "../models/Connection.model";
 import AbstractEvent from "../events/Abstract.event";
 
 

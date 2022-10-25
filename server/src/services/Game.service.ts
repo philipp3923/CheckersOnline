@@ -1,11 +1,11 @@
 import GameRepository from "../repositories/Game.repository";
 import IdentityRepository from "../repositories/Identity.repository";
 import SocketService from "./Socket.service";
-import {Play} from "../objects/Board";
-import UserGame from "../objects/UserGame";
-import StaticGame from "../objects/StaticGame";
-import Game, {GameType} from "../objects/Game";
-import DynamicGame from "../objects/DynamicGame";
+import {Play} from "../models/Board.model";
+import UserGame from "../models/UserGame.model";
+import StaticGame from "../models/StaticGame.model";
+import Game, {GameType} from "../models/Game.model";
+import DynamicGame from "../models/DynamicGame.model";
 
 export enum TimeType {
     STATIC, DYNAMIC, DYNAMIC_INCREMENT

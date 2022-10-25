@@ -1,4 +1,6 @@
 import {Component, OnInit} from '@angular/core';
+import {ApiService} from "./shared/services/api.service";
+import {TokenService} from "./shared/services/token.service";
 
 @Component({
   selector: 'app-root',
@@ -8,10 +10,15 @@ import {Component, OnInit} from '@angular/core';
 export class AppComponent implements OnInit {
   title = 'client';
 
-  constructor() {
+  constructor(private apiService: ApiService, private tokenService: TokenService) {
   }
 
   ngOnInit(): void {
+    this.apiService.insertTokenGetters(() => {
+      return this.tokenService.getRefreshToken();
+    }, () => {
+      return this.tokenService.getAccessToken();
+    });
     /*
     const refreshToken = this.storageService.getRefreshToken();
 
