@@ -103,7 +103,7 @@ paths:
       summary: logout a User
       operationId: LogoutUser
       description: |
-        Removes refresh token from server and prevents old access tokens from accessing data
+        Removes refresh token from server and prevents old access tokens from accessing data by providing a valid refresh token as bearer
       responses:
         '204':
           description: Logout successful

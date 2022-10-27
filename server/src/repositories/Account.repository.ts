@@ -18,4 +18,12 @@ export default class AccountRepository{
         return await this.prismaClient.account.findUnique({where: {id: id}});
     }
 
+    public async getByExtID(id: string){
+        return await this.prismaClient.account.findUnique({where: {ext_id: id}});
+    }
+
+    public async logout(id: string){
+        await this.prismaClient.account.update({data: {logoutAt: new Date()},where : {ext_id: id}});
+    }
+
 }

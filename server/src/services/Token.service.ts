@@ -1,4 +1,5 @@
 import TokenRepository from "../repositories/Token.repository";
+import AccountRepository from "../repositories/Account.repository";
 
 export enum Role {
     ADMIN = "ADMIN", USER = "USER", GUEST = "GUEST"
@@ -7,6 +8,7 @@ export enum Role {
 export interface DecryptedToken {
     account_id: string,
     role: Role
+    timestamp?: number
 }
 
 export interface EncryptedToken {
@@ -16,7 +18,7 @@ export interface EncryptedToken {
 
 export default class TokenService {
 
-    constructor(private tokenRepository: TokenRepository, private accessTokenSecret: string, private refreshTokenSecret: string, private refreshTokenCount?: number) {
+    constructor(private tokenRepository: TokenRepository, private accountRepository: AccountRepository, private accessTokenSecret: string, private refreshTokenSecret: string, private refreshTokenCount?: number) {
         if(typeof refreshTokenCount !== "undefined"){
             this.tokenRepository.setRefreshTokenCount(refreshTokenCount);
         }
@@ -60,8 +62,26 @@ export default class TokenService {
     }
 
     // #TODO implement check for last logout
-    public decryptAccessToken(token: string): DecryptedToken | null {
-        return this.tokenRepository.decryptToken(token, this.accessTokenSecret);
+    public async decryptAccessToken(token: string): Promise<DecryptedToken | null> {
+        const decryptedToken = await this.tokenRepository.decryptToken(token, this.accessTokenSecret);
+
+        if(decryptedToken === null || typeof decryptedToken.timestamp === "undefined"){
+            return null;
+        }
+
+        const account = await this.accountRepository.getByExtID(decryptedToken.account_id);
+
+        if(account === null){
+            return null;
+        }
+
+        if(account.logoutAt !== null && account.logoutAt.getTime() > decryptedToken.timestamp){
+            return null;
+        }
+
+        delete decryptedToken.timestamp;
+
+        return decryptedToken;
     }
 
     public async createTokenResponse(decryptedToken: DecryptedToken){

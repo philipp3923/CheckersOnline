@@ -20,7 +20,7 @@ export default class AuthenticateSocketMiddleware {
         }
 
 
-        const decryptedToken = this.tokenService.decryptAccessToken(accessToken);
+        const decryptedToken = await this.tokenService.decryptAccessToken(accessToken);
 
         if (decryptedToken === null) {
             const err = new Error("403");
