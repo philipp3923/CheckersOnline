@@ -10,7 +10,7 @@ export default class LogoutController extends AbstractController{
     }
 
     public async post(req: Request, res: Response, next: NextFunction): Promise<void> {
-        await this.tokenService.decryptRefreshToken(res.locals.refreshToken);
+        await this.tokenService.deleteRefreshToken(res.locals.refreshToken);
         await this.accountService.logout(res.locals.id);
         res.status(204).send();
     }

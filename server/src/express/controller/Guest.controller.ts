@@ -11,7 +11,7 @@ export default class GuestController extends AbstractController {
 
     public async post(req: Request, res: Response, next: NextFunction): Promise<void> {
         const id = await this.guestService.create();
-        const decryptedToken = {account_id: id, role: Role.GUEST};
+        const decryptedToken = {id: id, role: Role.GUEST};
 
         res.json(await this.tokenService.createTokenResponse(decryptedToken));
     }

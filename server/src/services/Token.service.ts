@@ -6,7 +6,7 @@ export enum Role {
 }
 
 export interface DecryptedToken {
-    account_id: string,
+    id: string,
     role: Role
     timestamp?: number
 }
@@ -31,7 +31,7 @@ export default class TokenService {
 
     public async generateRefreshToken(decryptedToken: DecryptedToken): Promise<EncryptedToken> {
         const encryptedToken: string = this.tokenRepository.generateToken(decryptedToken, this.refreshTokenSecret, "30d");
-        await this.tokenRepository.saveRefreshToken(decryptedToken.account_id, encryptedToken);
+        await this.tokenRepository.saveRefreshToken(decryptedToken.id, encryptedToken);
         return this.wrapToken(encryptedToken);
     }
 
@@ -69,7 +69,7 @@ export default class TokenService {
             return null;
         }
 
-        const account = await this.accountRepository.getByExtID(decryptedToken.account_id);
+        const account = await this.accountRepository.getByExtID(decryptedToken.id);
 
         if(account === null){
             return null;

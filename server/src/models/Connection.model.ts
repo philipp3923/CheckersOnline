@@ -15,25 +15,25 @@ export default class ConnectionModel {
 
     public async goOnline(){
         if(this.decryptedToken.role === Role.GUEST){return}
-        for(const friendship of await this.friendshipService.getFriends(this.decryptedToken.account_id)){
-            if(friendship.friend === this.decryptedToken.account_id || friendship.status !== "ACTIVE"){continue}
-            this.socketService.sendTo(friendship.friend, "online", this.decryptedToken.account_id);
+        for(const friendship of await this.friendshipService.getFriends(this.decryptedToken.id)){
+            if(friendship.friend === this.decryptedToken.id || friendship.status !== "ACTIVE"){continue}
+            this.socketService.sendTo(friendship.friend, "online", this.decryptedToken.id);
         }
     }
 
     public async goOffline(){
         if(this.decryptedToken.role === Role.GUEST){return}
-        for(const friendship of await this.friendshipService.getFriends(this.decryptedToken.account_id)){
-            if(friendship.friend === this.decryptedToken.account_id || friendship.status !== "ACTIVE"){continue}
-            this.socketService.sendTo(friendship.friend, "offline", this.decryptedToken.account_id);
+        for(const friendship of await this.friendshipService.getFriends(this.decryptedToken.id)){
+            if(friendship.friend === this.decryptedToken.id || friendship.status !== "ACTIVE"){continue}
+            this.socketService.sendTo(friendship.friend, "offline", this.decryptedToken.id);
         }
     }
 
     public async addSocket(socket: Socket){
         this.sockets.push(socket);
-        socket.join(this.decryptedToken.account_id);
+        socket.join(this.decryptedToken.id);
         if(this.decryptedToken.role !== Role.GUEST){
-            socket.send("welcome", {friends: await this.friendshipService.getFriends(this.decryptedToken.account_id)});
+            socket.send("welcome", {friends: await this.friendshipService.getFriends(this.decryptedToken.id)});
         }
     }
 
@@ -52,7 +52,7 @@ export default class ConnectionModel {
             socket.join(game.getKey());
         }
         if(game instanceof UserGameModel){
-            await game.join(this.decryptedToken.account_id);
+            await game.join(this.decryptedToken.id);
         }
     }
 
@@ -72,11 +72,11 @@ export default class ConnectionModel {
     }
 
     public getID(){
-        return this.decryptedToken.account_id;
+        return this.decryptedToken.id;
     }
 
     public send(event: string, msg: any){
-        this.socketService.sendTo(this.decryptedToken.account_id,event,msg);
+        this.socketService.sendTo(this.decryptedToken.id,event,msg);
     }
 
 

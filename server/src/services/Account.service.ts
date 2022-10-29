@@ -10,4 +10,8 @@ export default class AccountService{
         await this.accountRepository.logout(id);
     }
 
+    public async get(id: string){
+        return await this.accountRepository.getByExtID(id);
+    }
+
 }

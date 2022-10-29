@@ -60,15 +60,26 @@ export default class UserService{
 
     }
 
-    public changePassword(id: string){
+    //#TODO implement change methods
+
+    /**
+     * @deprecated The method is not implemented
+     */
+    public changePassword(id: string, password: string){
 
     }
 
-    public changeUsername(id: string){
+    /**
+     * @deprecated The method is not implemented
+     */
+    public changeUsername(id: string, username: string){
 
     }
 
-    public changeEmail(id: string){
+    /**
+     * @deprecated The method is not implemented
+     */
+    public changeEmail(id: string, email: string){
 
     }
 

@@ -8,7 +8,7 @@ export default class UserRepository {
     }
 
     public async create(id: string, email: string, username: string, password: string){
-            await this.accountRepository.create(id, Role.GUEST);
+            await this.accountRepository.create(id, Role.USER);
             const user = await this.prismaClient.user.create({
                 data: {
                     username: username,

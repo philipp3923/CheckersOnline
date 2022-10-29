@@ -22,7 +22,7 @@ export default class TokenRepository {
             if(!decryptedToken){
                 throw new Error();
             }
-            return {account_id: (<DecryptedToken>decryptedToken).account_id, role: (<DecryptedToken>decryptedToken).role, timestamp: (<JwtPayload>decryptedToken).iat};
+            return {id: (<DecryptedToken>decryptedToken).id, role: (<DecryptedToken>decryptedToken).role, timestamp: ((<JwtPayload>decryptedToken).iat ?? 0) *1000};
         } catch (err) {
             return null;
         }

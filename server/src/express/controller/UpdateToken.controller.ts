@@ -10,7 +10,7 @@ export class UpdateAccessTokenController extends AbstractController {
     }
 
     public async post(req: Request, res: Response, next: NextFunction): Promise<void> {
-        const decryptedToken: DecryptedToken = {account_id: res.locals.id, role: res.locals.role}
+        const decryptedToken: DecryptedToken = {id: res.locals.id, role: res.locals.role}
 
         const accessToken = await this.tokenService.generateAccessToken(decryptedToken);
 

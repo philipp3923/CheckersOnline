@@ -17,6 +17,11 @@ export default class LoginController extends AbstractController {
             return;
         }
 
+        if(await this.userService.getByUsernameOrEmail(user) === null){
+            res.status(404).send();
+            return;
+        }
+
         if (!(await this.userService.authenticate(user, password))) {
             res.status(409).send();
             return;
@@ -27,7 +32,7 @@ export default class LoginController extends AbstractController {
             throw new Error("Account for user does not exist " + user);
         }
 
-        const decryptedToken = {account_id: account_id, role: Role.USER};
+        const decryptedToken = {id: account_id, role: Role.USER};
 
         await this.userService.login(account_id);
 
