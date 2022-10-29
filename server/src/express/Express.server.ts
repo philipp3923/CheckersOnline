@@ -6,7 +6,7 @@ import UserService from "../services/User.service";
 import DecryptRefreshTokenMiddleware from "./middleware/DecryptRefreshToken.middleware";
 import AccountService from "../services/Account.service";
 import IsThisUserMiddleware from "./middleware/IsThisUser.middleware";
-import IsUserParameterValidMiddleware from "./middleware/IsUserParameterValid.middleware";
+import UserExistsMiddleware from "./middleware/UserExists.middleware";
 import UserRouter from "./router/User.router";
 import DecryptAccessTokenMiddleware from "./middleware/DecryptAccessToken.middleware";
 
@@ -18,7 +18,7 @@ export default class ExpressServer {
         const decryptRefreshTokenMiddleware = new DecryptRefreshTokenMiddleware(tokenService);
         const decryptAccessTokenMiddleware = new DecryptAccessTokenMiddleware(tokenService);
         const isThisUserMiddleware = new IsThisUserMiddleware();
-        const isUserParameterValidMiddleware = new IsUserParameterValidMiddleware(accountService);
+        const isUserParameterValidMiddleware = new UserExistsMiddleware(accountService);
 
 
         new AuthenticationRouter("/auth", app, tokenService, guestService, userService, accountService, decryptRefreshTokenMiddleware);

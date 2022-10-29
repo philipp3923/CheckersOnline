@@ -41,9 +41,9 @@ export default class UserRepository {
         return user ? user.account.ext_id : null;
     }
 
-    public async getPassword(name: string): Promise<string | null>{
-        let user =  await this.prismaClient.user.findFirst({where: {OR: [{email: name}, {username: name}]}});
-        return user? user.password: null;
+    public async getPassword(id: string): Promise<string | null>{
+        let account = await this.prismaClient.account.findUnique({where: {ext_id: id}, include: {user: true}});
+        return account?.user?.password ?? null;
     }
 
     public async getByEmailOrUsername(name: string) {

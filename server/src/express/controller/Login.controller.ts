@@ -10,31 +10,28 @@ export default class LoginController extends AbstractController {
     }
 
     public async post(req: Request, res: Response, next: NextFunction): Promise<void> {
-        const {user, password} = req.body;
+        const {username, password} = req.body;
 
-        if (!user || !password) {
+        if (!username || !password) {
             res.status(400).send();
             return;
         }
 
-        if(await this.userService.getByUsernameOrEmail(user) === null){
+        const user_id = await this.userService.getByUsername(username);
+
+        if(user_id === null){
             res.status(404).send();
             return;
         }
 
-        if (!(await this.userService.authenticate(user, password))) {
+        if (!(await this.userService.authenticate(user_id, password))) {
             res.status(409).send();
             return;
         }
 
-        const account_id = await this.userService.getByUsernameOrEmail(user);
-        if (account_id === null) {
-            throw new Error("Account for user does not exist " + user);
-        }
+        const decryptedToken = {id: user_id, role: Role.USER};
 
-        const decryptedToken = {id: account_id, role: Role.USER};
-
-        await this.userService.login(account_id);
+        await this.userService.login(user_id);
 
         res.json(await this.tokenService.createTokenResponse(decryptedToken));
     }

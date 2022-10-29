@@ -3,9 +3,8 @@ import {Router} from "express";
 import TokenService from "../../services/Token.service";
 import UserService from "../../services/User.service";
 import AccountService from "../../services/Account.service";
-import DecryptRefreshTokenMiddleware from "../middleware/DecryptRefreshToken.middleware";
 import ThisUserRouter from "./ThisUser.router";
-import IsUserParameterValidMiddleware from "../middleware/IsUserParameterValid.middleware";
+import UserExistsMiddleware from "../middleware/UserExists.middleware";
 import IsThisUserMiddleware from "../middleware/IsThisUser.middleware";
 import DecryptAccessTokenMiddleware from "../middleware/DecryptAccessToken.middleware";
 
@@ -16,7 +15,7 @@ export default class UserRouter extends AbstractRouter {
                 private userService: UserService,
                 private accountService: AccountService,
                 private decryptAccessTokenMiddleware: DecryptAccessTokenMiddleware,
-                private isUserParameterValidMiddleware: IsUserParameterValidMiddleware,
+                private isUserParameterValidMiddleware: UserExistsMiddleware,
                 private isThisUserMiddleware: IsThisUserMiddleware) {
         super(path, app);
 

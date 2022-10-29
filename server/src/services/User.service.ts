@@ -37,8 +37,8 @@ export default class UserService{
 
     }
 
-    public async authenticate(name: string, password: string): Promise<boolean>{
-        const userPassword = await this.userRepository.getPassword(name);
+    public async authenticate(id: string, password: string): Promise<boolean>{
+        const userPassword = await this.userRepository.getPassword(id);
 
         if(userPassword === null){
             throw new Error("User does not exist");
@@ -55,6 +55,18 @@ export default class UserService{
         return await this.userRepository.getByEmail(email);
     }
 
+    private async getByID(id: string){
+        return (await this.userRepository.getByAccountID(id));
+    }
+
+    public async getEmail(id: string){
+        return (await this.getByID(id))?.email ?? null;
+    }
+
+    /**
+     *
+     * @deprecated unsafe to use
+     */
     public async getByUsernameOrEmail(name: string){
         return await this.userRepository.getByEmailOrUsername(name);
 

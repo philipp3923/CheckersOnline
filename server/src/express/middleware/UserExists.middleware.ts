@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import AccountService from "../../services/Account.service";
 import InterfaceMiddleware from "./Interface.middleware";
 
-export default class IsUserParameterValidMiddleware implements InterfaceMiddleware{
+export default class UserExistsMiddleware implements InterfaceMiddleware{
     constructor(private accountService: AccountService) {
     }
 
