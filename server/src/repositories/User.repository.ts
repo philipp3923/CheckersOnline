@@ -46,10 +46,21 @@ export default class UserRepository {
         return account?.user?.password ?? null;
     }
 
+    /**
+     *
+     * @deprecated unsafe to use
+     */
     public async getByEmailOrUsername(name: string) {
         let user =  await this.prismaClient.user.findFirst({where: {OR: [{email: name}, {username: name}]}, include: {account: true}});
         return user? user.account.ext_id: null;
     }
 
+    public async getAllMatchingEmail(email: string){
+        return await this.prismaClient.user.findMany({where: {email: {contains: email}}, include: {account: true}, take: 100});
+    }
+
+    public async getAllMatchingUsername(username: string){
+        return await this.prismaClient.user.findMany({where: {username: {contains: username}}, include: {account: true}, take: 100});
+    }
 
 }
