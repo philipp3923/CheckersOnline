@@ -46,7 +46,7 @@ export default class SocketService{
     }
 
     public getConnection(decryptedToken: DecryptedToken): Connection | null{
-        return this.socketRepository.getConnection(decryptedToken.account_id);
+        return this.socketRepository.getConnection(decryptedToken.id);
     }
 
     public async addConnection(connection: Connection){

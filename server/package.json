@@ -4,8 +4,7 @@
   "description": "",
   "main": "build/server.js",
   "scripts": {
-    "build": "tsc -p .",
-    "install": "npm install && tsc -p && npx prisma generate && npx prisma push",
+    "build": "npx prisma generate && npx prisma db push && tsc -p .",
     "start": "node build/server.js",
     "dev": "tsc -p . -w & nodemon build/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"

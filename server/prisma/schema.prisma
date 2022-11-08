@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./checkers.db"
 }
 
 model Account {
@@ -15,20 +15,20 @@ model Account {
   loginAt        DateTime?
   logoutAt       DateTime?
   active         Boolean
-  role           Role
+  role           String
   refresh_tokens RefreshToken[]
-  white_games    GameModel[]         @relation(name: "white")
-  black_games    GameModel[]         @relation(name: "black")
+  white_games    Game[]         @relation(name: "white")
+  black_games    Game[]         @relation(name: "black")
   user           User?
 }
 
-model GameModel {
+model Game {
   id         Int      @id @default(autoincrement())
   ext_id     String   @unique
-  type       GameType
+  type       String
   time_limit Int
   startedAt  DateTime @default(now())
-  winner     Color?
+  winner     String?
   id_white   Int
   id_black   Int
   white      Account  @relation(name: "white", fields: [id_white], references: [id])
@@ -38,7 +38,7 @@ model GameModel {
 
 model RefreshToken {
   id         Int      @id @default(autoincrement())
-  content    String   @unique @db.VarChar(1000)
+  content    String   @unique
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   id_account Int
@@ -50,14 +50,14 @@ model Play {
   createdAt DateTime @default(now())
   time      Int
   capture   Boolean
-  color     Color
+  color     String
   index     Int
   start_x   Int
   start_y   Int
   target_x  Int
   target_y  Int
   id_game   Int
-  game      GameModel     @relation(fields: [id_game], references: [id])
+  game      Game     @relation(fields: [id_game], references: [id])
 }
 
 model User {
@@ -75,35 +75,11 @@ model Friend {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  type      FriendType
+  type      String
   id_user   Int
   id_friend Int
   user      User     @relation(name: "user", fields: [id_user], references: [id])
   friend    User     @relation(name: "friend", fields: [id_friend], references: [id])
 
   @@unique([id_user, id_friend])
-}
-
-enum Role {
-  USER
-  GUEST
-  ADMIN
-}
-
-enum Color {
-  WHITE
-  BLACK
-  NONE
-}
-
-enum GameType {
-  FRIEND
-  CASUAL
-  RANKED
-  CUSTOM
-}
-
-enum FriendType{
-    ACTIVE
-    REQUEST
 }

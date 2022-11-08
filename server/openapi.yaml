@@ -9,7 +9,7 @@ info:
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  version: 1.0.0
+  version: 1.3.0
 tags:
   - name: users
     description: Secured User-only calls
@@ -22,19 +22,23 @@ paths:
       operationId: LoginUser
       description: |
         By passing in the appropriate options, you can login a User
-      parameters:
-        - in: query
-          name: user
-          description: username or email address associated with the user
-          required: true
-          schema:
-            type: string
-        - in: query
-          name: password
-          description: password associated with the user
-          required: true
-          schema:
-            type: string
+      requestBody:
+        description: login information
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  example: "Max13"
+                  type: string
+                password:
+                  example: "sijs-x8332!JA"
+                  type: string
       responses:
         '200':
           description: access token, refresh token and account information
@@ -46,6 +50,8 @@ paths:
           description: bad input parameter
         '409':
           description: authentication failed
+        '404':
+          description: user does not exist
 
   /auth/register:
     post:
@@ -53,25 +59,27 @@ paths:
       operationId: RegisterUser
       description: |
         By passing in the appropriate options, you can register a User
-      parameters:
-        - in: query
-          name: username
-          description: username associated with the user
-          required: true
-          schema:
-            type: string
-        - in: query
-          name: email
-          description: email associated with the user
-          required: true
-          schema:
-            type: string
-        - in: query
-          name: password
-          description: password associated with the user
-          required: true
-          schema:
-            type: string
+      requestBody:
+        description: register information
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - password
+              properties:
+                username:
+                  example: "Max13"
+                  type: string
+                email:
+                  example: "max.muster@gmail.com"
+                  type: string
+                password:
+                  example: "sijs-x8332!JA"
+                  type: string
       responses:
         '204':
           description: register successful
@@ -103,13 +111,12 @@ paths:
       summary: logout a User
       operationId: LogoutUser
       description: |
-        Removes refresh token from server and prevents old access tokens from accessing data
+        Removes refresh token from server and prevents old access tokens from accessing data by providing a valid refresh token as bearer
       responses:
         '204':
           description: Logout successful
         '401':
           description: Access token is missing or invalid
-
 
   /auth/token/access:
     post:
@@ -131,7 +138,6 @@ paths:
                 $ref: '#/components/schemas/Token'
         '401':
           description: Access token is missing or invalid
-
 
   /auth/token/refresh:
     post:
@@ -160,7 +166,7 @@ paths:
         - auth: []
       tags:
         - users
-      summary: update email of user
+      summary: update password of user
       operationId: UpdateUserPassword
       description: |
         Update user password. Only possible if request is authenticated as the same user
@@ -171,19 +177,32 @@ paths:
             type: string
           required: true
           description: ID of the user
-        - in: query
-          name: password
-          schema:
-            type: string
-          required: true
-          description: password of the user
+      requestBody:
+        description: password information
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password_old
+                - password_new
+              properties:
+                password_old:
+                  example: "123456"
+                  type: string
+                password_new:
+                  example: "sijs-x8332!JA"
+                  type: string
       responses:
         '204':
           description: update successful
         '401':
           description: Access token is missing or invalid
-        '409':
+        '403':
           description: unauthorized
+        '406':
+          description: password invalid
 
   /user/{id}/username:
     patch:
@@ -191,7 +210,7 @@ paths:
         - auth: []
       tags:
         - users
-      summary: update email of user
+      summary: update username of user
       operationId: UpdateUserUsername
       description: |
         Update user username. Only possible if request is authenticated as the same user
@@ -202,13 +221,30 @@ paths:
             type: string
           required: true
           description: ID of the user
+      requestBody:
+        description: username information
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+              properties:
+                username:
+                  example: "maxx23"
+                  type: string
       responses:
         '204':
           description: update successful
         '401':
           description: Access token is missing or invalid
-        '409':
+        '403':
           description: unauthorized
+        '409':
+          description: username unavailable
+        '406':
+          description: username invalid
 
   /user/{id}/email:
     get:
@@ -233,12 +269,18 @@ paths:
           content:
             application/json:
               schema:
-               type: string
-               example: "max-muste@gmail.com"
+                type: object
+                required:
+                  - email
+                properties:
+                  email:
+                    type: string
+                    example: "max-muste@gmail.com"
         '401':
           description: Access token is missing or invalid
-        '409':
+        '403':
           description: unauthorized
+
     patch:
       security:
         - auth: []
@@ -255,13 +297,30 @@ paths:
             type: string
           required: true
           description: ID of the user
+      requestBody:
+        description: email information
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  example: "maxx23@gmail.com"
+                  type: string
       responses:
         '204':
           description: update successful
         '401':
           description: Access token is missing or invalid
-        '409':
+        '403':
           description: unauthorized
+        '409':
+          description: email unavailable
+        '406':
+          description: email invalid
 
   /user/{id}/games:
     get:
@@ -282,9 +341,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Game'
+                type: object
+                required:
+                  - games
+                properties:
+                  games:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Game'
         '404':
           description: user not found
 
@@ -326,17 +390,32 @@ paths:
             type: string
           required: true
           description: ID of the user
+      requestBody:
+        description: delete information
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+              properties:
+                password:
+                  example: "123456"
+                  type: string
       responses:
         '201':
           description: user deleted
         '401':
           description: Access token is missing or invalid
-        '409':
+        '403':
           description: unauthorized
+        '406':
+          description: password invalid
 
   /user:
     get:
-      summary: get users by email or username
+      summary: get users by email OR username
       operationId: GetUsers
       description: |
         Get user information matching the given username or email address
@@ -359,13 +438,16 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
+                type: object
+                required:
+                  - user
+                properties:
+                  user:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
         '400':
-          description: neither username nor email provided
-        '404':
-          description: no user found
+          description: neither username nor email provided or both username and email provided
 
   /game/{id}:
     get:

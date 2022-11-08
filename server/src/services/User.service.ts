@@ -1,81 +1,121 @@
 import UserRepository from "../repositories/User.repository";
 import EncryptionRepository from "../repositories/Encryption.repository";
 import IdentityRepository from "../repositories/Identity.repository";
+import AccountRepository from "../repositories/Account.repository";
+import FriendshipRepository from "../repositories/Friendship.repository";
 
-export default class UserService{
+export default class UserService {
+    constructor(
+        private userRepository: UserRepository,
+        private encryptionRepository: EncryptionRepository,
+        private identRepository: IdentityRepository,
+        private accountRepository: AccountRepository,
+        private friendshipRepository: FriendshipRepository
+    ) {
+    }
 
-    constructor(private userRepository: UserRepository, private encryptionRepository: EncryptionRepository, private identRepository: IdentityRepository) {}
-
-    public async create(email: string, username: string, password: string): Promise<string>{
-        if(!this.validatePassword(password) || !this.validateUsername(username) || !this.validateEmail(email)){
+    public async create(
+        email: string,
+        username: string,
+        password: string
+    ): Promise<string> {
+        if (
+            !this.validatePassword(password) ||
+            !this.validateUsername(username) ||
+            !this.validateEmail(email)
+        ) {
             throw new Error("Illegal arguments provided");
         }
-        if(await this.getByEmail(email) !== null || await this.getByUsername(username) !== null){
+        if (
+            (await this.getByEmail(email)) !== null ||
+            (await this.getByUsername(username)) !== null
+        ) {
             throw new Error("User already exists");
         }
 
         const hashedPassword = this.encryptionRepository.hashPassword(password);
         const id = await this.identRepository.generateUserID();
 
-        try{
-            await this.userRepository.create(id,email, username, hashedPassword);
-        }catch (e){
+        try {
+            await this.userRepository.create(id, email, username, hashedPassword);
+        } catch (e) {
             throw new Error("User generation failed");
         }
 
         return id;
     }
 
-    public async login(id: string){
+    public async login(id: string) {
         await this.userRepository.login(id);
     }
 
-    /**
-     * @deprecated The method is not implemented
-     */
-    public delete(id: string){
+    public async authenticate(id: string, password: string): Promise<boolean> {
+        const userPassword = await this.userRepository.getPassword(id);
 
-    }
-
-    public async authenticate(name: string, password: string): Promise<boolean>{
-        const userPassword = await this.userRepository.getPassword(name);
-
-        if(userPassword === null){
+        if (userPassword === null) {
             throw new Error("User does not exist");
         }
 
         return this.encryptionRepository.comparePasswords(password, userPassword);
     }
 
-    public async getByUsername(username: string): Promise<string | null>{
+    public async getByUsername(username: string): Promise<string | null> {
         return await this.userRepository.getByUsername(username);
     }
 
-    public async getByEmail(email: string): Promise<string | null>{
+    public async getByEmail(email: string): Promise<string | null> {
         return await this.userRepository.getByEmail(email);
     }
 
-    public async getByUsernameOrEmail(name: string){
+    public async getAllMatchingEmail(email: string) {
+        return (await this.userRepository.getAllMatchingEmail(email)).map(
+            (user) => {
+                return {id: user.account.ext_id, username: user.username};
+            }
+        );
+    }
+
+    public async getAllMatchingUsername(username: string) {
+        return (await this.userRepository.getAllMatchingUsername(username)).map(
+            (user) => {
+                return {id: user.account.ext_id, username: user.username};
+            }
+        );
+    }
+
+    public async getEmail(id: string) {
+        return (await this.getByID(id))?.email ?? null;
+    }
+
+    public async getUsername(id: string) {
+        return (await this.getByID(id))?.username ?? null;
+    }
+
+    /**
+     *
+     * @deprecated unsafe to use
+     */
+    public async getByUsernameOrEmail(name: string) {
         return await this.userRepository.getByEmailOrUsername(name);
-
     }
 
-    public changePassword(id: string){
-
+    public async changePassword(id: string, password: string) {
+        const hashedPassword = this.encryptionRepository.hashPassword(password);
+        await this.userRepository.changePassword(id, hashedPassword);
     }
 
-    public changeUsername(id: string){
-
+    public async changeUsername(id: string, username: string) {
+        await this.userRepository.changeUsername(id, username);
     }
 
-    public changeEmail(id: string){
-
+    public async changeEmail(id: string, email: string) {
+        await this.userRepository.changeEmail(id, email);
     }
 
-    public validateUsername(username: string): boolean{
+    public validateUsername(username: string): boolean {
         let result = true;
 
-        if(username.length < 4){
+        if (username.length < 4) {
             result = false;
         }
 
@@ -83,10 +123,10 @@ export default class UserService{
         return true;
     }
 
-    public validateEmail(email: string): boolean{
+    public validateEmail(email: string): boolean {
         let result = true;
 
-        if(email.length < 4){
+        if (email.length < 4) {
             result = false;
         }
 
@@ -94,11 +134,11 @@ export default class UserService{
         return true;
     }
 
-    public validatePassword(password: string): boolean{
+    public validatePassword(password: string): boolean {
         let result = true;
         const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,100}$/;
 
-        if(!password.match(regex)){
+        if (!password.match(regex)) {
             result = false;
         }
 
@@ -106,4 +146,13 @@ export default class UserService{
         return true;
     }
 
+    private async getByID(id: string) {
+        return await this.userRepository.getByAccountID(id);
+    }
+
+    public async delete(id: string) {
+        await this.accountRepository.setDeleted(id);
+        await this.friendshipRepository.deleteAllFriendships(id);
+        await this.userRepository.deleteUser(id);
+    }
 }

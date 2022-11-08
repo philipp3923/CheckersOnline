@@ -3,14 +3,17 @@ import SocketService from "./Socket.service";
 import AccountRepository from "../repositories/Account.repository";
 
 interface Friendship {
-    user: string,
-    friend: string,
-    status: "ACTIVE" | "REQUEST" | "DELETED"
+    user: string;
+    friend: string;
+    status: "ACTIVE" | "REQUEST" | "DELETED";
 }
 
 export default class FriendshipService {
-
-    constructor(private friendshipRepository: FriendshipRepository, private accountRepository: AccountRepository, private socketService: SocketService) {
+    constructor(
+        private friendshipRepository: FriendshipRepository,
+        private accountRepository: AccountRepository,
+        private socketService: SocketService
+    ) {
     }
 
     public async request(user_id: string, friend_id: string) {
@@ -19,7 +22,11 @@ export default class FriendshipService {
         }
 
         await this.friendshipRepository.requestFriend(user_id, friend_id);
-        const friendship: Friendship = {user: user_id, friend: friend_id, status: "REQUEST"};
+        const friendship: Friendship = {
+            user: user_id,
+            friend: friend_id,
+            status: "REQUEST",
+        };
 
         this.socketService.sendTo(user_id, "friendRequest", friendship);
         this.socketService.sendTo(friend_id, "friendRequest", friendship);
@@ -30,14 +37,21 @@ export default class FriendshipService {
             throw new Error("A User cannot be a friend of himself");
         }
 
-        if(await this.exists(user_id, friend_id)){
+        if (await this.exists(user_id, friend_id)) {
             throw new Error("Cannot deny active friendship");
         }
 
         await this.friendshipRepository.acceptFriend(user_id, friend_id);
-        const friendship_user: Friendship = {user: user_id, friend: friend_id, status: "ACTIVE"};
-        const friendship_friend: Friendship = {user: friend_id, friend: user_id, status: "ACTIVE"};
-
+        const friendship_user: Friendship = {
+            user: user_id,
+            friend: friend_id,
+            status: "ACTIVE",
+        };
+        const friendship_friend: Friendship = {
+            user: friend_id,
+            friend: user_id,
+            status: "ACTIVE",
+        };
 
         this.socketService.sendTo(user_id, "friendAccept", friendship_user);
         this.socketService.sendTo(friend_id, "friendAccept", friendship_friend);
@@ -49,19 +63,27 @@ export default class FriendshipService {
         }
 
         await this.friendshipRepository.deleteFriend(user_id, friend_id);
-        const friendship: Friendship = {user: user_id, friend: friend_id, status: "DELETED"};
+        const friendship: Friendship = {
+            user: user_id,
+            friend: friend_id,
+            status: "DELETED",
+        };
 
         this.socketService.sendTo(user_id, "friendDelete", friendship);
         this.socketService.sendTo(friend_id, "friendDelete", friendship);
-
     }
 
     public async getFriends(user_id: string): Promise<Friendship[]> {
         const friends = await this.friendshipRepository.getFriends(user_id);
 
-        return await Promise.all(friends.map(async (friendship) => {
-                const user_acc = await this.accountRepository.getByID(friendship.user.id_account);
-                const friend_acc = await this.accountRepository.getByID(friendship.friend.id_account);
+        return await Promise.all(
+            friends.map(async (friendship) => {
+                const user_acc = await this.accountRepository.getByID(
+                    friendship.user.id_account
+                );
+                const friend_acc = await this.accountRepository.getByID(
+                    friendship.friend.id_account
+                );
 
                 if (user_acc === null || friend_acc === null) {
                     throw new Error("User has no account");
@@ -69,14 +91,13 @@ export default class FriendshipService {
                 return {
                     user: user_acc.ext_id,
                     friend: friend_acc.ext_id,
-                    status: friendship.type
+                    status: <any>friendship.type,
                 };
-            }
-        ));
+            })
+        );
     }
 
-    public async exists(user_id: string, friend_id: string){
+    public async exists(user_id: string, friend_id: string) {
         return await this.friendshipRepository.friendshipExists(user_id, friend_id);
     }
-
 }

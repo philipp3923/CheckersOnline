@@ -7,9 +7,8 @@ import DecryptRefreshTokenMiddleware from "../middleware/DecryptRefreshToken.mid
 
 export default class TokenRouter extends AbstractRouter {
 
-    constructor(path: string, app: Router, private tokenService: TokenService, private userService: UserService) {
+    constructor(path: string, app: Router, private tokenService: TokenService, private userService: UserService, private decryptRefreshTokenMiddleware: DecryptRefreshTokenMiddleware) {
         super(path, app);
-        const decryptRefreshTokenMiddleware = new DecryptRefreshTokenMiddleware(tokenService);
 
         this.router.use((req, res, next) => decryptRefreshTokenMiddleware.handle(req, res, next));
 

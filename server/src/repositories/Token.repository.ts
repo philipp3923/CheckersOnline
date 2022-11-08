@@ -1,5 +1,5 @@
 import {PrismaClient} from "@prisma/client";
-import jwt from "jsonwebtoken";
+import jwt, {JwtPayload} from "jsonwebtoken";
 import {DecryptedToken} from "../services/Token.service";
 
 export default class TokenRepository {
@@ -18,11 +18,11 @@ export default class TokenRepository {
 
     public decryptToken(token: string, secret: string): DecryptedToken | null {
         try {
-            const decryptedToken = <DecryptedToken>jwt.verify(token, secret);
+            const decryptedToken = jwt.verify(token, secret);
             if(!decryptedToken){
                 throw new Error();
             }
-            return {account_id: decryptedToken.account_id, role: decryptedToken.role};
+            return {id: (<DecryptedToken>decryptedToken).id, role: (<DecryptedToken>decryptedToken).role, timestamp: ((<JwtPayload>decryptedToken).iat ?? 0) *1000};
         } catch (err) {
             return null;
         }
