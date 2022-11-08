@@ -1,17 +1,35 @@
 import UserRepository from "../repositories/User.repository";
 import EncryptionRepository from "../repositories/Encryption.repository";
 import IdentityRepository from "../repositories/Identity.repository";
+import AccountRepository from "../repositories/Account.repository";
+import FriendshipRepository from "../repositories/Friendship.repository";
 
 export default class UserService {
-
-    constructor(private userRepository: UserRepository, private encryptionRepository: EncryptionRepository, private identRepository: IdentityRepository) {
+    constructor(
+        private userRepository: UserRepository,
+        private encryptionRepository: EncryptionRepository,
+        private identRepository: IdentityRepository,
+        private accountRepository: AccountRepository,
+        private friendshipRepository: FriendshipRepository
+    ) {
     }
 
-    public async create(email: string, username: string, password: string): Promise<string> {
-        if (!this.validatePassword(password) || !this.validateUsername(username) || !this.validateEmail(email)) {
+    public async create(
+        email: string,
+        username: string,
+        password: string
+    ): Promise<string> {
+        if (
+            !this.validatePassword(password) ||
+            !this.validateUsername(username) ||
+            !this.validateEmail(email)
+        ) {
             throw new Error("Illegal arguments provided");
         }
-        if (await this.getByEmail(email) !== null || await this.getByUsername(username) !== null) {
+        if (
+            (await this.getByEmail(email)) !== null ||
+            (await this.getByUsername(username)) !== null
+        ) {
             throw new Error("User already exists");
         }
 
@@ -29,13 +47,6 @@ export default class UserService {
 
     public async login(id: string) {
         await this.userRepository.login(id);
-    }
-
-    /**
-     * @deprecated The method is not implemented
-     */
-    public delete(id: string) {
-
     }
 
     public async authenticate(id: string, password: string): Promise<boolean> {
@@ -57,15 +68,19 @@ export default class UserService {
     }
 
     public async getAllMatchingEmail(email: string) {
-        return (await this.userRepository.getAllMatchingEmail(email)).map(user => {
-            return {id: user.account.ext_id, username: user.username}
-        });
+        return (await this.userRepository.getAllMatchingEmail(email)).map(
+            (user) => {
+                return {id: user.account.ext_id, username: user.username};
+            }
+        );
     }
 
     public async getAllMatchingUsername(username: string) {
-        return (await this.userRepository.getAllMatchingUsername(username)).map(user => {
-            return {id: user.account.ext_id, username: user.username}
-        });
+        return (await this.userRepository.getAllMatchingUsername(username)).map(
+            (user) => {
+                return {id: user.account.ext_id, username: user.username};
+            }
+        );
     }
 
     public async getEmail(id: string) {
@@ -82,30 +97,19 @@ export default class UserService {
      */
     public async getByUsernameOrEmail(name: string) {
         return await this.userRepository.getByEmailOrUsername(name);
-
     }
 
-    /**
-     * @deprecated The method is not implemented
-     */
-    public changePassword(id: string, password: string) {
-
+    public async changePassword(id: string, password: string) {
+        const hashedPassword = this.encryptionRepository.hashPassword(password);
+        await this.userRepository.changePassword(id, hashedPassword);
     }
 
-    //#TODO implement change methods
-
-    /**
-     * @deprecated The method is not implemented
-     */
-    public changeUsername(id: string, username: string) {
-
+    public async changeUsername(id: string, username: string) {
+        await this.userRepository.changeUsername(id, username);
     }
 
-    /**
-     * @deprecated The method is not implemented
-     */
-    public changeEmail(id: string, email: string) {
-
+    public async changeEmail(id: string, email: string) {
+        await this.userRepository.changeEmail(id, email);
     }
 
     public validateUsername(username: string): boolean {
@@ -143,7 +147,12 @@ export default class UserService {
     }
 
     private async getByID(id: string) {
-        return (await this.userRepository.getByAccountID(id));
+        return await this.userRepository.getByAccountID(id);
     }
 
+    public async delete(id: string) {
+        await this.accountRepository.setDeleted(id);
+        await this.friendshipRepository.deleteAllFriendships(id);
+        await this.userRepository.deleteUser(id);
+    }
 }

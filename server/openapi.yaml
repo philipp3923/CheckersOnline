@@ -410,6 +410,8 @@ paths:
           description: Access token is missing or invalid
         '403':
           description: unauthorized
+        '406':
+          description: password invalid
 
   /user:
     get:
