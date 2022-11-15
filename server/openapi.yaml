@@ -3,7 +3,7 @@ servers:
   - url: localhost:5000
     description: Development server (uses development data)
 info:
-  title: Checkers Online
+  title: Checkers Online OpenAPI
   description: |-
     This API handles all the non socket based Communication between the Client and the Server of the Checkers Online Web Application.
   license:
@@ -105,7 +105,7 @@ paths:
   /auth/logout:
     post:
       security:
-        - auth: []
+        - auth: [ ]
       tags:
         - users
       summary: logout a User
@@ -121,7 +121,7 @@ paths:
   /auth/token/access:
     post:
       security:
-        - auth: []
+        - auth: [ ]
       tags:
         - users
         - guests
@@ -142,7 +142,7 @@ paths:
   /auth/token/refresh:
     post:
       security:
-        - auth: []
+        - auth: [ ]
       tags:
         - users
         - guests
@@ -163,7 +163,7 @@ paths:
   /user/{id}/password:
     patch:
       security:
-        - auth: []
+        - auth: [ ]
       tags:
         - users
       summary: update password of user
@@ -207,7 +207,7 @@ paths:
   /user/{id}/username:
     patch:
       security:
-        - auth: []
+        - auth: [ ]
       tags:
         - users
       summary: update username of user
@@ -249,7 +249,7 @@ paths:
   /user/{id}/email:
     get:
       security:
-        - auth: []
+        - auth: [ ]
       tags:
         - users
       summary: get email of user
@@ -283,7 +283,7 @@ paths:
 
     patch:
       security:
-        - auth: []
+        - auth: [ ]
       tags:
         - users
       summary: update email of user
@@ -371,12 +371,12 @@ paths:
           content:
             application/json:
               schema:
-               $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/User'
         '404':
           description: user not found
     delete:
       security:
-        - auth: []
+        - auth: [ ]
       tags:
         - users
       summary: delete user account
@@ -486,7 +486,7 @@ components:
     auth:
       type: http
       scheme: bearer
-      bearerFormat: JWT 
+      bearerFormat: JWT
 
   schemas:
     Token:
@@ -525,7 +525,7 @@ components:
               example: USER-L9NZUGX01JX69K
             role:
               type: string
-              enum: [USER, GUEST]
+              enum: [ USER, GUEST ]
     
     User:
       type: object
@@ -557,7 +557,7 @@ components:
           example: GAME-GH2ZNGX0X23F9R
         type:
           type: string
-          enum: [FRIEND, CASUAL, CUSTOM]
+          enum: [ FRIEND, CASUAL, CUSTOM ]
         start:
           type: integer
           example: 1313289426592
@@ -566,7 +566,7 @@ components:
           example: 1313292325517
         won:
           type: string
-          enum: [BLACK, WHITE]
+          enum: [ BLACK, WHITE ]
         white:
           type: string
           example: USER-L9NZUGX01JX69K
@@ -583,7 +583,7 @@ components:
         x:
           type: integer
           example: 4
-        y: 
+        y:
           type: integer
           example: 1
     
@@ -608,7 +608,7 @@ components:
           example: true
         color:
           type: string
-          enum: [BLACK, WHITE]
+          enum: [ BLACK, WHITE ]
         start:
           $ref: '#/components/schemas/Coordinate'
         target:
