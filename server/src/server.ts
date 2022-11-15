@@ -10,7 +10,7 @@ import TokenRepository from "./repositories/Token.repository";
 import TokenService from "./services/Token.service";
 import SocketRepository from "./repositories/Socket.repository";
 import SocketService from "./services/Socket.service";
-import AuthenticateSocketMiddleware from "./middleware/AuthenticateSocket.middleware";
+import DecryptAccessTokenMiddleware from "./socketio/middleware/DecryptAccessToken.middleware";
 import GuestRepository from "./repositories/Guest.repository";
 import GuestService from "./services/Guest.service";
 import AccountRepository from "./repositories/Account.repository";
@@ -80,7 +80,7 @@ const friendshipService = new FriendshipService(
 );
 const accountService = new AccountService(accountRepository);
 
-const authenticateSocketMiddleware = new AuthenticateSocketMiddleware(
+const authenticateSocketMiddleware = new DecryptAccessTokenMiddleware(
     socketService,
     tokenService,
     gameService,
