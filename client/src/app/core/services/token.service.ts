@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {ApiService} from "./api.service";
 import {TokenModel} from "../../models/token.model";
 
+//#TODO move KEYS to Constants File
 const ACCESS_TOKEN_KEY = "access-token";
 const REFRESH_TOKEN_KEY = "refresh-token";
 
@@ -23,7 +24,7 @@ export class TokenService {
     window.localStorage.removeItem(REFRESH_TOKEN_KEY);
     window.localStorage.setItem(REFRESH_TOKEN_KEY, JSON.stringify(token));
     clearTimeout(this.refreshTokenUpdater);
-    this.refreshTokenUpdater = setTimeout(async() => this.saveAccessToken(await this.apiService.updateAccessToken()), 86400000);
+    this.refreshTokenUpdater = setTimeout(async () => this.saveRefreshToken(await this.apiService.updateRefreshToken()), 86400000);
   }
 
   public async getRefreshToken(): Promise<TokenModel> {
@@ -33,11 +34,11 @@ export class TokenService {
     }
     const token: TokenModel = JSON.parse(tokenString);
 
-    if (Date.now() - token.creation > 2505600000) {
+    if (Date.now() - token.timestamp > 2505600000) {
       this.removeTokens();
       throw new Error("RefreshToken outdated");
     }
-    if (Date.now() - token.creation > 864000000) {
+    if (Date.now() - token.timestamp > 864000000) {
       await this.saveRefreshToken(await this.apiService.updateRefreshToken());
     }
     return token;
@@ -47,7 +48,7 @@ export class TokenService {
     window.sessionStorage.removeItem(ACCESS_TOKEN_KEY);
     window.sessionStorage.setItem(ACCESS_TOKEN_KEY, JSON.stringify(token));
     clearTimeout(this.accessTokenUpdater);
-    this.accessTokenUpdater = setTimeout(async() => this.saveAccessToken(await this.apiService.updateAccessToken()), 600000);
+    this.accessTokenUpdater = setTimeout(async () => this.saveAccessToken(await this.apiService.updateAccessToken()), 600000);
   }
 
   public async getAccessToken(): Promise<TokenModel> {
@@ -56,7 +57,7 @@ export class TokenService {
       throw new Error("AccessToken does not exist");
     }
     const token: TokenModel = JSON.parse(tokenString);
-    if (Date.now() - token.creation > 1080000) {
+    if (Date.now() - token.timestamp > 1080000) {
       this.saveAccessToken(await this.apiService.updateAccessToken());
       return this.getAccessToken();
     }

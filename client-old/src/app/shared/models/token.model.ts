@@ -1,5 +1,4 @@
-
-export interface TokenModel{
-  token: string,
+export interface TokenModel {
+  string: string,
   creation: number
 }

@@ -14,8 +14,8 @@ export interface DecryptedToken {
 }
 
 export interface EncryptedToken {
-  token: string;
-  creation: number;
+  string: string;
+  timestamp: number;
 }
 
 export default class TokenService {
@@ -71,7 +71,7 @@ export default class TokenService {
 
     await this.tokenRepository.updateRefreshToken(
       oldToken,
-      newEncryptedToken.token
+      newEncryptedToken.string
     );
 
     return newEncryptedToken;
@@ -141,6 +141,6 @@ export default class TokenService {
   }
 
   private wrapToken(token: string): EncryptedToken {
-    return { token: token, creation: Date.now() - 5000 };
+    return { string: token, timestamp: Date.now() - 5000 };
   }
 }

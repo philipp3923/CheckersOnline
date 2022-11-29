@@ -1,7 +1,7 @@
 import UserService from "../../services/User.service";
 import TokenService, {DecryptedToken} from "../../services/Token.service";
 import AbstractController from "./Abstract.controller";
-import {Request, Response, NextFunction} from "express";
+import {NextFunction, Request, Response} from "express";
 
 export class UpdateAccessTokenController extends AbstractController {
 
@@ -14,10 +14,11 @@ export class UpdateAccessTokenController extends AbstractController {
 
         const accessToken = await this.tokenService.generateAccessToken(decryptedToken);
 
-        res.json({accessToken: accessToken});
+        res.json(accessToken);
     }
 }
-export class UpdateRefreshTokenController extends AbstractController{
+
+export class UpdateRefreshTokenController extends AbstractController {
 
     constructor(private userService: UserService, private tokenService: TokenService) {
         super();
@@ -27,7 +28,7 @@ export class UpdateRefreshTokenController extends AbstractController{
 
         const refreshToken = await this.tokenService.updateRefreshToken(res.locals.refreshToken);
 
-        res.json({refreshToken: refreshToken});
+        res.json(refreshToken);
     }
 }
 

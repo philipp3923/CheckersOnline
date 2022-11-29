@@ -1,4 +1,4 @@
 export interface TokenModel{
-  token: string,
-  creation: number
+  string: string,
+  timestamp: number
 }

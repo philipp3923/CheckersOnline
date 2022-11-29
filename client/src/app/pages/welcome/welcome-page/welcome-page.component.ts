@@ -19,6 +19,7 @@ export class WelcomePageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    return;
     this.loadEchos();
     this.filterInput.pipe(
       skip(1),
