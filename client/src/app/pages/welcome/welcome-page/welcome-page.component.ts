@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Echo} from "../../../models/echo.model";
-import {ApiService} from "../../../core/services/api.service";
+import {ApiOldService} from "../../../core/services/api-old.service";
 import {BehaviorSubject, debounceTime, skip} from "rxjs";
 
 @Component({
@@ -15,7 +15,7 @@ export class WelcomePageComponent implements OnInit {
 
   echos: BehaviorSubject<Echo[]> = new BehaviorSubject<Echo[]>([]);
 
-  constructor(private apiService: ApiService) {
+  constructor(private apiService: ApiOldService) {
   }
 
   ngOnInit(): void {

@@ -7,7 +7,7 @@ import {environment} from '../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class ApiService {
+export class ApiOldService {
 
   private readonly baseUrl: string = environment.api.baseUrl;
 
