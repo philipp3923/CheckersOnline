@@ -7,6 +7,8 @@
     "build": "npx prisma generate && npx prisma db push && tsc -p .",
     "start": "node build/server.js",
     "dev": "tsc -p . -w & nodemon build/server.js",
+    "dev-win": "nodemon build/server.js",
+    "watch-win": "tsc -p . -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

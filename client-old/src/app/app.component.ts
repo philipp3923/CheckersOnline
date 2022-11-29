@@ -8,7 +8,7 @@ import {TokenService} from "./shared/services/token.service";
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  title = 'client';
+  title = 'client-old';
 
   constructor(private apiService: ApiService, private tokenService: TokenService) {
   }
