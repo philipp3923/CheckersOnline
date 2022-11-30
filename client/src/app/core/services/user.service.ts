@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {TokenService} from "./token.service";
 import {ApiService} from "./api.service";
 import {UserModel} from "../../models/user.model";
+import {SocketService} from "./socket.service";
 
 //#TODO move USER_KEY to Constants File
 const USER_KEY = "user";
@@ -11,7 +12,7 @@ const USER_KEY = "user";
 })
 export class UserService {
 
-  constructor(private tokenService: TokenService, private apiService: ApiService) {
+  constructor(private tokenService: TokenService, private apiService: ApiService, private socketService: SocketService) {
     this.auth().then(r => null);
   }
 
@@ -19,8 +20,8 @@ export class UserService {
     try{
       await this.tokenService.saveRefreshToken(await this.apiService.updateRefreshToken());
       await this.tokenService.saveAccessToken(await this.apiService.updateAccessToken());
-    }catch(e){
-      console.log(e);
+      this.socketService.connect((await this.tokenService.getAccessToken()).string);
+    }catch{
       this.tokenService.removeTokens();
       this.logout();
       await this.guest();
@@ -28,6 +29,8 @@ export class UserService {
   }
 
   private logout(){
+    this.tokenService.removeTokens();
+    this.socketService.disconnect();
     window.localStorage.clear();
     window.sessionStorage.clear();
   }
@@ -50,5 +53,6 @@ export class UserService {
     console.log(authResponse);
     await this.tokenService.saveAccessToken(authResponse.accessToken);
     await this.tokenService.saveRefreshToken(authResponse.refreshToken);
+    this.socketService.connect((await this.tokenService.getAccessToken()).string);
   }
 }

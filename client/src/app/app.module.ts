@@ -8,13 +8,15 @@ import {FooterComponent} from './core/footer/footer.component';
 import {HeaderComponent} from './core/header/header.component';
 import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
+import { BoardComponent } from './pages/game/board/board.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PageNotFoundComponent,
     FooterComponent,
-    HeaderComponent
+    HeaderComponent,
+    BoardComponent
   ],
   imports: [
     BrowserModule,
