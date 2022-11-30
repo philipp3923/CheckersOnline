@@ -9,6 +9,7 @@ import {HeaderComponent} from './core/header/header.component';
 import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
 import { BoardComponent } from './pages/game/board/board.component';
+import { PlayComponent } from './pages/play/play/play.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { BoardComponent } from './pages/game/board/board.component';
     PageNotFoundComponent,
     FooterComponent,
     HeaderComponent,
-    BoardComponent
+    BoardComponent,
+    PlayComponent
   ],
   imports: [
     BrowserModule,

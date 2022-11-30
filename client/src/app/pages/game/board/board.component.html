@@ -1,5 +1,5 @@
 <div>
-  <canvas #boardcanvas>
+  <canvas #boardcanvas (mousedown)="onMousedown($event)">
     dis is da board.
   </canvas>
   <div style="display:none;">
