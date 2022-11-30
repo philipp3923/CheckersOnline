@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {io, Socket} from "socket.io-client";
+import GameStateModel from "../../models/gamestate.model";
 
 @Injectable({
   providedIn: 'root'
@@ -7,10 +8,13 @@ import {io, Socket} from "socket.io-client";
 export class SocketService {
 
   private socket: Socket | null = null;
+  private listeners: {event: string, listener: Function}[];
 
-  constructor() { }
+  constructor() {
+    this.listeners = [];
+  }
 
-  public connect(token: string){
+  public connect(token: string) {
     if (this.socket) {
       this.socket.disconnect();
     }
@@ -21,15 +25,47 @@ export class SocketService {
       },
     });
 
-    this.socket.on("welcome", (args)=>console.log(args));
-    setTimeout(() => {
-      this.socket?.emit("ping", {msg: "Hallo!"}, (response: Object) => {
-        console.log(response);
-      });
-    }, 100);
+    this.socket.on("welcome", (args) => console.log(args));
+
+    for(const listener of this.listeners){
+      this.socket.on(listener.event, (args:any) => listener.listener(args));
+    }
   }
 
-  public disconnect(){
+  public createCustomGame(dynamic: boolean, time: number, increment: number, callback: (res:any)=> void) {
+    this.socket?.emit("createGame", {
+      gameType: "CUSTOM",
+      timeType: dynamic ? "DYNAMIC" : "STATIC",
+      time: time,
+      increment: increment
+    }, (res: any) => callback(res));
+  }
+
+  public joinCustomGame(key: string, callback: (res:any)=> void) {
+    this.socket?.emit("joinGame", {key: key}, (res: any) => callback(res));
+  }
+
+  public joinCasualGame(dynamic: boolean, time: number, increment: number, callback: (res:any)=> void) {
+    this.socket?.emit("createGame", {
+      gameType: "CASUAL",
+      timeType: dynamic ? "DYNAMIC" : "STATIC",
+      time: time,
+      increment: increment
+    }, (res: any) => callback(res));
+  }
+
+  public addGameStateListener(listener: (gameState: GameStateModel) => void){
+    this.addListener("gameState", listener);
+  }
+
+  private addListener(event: string, listener: Function){
+    this.listeners.push({event: event, listener: listener});
+    if(this.socket){
+      this.socket.on(event, (args:any) => listener(args));
+    }
+  }
+
+  public disconnect() {
     this.socket?.disconnect();
     this.socket = null;
   }

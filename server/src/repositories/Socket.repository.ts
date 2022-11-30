@@ -44,7 +44,7 @@ export default class SocketRepository {
 
             for (const eventListener of this.eventListeners) {
                 socket.on(eventListener.event, (args, callback) => {
-                    eventListener.fn(<Connection>socket.connection, args, callback)
+                    eventListener.fn(<Connection>socket.connection, args, callback? callback: (args) => null)
                 });
             }
 

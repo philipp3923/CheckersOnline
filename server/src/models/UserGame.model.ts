@@ -69,7 +69,7 @@ export default abstract class UserGameModel extends GameModel {
         if (player === null) {
             throw new Error("Player is null in game")
         }
-        ;
+
 
         if (this.plays.length === 0) {
             selectedPlay.time = 0;

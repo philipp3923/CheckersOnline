@@ -65,7 +65,7 @@ export default class CreateGameEvent extends AbstractEvent {
       return;
     }
 
-    if (!this.socketService.isOnline(args.invitation)) {
+    if (gameType === GameType.FRIEND &&!this.socketService.isOnline(args.invitation)) {
       respond({ success: false, error: "Friend is not online" });
       return;
     }

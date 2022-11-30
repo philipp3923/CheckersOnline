@@ -1,6 +1,44 @@
-<div>
-  <button (click)="switchJoinCasual()">Join Casual Game</button>
-  <button (click)="switchJoinCustom()">Join Custom Game</button>
-  <button (click)="switchCreateCustom()">Create Custom Game</button>
+<app-active-games-overview></app-active-games-overview>
+<div class="box">
+  <button #join_casual [classList]="state==='join_casual' ? 'highlight switch': 'switch'"
+          (click)="switchJoinCasual()">Join Casual Game
+  </button>
+  <button #join_custom [classList]="state==='join_custom' ? 'highlight switch': 'switch'"
+          (click)="switchJoinCustom()">Join Custom Game
+  </button>
+  <button #create_custom [classList]="state==='create_custom' ? 'highlight switch': 'switch'"
+          (click)="switchCreateCustom()">Create Custom Game
+  </button>
+</div>
+<div class="select-box box">
+  <div class="sub-box" *ngIf="state==='join_custom'">
+    <input #game_key placeholder="GAME KEY">
+    <button (click)="enterGame()">Join</button>
+  </div>
+  <div *ngIf="state==='join_casual' || state==='create_custom' ">
+    <div class="sub-box">
+      <button (click)="switchType(0)" [classList]="type===0 ? 'highlight ': ''">
+        Static Game
+      </button>
+      <button (click)="switchType(1)" [classList]="type===1 ? 'highlight ': ''">
+        Dynamic Game
+      </button>
+
+    </div>
+    <div class="slider-box">
+      <div class="text">Time: {{type ? DYN_TIME_MAP[time] : STAT_TIME_MAP[time]}}</div>
+      <input (input)="updateTime()" #time_slider class="slider" type="range" min="0"
+             max="{{STAT_TIME_MAP.length-1}}" value="3">
+    </div>
+    <div class="slider-box" *ngIf="type===1">
+      <div class="text">Increment: {{DYN_INC_MAP[increment]}}</div>
+      <input (input)="updateIncrement()"  #increment_slider class="slider" type="range" min="0" value="2"
+             max="{{DYN_INC_MAP.length-1}}" min="0"
+            >
+    </div>
+    <div class="sub-box">
+      <button (click)="enterGame()">{{state==='join_casual'? "Join" : "Create"}}</button>
+    </div>
+  </div>
 </div>
 

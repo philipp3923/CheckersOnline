@@ -10,6 +10,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
 import { BoardComponent } from './pages/game/board/board.component';
 import { PlayComponent } from './pages/play/play/play.component';
+import { ActiveGamesOverviewComponent } from './pages/play/active-games-overview/active-games-overview.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { PlayComponent } from './pages/play/play/play.component';
     FooterComponent,
     HeaderComponent,
     BoardComponent,
-    PlayComponent
+    PlayComponent,
+    ActiveGamesOverviewComponent
   ],
   imports: [
     BrowserModule,

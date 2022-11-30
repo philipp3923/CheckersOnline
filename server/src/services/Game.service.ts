@@ -8,7 +8,7 @@ import Game, {GameType} from "../models/Game.model";
 import DynamicGame from "../models/DynamicGame.model";
 
 export enum TimeType {
-    STATIC, DYNAMIC, DYNAMIC_INCREMENT
+    STATIC, DYNAMIC
 }
 
 export default class GameService {
@@ -88,9 +88,6 @@ export default class GameService {
                 game = new StaticGame(this, id, key, gameType, time);
                 break
             case TimeType.DYNAMIC:
-                game = new DynamicGame(this, id, key, gameType, time, 0);
-                break
-            case TimeType.DYNAMIC_INCREMENT:
                 if (typeof increment === "undefined") {
                     throw new Error("Increment undefined");
                 }

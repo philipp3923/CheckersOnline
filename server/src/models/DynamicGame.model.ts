@@ -2,15 +2,18 @@ import UserGameModel, {Player} from "./UserGame.model";
 import {Play} from "./Board.model";
 import GameService from "../services/Game.service";
 import {GameType} from "./Game.model";
+import {staticTimes} from "./StaticGame.model";
 
-const dynamicTimes = [{t: 60000, i: 0}, {t: 60000, i: 60000}];
-
+const dynamicTimes: number[] = [10*1000, 30*1000, 60*1000,10*60*1000, 30*60*1000,60*60*1000];
+const dynamicIncrements: number[] = [0,10*1000, 30*1000, 60*1000,10*60*1000];
 export default class DynamicGameModel extends UserGameModel{
+    private increment: number;
 
-    public constructor(gameService: GameService, id: string, key: string, type: GameType, time: number, private increment: number) {
-        super(gameService, id, key, type, time);
+    public constructor(gameService: GameService, id: string, key: string, type: GameType, time: number, increment: number) {
+        super(gameService, id, key, type, dynamicTimes[time]);
 
-        if(!DynamicGameModel.isValidTime(time, increment)){throw new Error("Illegal time provided")};
+        if(!DynamicGameModel.isValidTime(time, increment)){throw new Error("Illegal time provided")}
+        this.increment = dynamicIncrements[increment];
     }
 
     protected updateTime(player: Player, play: Play): void {
@@ -20,12 +23,8 @@ export default class DynamicGameModel extends UserGameModel{
     }
 
     public static isValidTime(time: number, increment: number){
-        for(const dynamicTime of dynamicTimes){
-            if(dynamicTime.t === time && dynamicTime.i === increment){
-                 return true;
-            }
-        }
-        return false;
+        return time < dynamicTimes.length && time >= 0 && increment < dynamicIncrements.length && increment > 0;
+
     }
 
 }
