@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {GameService} from "../../../core/services/game.service";
-import GameStateModel from "../../../models/gamestate.model";
+import GameStateModel, {WaitingStateModel} from "../../../models/gamestate.model";
 import {Observable} from "rxjs";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-active-games-overview',
@@ -10,21 +11,24 @@ import {Observable} from "rxjs";
 })
 export class ActiveGamesOverviewComponent implements OnInit {
 
-  public games: Observable<{[p: string]: GameStateModel | null}>;
-  public infos: {key: string}[];
+  public games: Observable<{ [p: string]: GameStateModel | WaitingStateModel }>;
+  public waitingGames: WaitingStateModel[];
+  public activeGames: GameStateModel[];
 
-  constructor(private gameService: GameService) {
-    this.infos = [];
+  constructor(private gameService: GameService, public router: Router) {
+    this.waitingGames = [];
+    this.activeGames = [];
     this.games = gameService.getGamesObserver();
-    this.games.subscribe({next: dict => {
-      console.log(dict);
-      this.infos = [];
-      for(const key of Object.keys(dict)){
-          let info = {key: key};
-          if(dict[key] != null){
-            //TODO add more information to active games
+    this.games.subscribe({
+      next: dict => {
+        this.waitingGames = [];
+        this.activeGames = [];
+        for (const key of Object.keys(dict)) {
+          if (dict[key].waiting) {
+            this.waitingGames.push(<WaitingStateModel>dict[key]);
+          } else {
+            this.activeGames.push(<GameStateModel>dict[key]);
           }
-          this.infos.push(info);
         }
       }
     })

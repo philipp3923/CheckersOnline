@@ -1,6 +1,7 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {SocketService} from "../../../core/services/socket.service";
 import {GameService} from "../../../core/services/game.service";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -23,7 +24,7 @@ export class PlayComponent implements OnInit {
   DYN_TIME_MAP = ["10s", "30s", "1 Minute", "10 Minutes", "30 Minutes", "1 Hour"];
   DYN_INC_MAP = ["none", "10 Seconds", "30 Seconds", "1 Minute", "10 Minutes"];
 
-  constructor(private socketService: SocketService, private gameService: GameService) {
+  constructor(private socketService: SocketService, private gameService: GameService, private router: Router) {
     this.type = 0;
     this.time = 2;
     this.increment = 2;
@@ -83,14 +84,23 @@ export class PlayComponent implements OnInit {
   }
 
   enterGame() {
+    const timeType = this.type;
+    const time = this.time;
+    const increment = this.increment;
+
     switch (this.state){
       case "join_custom":
-        this.socketService.joinCustomGame(this.game_keyInput?.nativeElement.value ?? "", (res)=>{
+        const key = this.game_keyInput?.nativeElement.value;
+        if(!key) return;
+        this.socketService.joinCustomGame(key, (res)=>{
           console.log(res);
           if(!res.success){
             return;
           }
-          this.gameService.addWaitingGame(res.key);
+          if(!this.gameService.getGame(key)){
+            this.gameService.addWaitingGame(key,0,0,0);
+          }
+          this.router.navigate(["/game/"+key]);
         });
         break
       case "join_casual":
@@ -99,7 +109,8 @@ export class PlayComponent implements OnInit {
           if(!res.success){
             return;
           }
-          this.gameService.addWaitingGame(res.key);
+          this.gameService.addWaitingGame(res.key,timeType,time,increment);
+          this.router.navigate(["/game/"+res.key]);
         });
         break
       case "create_custom":
@@ -108,7 +119,8 @@ export class PlayComponent implements OnInit {
           if(!res.success){
             return;
           }
-          this.gameService.addWaitingGame(res.key);
+          this.gameService.addWaitingGame(res.key,timeType,time,increment);
+          this.router.navigate(["/game/"+res.key]);
         });
         break
     }

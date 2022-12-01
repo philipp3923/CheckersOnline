@@ -54,6 +54,10 @@ export class SocketService {
     }, (res: any) => callback(res));
   }
 
+  public playMove(key: string, index: number){
+    this.socket?.emit("gameTurn", {key: key, index: index}, (res: any) => console.log(res));
+  }
+
   public addGameStateListener(listener: (gameState: GameStateModel) => void){
     this.addListener("gameState", listener);
   }

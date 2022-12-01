@@ -7,6 +7,23 @@ export interface Player {
     time: number
 }
 
+export interface GameState {
+    white: Player,
+    black: Player,
+    key: string,
+    id: string,
+    board: number[][],
+    possibleTurns: Play[],
+    nextColor: number | null,
+    winner: number | null,
+    plays: Play[],
+    timestamp: number,
+    timeType: number,
+    time: number,
+    increment: number,
+
+}
+
 export default abstract class UserGameModel extends GameModel {
     private readonly player: Player[];
     private timeout: any | null;

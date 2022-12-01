@@ -1,6 +1,6 @@
 
 export enum Values {
-    E = 0, BS = 1, WS = -1, BD = 2, WD = -2
+    E = 0, BS = -1, WS = 1, BD = -2, WD = 2
 }
 
 export interface Play {
@@ -17,7 +17,7 @@ export interface Location {
 }
 
 export enum Color{
-    WHITE= -1, BLACK=1
+    WHITE= 1, BLACK=-1
 }
 
 export default class BoardModel {
@@ -155,7 +155,7 @@ export default class BoardModel {
                 this.isCapture(location, target)
             ) {
                 captures.push({
-                    color: this.getValue(location) < 0 ? Color.WHITE : Color.BLACK,
+                    color: this.getValue(location) < 0 ? Color.BLACK : Color.WHITE,
                     start: location,
                     target: target,
                     capture: true
@@ -182,7 +182,7 @@ export default class BoardModel {
                 this.isMove(location, target)
             ) {
                 moves.push({
-                    color: this.getValue(location) < 0 ? Color.WHITE : Color.BLACK,
+                    color: this.getValue(location) < 0 ? Color.BLACK : Color.WHITE,
                     start: location,
                     target: target,
                     capture: false

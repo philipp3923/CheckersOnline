@@ -11,6 +11,7 @@ import {FormsModule} from "@angular/forms";
 import { BoardComponent } from './pages/game/board/board.component';
 import { PlayComponent } from './pages/play/play/play.component';
 import { ActiveGamesOverviewComponent } from './pages/play/active-games-overview/active-games-overview.component';
+import { GameComponent } from './pages/game/game/game.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { ActiveGamesOverviewComponent } from './pages/play/active-games-overview
     HeaderComponent,
     BoardComponent,
     PlayComponent,
-    ActiveGamesOverviewComponent
+    ActiveGamesOverviewComponent,
+    GameComponent
   ],
   imports: [
     BrowserModule,

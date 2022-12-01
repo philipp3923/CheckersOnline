@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {PageNotFoundComponent} from "./pages/page-not-found/page-not-found.component";
 import {BoardComponent} from "./pages/game/board/board.component";
 import {PlayComponent} from "./pages/play/play/play.component";
+import {GameComponent} from "./pages/game/game/game.component";
 
 const routes: Routes = [
   {
@@ -10,8 +11,8 @@ const routes: Routes = [
     loadChildren: () => import('./pages/welcome/welcome.module').then(m => m.WelcomeModule)
   },
   {
-    path: 'game',
-    component: BoardComponent
+    path: 'game/:key',
+    component: GameComponent
   },
   {
     path: 'play',

@@ -54,5 +54,6 @@ export class UserService {
     await this.tokenService.saveAccessToken(authResponse.accessToken);
     await this.tokenService.saveRefreshToken(authResponse.refreshToken);
     this.socketService.connect((await this.tokenService.getAccessToken()).string);
+    this.save(authResponse.user);
   }
 }
