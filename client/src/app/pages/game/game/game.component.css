@@ -1,0 +1,28 @@
+
+.info{
+  background-color: #999999;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.info-waiting{
+  justify-content: center;
+}
+
+.user{
+  margin: 16px;
+  padding: 4px;
+}
+
+.game{
+  height: 100%;
+}
+
+.black {
+  color: black;
+}
+
+.white {
+  color: white;
+}

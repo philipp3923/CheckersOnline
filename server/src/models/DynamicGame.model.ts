@@ -34,7 +34,7 @@ export default class DynamicGameModel extends UserGameModel{
     }
 
     public static isValidTime(time: number, increment: number){
-        return time < dynamicTimes.length && time >= 0 && increment < dynamicIncrements.length && increment > 0;
+        return time < dynamicTimes.length && time >= 0 && increment < dynamicIncrements.length && increment >= 0;
 
     }
 

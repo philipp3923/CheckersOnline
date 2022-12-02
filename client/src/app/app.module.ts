@@ -12,6 +12,7 @@ import { BoardComponent } from './pages/game/board/board.component';
 import { PlayComponent } from './pages/play/play/play.component';
 import { ActiveGamesOverviewComponent } from './pages/play/active-games-overview/active-games-overview.component';
 import { GameComponent } from './pages/game/game/game.component';
+import { TimerComponent } from './pages/game/timer/timer.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { GameComponent } from './pages/game/game/game.component';
     BoardComponent,
     PlayComponent,
     ActiveGamesOverviewComponent,
-    GameComponent
+    GameComponent,
+    TimerComponent
   ],
   imports: [
     BrowserModule,
@@ -30,7 +32,6 @@ import { GameComponent } from './pages/game/game/game.component';
     HttpClientModule,
     FormsModule
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -38,6 +38,7 @@ export default class DecryptAccessTokenMiddleware {
 
         if (connection === null) {
             socket.connection = new Connection(
+                this.gameService,
                 this.socketService,
                 this.friendshipService,
                 decryptedToken

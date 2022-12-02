@@ -18,6 +18,16 @@ export class ActiveGamesOverviewComponent implements OnInit {
   constructor(private gameService: GameService, public router: Router) {
     this.waitingGames = [];
     this.activeGames = [];
+
+    const games = this.gameService.getGames();
+    for (const key of Object.keys(games)) {
+      if (games[key].waiting) {
+        this.waitingGames.push(<WaitingStateModel>games[key]);
+      } else {
+        this.activeGames.push(<GameStateModel>games[key]);
+      }
+    }
+
     this.games = gameService.getGamesObserver();
     this.games.subscribe({
       next: dict => {

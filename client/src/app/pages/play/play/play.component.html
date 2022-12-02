@@ -27,8 +27,8 @@
     </div>
     <div class="slider-box">
       <div class="text">Time: {{type ? DYN_TIME_MAP[time] : STAT_TIME_MAP[time]}}</div>
-      <input (input)="updateTime()" #time_slider class="slider" type="range" min="0"
-             max="{{STAT_TIME_MAP.length-1}}" value="3">
+      <input (input)="updateTime()" #time_slider class="slider" type="range" min="0" value="2"
+             max="{{STAT_TIME_MAP.length-1}}">
     </div>
     <div class="slider-box" *ngIf="type===1">
       <div class="text">Increment: {{DYN_INC_MAP[increment]}}</div>

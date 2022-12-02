@@ -10,9 +10,9 @@ li{
 }
 
 .waiting{
-  background-color: brown;
+  background-color: grey;
 }
 
 .active{
-  background-color: cadetblue;
+  background-color: darkseagreen;
 }

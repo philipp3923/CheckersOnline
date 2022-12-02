@@ -1,7 +1,16 @@
 
+.box{
+  width: 100%;
+  max-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 canvas {
   width: 400px;
   height: 400px;
   margin: 8px;
   border: 1px solid black;
 }
+

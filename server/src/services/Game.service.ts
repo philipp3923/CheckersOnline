@@ -66,7 +66,18 @@ export default class GameService {
         return this.games[key] ?? null;
     }
 
+    public getGamesByUserID(user_id: string): { [key: string]: UserGame }{
+        const result: { [key: string]: UserGame } = {};
+        for(let key of Object.keys(this.games)){
+            if(this.games[key].getBlack()?.id === user_id || this.games[key].getWhite()?.id === user_id){
+                result[key] = this.games[key];
+            }
+        }
+        return result;
+    }
+
     public emitGameState(game: UserGame) {
+        console.log(game.getKey());
         this.socketService.sendIn(game.getKey(), "gameState", game.getGameState());
     }
 
@@ -88,6 +99,7 @@ export default class GameService {
                 game = new StaticGame(this, id, key, gameType, time);
                 break
             case TimeType.DYNAMIC:
+
                 if (typeof increment === "undefined") {
                     throw new Error("Increment undefined");
                 }

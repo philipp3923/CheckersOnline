@@ -9,9 +9,11 @@ export class SocketService {
 
   private socket: Socket | null = null;
   private listeners: {event: string, listener: Function}[];
+  private pendingEmits: {event: string, args: any, callback?: Function}[];
 
   constructor() {
     this.listeners = [];
+    this.pendingEmits = [];
   }
 
   public connect(token: string) {
@@ -25,11 +27,17 @@ export class SocketService {
       },
     });
 
-    this.socket.on("welcome", (args) => console.log(args));
-
     for(const listener of this.listeners){
       this.socket.on(listener.event, (args:any) => listener.listener(args));
     }
+
+    for(const pendingEmit of this.pendingEmits){
+      this.socket.emit(pendingEmit.event, pendingEmit.args, (args:any)=> {
+        pendingEmit.callback ? pendingEmit.callback(args) : null;
+      });
+    }
+
+    this.clearPendingEmits();
   }
 
   public createCustomGame(dynamic: boolean, time: number, increment: number, callback: (res:any)=> void) {
@@ -42,11 +50,11 @@ export class SocketService {
   }
 
   public joinCustomGame(key: string, callback: (res:any)=> void) {
-    this.socket?.emit("joinGame", {key: key}, (res: any) => callback(res));
+    this.emit("joinGame", {key: key}, (res: any) => callback(res));
   }
 
   public joinCasualGame(dynamic: boolean, time: number, increment: number, callback: (res:any)=> void) {
-    this.socket?.emit("createGame", {
+    this.emit("createGame", {
       gameType: "CASUAL",
       timeType: dynamic ? "DYNAMIC" : "STATIC",
       time: time,
@@ -55,11 +63,15 @@ export class SocketService {
   }
 
   public playMove(key: string, index: number){
-    this.socket?.emit("gameTurn", {key: key, index: index}, (res: any) => console.log(res));
+    this.emit("gameTurn", {key: key, index: index}, (res: any) => console.log(res));
   }
 
   public addGameStateListener(listener: (gameState: GameStateModel) => void){
     this.addListener("gameState", listener);
+  }
+
+  public addWelcomeListener(listener: (res: any) => void){
+    this.addListener("welcome", listener);
   }
 
   private addListener(event: string, listener: Function){
@@ -67,6 +79,18 @@ export class SocketService {
     if(this.socket){
       this.socket.on(event, (args:any) => listener(args));
     }
+  }
+
+  private emit(event: string, args: any, callback?: Function){
+    if(this.socket){
+      this.socket.emit(event, args, callback ? (args: any) => callback(args) : undefined);
+    }else{
+      this.pendingEmits.push({event: event, args: args, callback: callback});
+    }
+  }
+
+  public clearPendingEmits(){
+    this.pendingEmits = [];
   }
 
   public disconnect() {

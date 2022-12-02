@@ -3,6 +3,8 @@ import {SocketService} from "./socket.service";
 import GameStateModel, {WaitingStateModel} from "../../models/gamestate.model";
 import {Observable, of, Subject} from "rxjs";
 
+const GAMES_KEY = "games";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -17,6 +19,7 @@ export class GameService {
     this.games_subjects = {};
     this.gamesSubject = new Subject<{[p: string]: GameStateModel | WaitingStateModel}>();
     this.socketService.addGameStateListener((gameState: GameStateModel)=>this.updateGameState(gameState));
+    this.socketService.addWelcomeListener((res:any)=> this.load(res.games));
   }
 
   public addWaitingGame(key: string, timeType: number, time: number, increment: number){
@@ -39,6 +42,10 @@ export class GameService {
     return this.games[key] ?? null;
   }
 
+  public getGames(){
+    return this.games;
+  }
+
   private updateGameState(gameState: GameStateModel) {
     this.games[gameState.key] = gameState;
     this.gamesSubject.next(this.games);
@@ -46,5 +53,21 @@ export class GameService {
       this.games_subjects[gameState.key] = new Subject<GameStateModel | WaitingStateModel>();
     }
     this.games_subjects[gameState.key].next(gameState);
+  }
+
+  /**
+   * useless
+   * @private
+   */
+  private save(){
+    window.sessionStorage.setItem(GAMES_KEY, JSON.stringify(this.games));
+  }
+
+  private load(games: { [key: string]: GameStateModel | WaitingStateModel }){
+    this.games = games;
+    for(let key of Object.keys(this.games)){
+      this.games_subjects[key] = new Subject<GameStateModel | WaitingStateModel>();
+    }
+    this.gamesSubject.next(this.games);
   }
 }

@@ -1,9 +1,12 @@
 <ul>
   <li class="waiting" *ngFor="let info of this.waitingGames; index as i">{{info.key}}, {{info.timeType ? "DYNAMIC" :
     "STATIC"}}
-    <button (click)="router.navigate(['/game/'+info.key])"></button>
+    <button>Leave</button>
+    <button (click)="router.navigate(['/game/'+info.key])">Play</button>
   </li>
-  <li class="active" *ngFor="let info of this.activeGames; index as i">{{info.key}}
-    <button (click)="router.navigate(['/game/'+info.key])"></button>
+  <li class="active" *ngFor="let info of this.activeGames; index as i">
+    <div>{{info.key}}</div>
+    <button>Leave</button>
+    <button (click)="router.navigate(['/game/'+info.key])">Play</button>
   </li>
 </ul>

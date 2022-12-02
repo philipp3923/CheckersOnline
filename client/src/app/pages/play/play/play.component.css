@@ -1,21 +1,21 @@
-.highlight{
+.highlight {
   background-color: aqua;
 }
 
-.switch{
+.switch {
   padding: 8px;
   border: none;
   margin: 8px;
 }
 
-input{
+input {
   text-transform: uppercase;
   padding: 2px;
   margin: 8px;
   text-align: center;
 }
 
-.box{
+.box {
   width: calc(100% - 32px);
   display: flex;
   justify-content: center;
@@ -25,21 +25,21 @@ input{
   padding: 8px;
 }
 
-.select-box{
+.select-box {
   flex-direction: column;
 }
 
-.slider{
+.slider {
   width: 50%;
 }
 
-.sub-box{
+.sub-box {
   width: 100%;
   display: flex;
   justify-content: center;
 }
 
-.slider-box{
+.slider-box {
   width: 100%;
   display: flex;
   align-items: center;

@@ -3,14 +3,15 @@ import SocketService, {Socket} from "../services/Socket.service";
 import UserGameModel from "./UserGame.model";
 import GameModel from "./Game.model";
 import FriendshipService from "../services/Friendship.service";
+import GameService from "../services/Game.service";
 
 export default class ConnectionModel {
     private readonly sockets: Socket[];
     private readonly games: {[id: string]: GameModel};
 
-    constructor(private socketService: SocketService, private friendshipService: FriendshipService, private decryptedToken: DecryptedToken) {
+    constructor(private gameService: GameService, private socketService: SocketService, private friendshipService: FriendshipService, private decryptedToken: DecryptedToken) {
         this.sockets = [];
-        this.games = {};
+        this.games = this.gameService.getGamesByUserID(this.decryptedToken.id);
     }
 
     public async goOnline(){
@@ -32,8 +33,18 @@ export default class ConnectionModel {
     public async addSocket(socket: Socket){
         this.sockets.push(socket);
         socket.join(this.decryptedToken.id);
+        const states: any = {};
+        for(let key of Object.keys(this.games)){
+            states[key] = this.games[key].getGameState();
+            if(states[key].white === null || states[key].black === null){
+                states[key] = {key: key, timeType: states[key].timeType, time: states[key].time, increment: states[key].increment, waiting: true};
+            }
+            socket.join(key);
+        }
         if(this.decryptedToken.role !== Role.GUEST){
-            socket.send("welcome", {friends: await this.friendshipService.getFriends(this.decryptedToken.id)});
+            socket.send("welcome", {friends: await this.friendshipService.getFriends(this.decryptedToken.id), games : states});
+        }else{
+            socket.send("welcome", {games: states});
         }
     }
 
