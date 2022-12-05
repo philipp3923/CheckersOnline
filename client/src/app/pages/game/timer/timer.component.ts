@@ -1,21 +1,68 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterContentInit, AfterViewInit, Component, Input, OnInit} from '@angular/core';
+import GameStateModel from "../../../models/gamestate.model";
+import {Observable} from "rxjs";
+import {GameService} from "../../../core/services/game.service";
 
 @Component({
   selector: 'app-timer',
   templateUrl: './timer.component.html',
   styleUrls: ['./timer.component.css']
 })
-export class TimerComponent implements OnInit {
+export class TimerComponent implements OnInit, AfterContentInit {
   time: string;
   private active: boolean;
   private interval: any;
 
-  constructor() {
+  @Input() gameKey: string |undefined;
+  @Input() colorToDisplay: number |undefined;
+
+  constructor(private gameService: GameService) {
     this.time ="";
     this.active = false;
   }
 
+  ngAfterContentInit() {
+    if(!this.gameKey ||!this.colorToDisplay){
+      return;
+    }
+    const game = this.gameService.getGame(this.gameKey);
+    const observable = this.gameService.getGameObserver(this.gameKey);
+    if(!game || !observable){
+      throw new Error("Game with given key does not exist");
+    }
+
+    if(!game.waiting){
+      this.observeGame(this.colorToDisplay, game);
+    }
+    observable.subscribe((gameState) => {
+      if(!game.waiting){
+        this.observeGame(this.colorToDisplay ?? 0, game);
+      }
+    });
+
+  }
+
+  private observeGame(color: number, gameState: GameStateModel){
+    const delta = Date.now() - gameState.timestamp;
+    if(this.colorToDisplay === 1){
+      if(gameState.plays.length > 0 && gameState.nextColor === 1){
+        this.countDown(gameState.white.time -delta);
+      }
+      this.setTime(gameState.white.time);
+    }
+    if(this.colorToDisplay === -1){
+      if(gameState.plays.length > 0 && gameState.nextColor === -1){
+        this.countDown(gameState.black.time -delta);
+      }
+      this.setTime(gameState.black.time);
+    }
+  }
+
   public setTime(timeInMilliseconds: number){
+    if(timeInMilliseconds <= 0){
+      this.time = "00:00,00";
+    }
+
     const days = Math.floor(timeInMilliseconds / 86400000);
     const hours =  Math.floor((timeInMilliseconds / 3600000))-days*24;
     const minutes = Math.floor((timeInMilliseconds / 60000))-hours*60;

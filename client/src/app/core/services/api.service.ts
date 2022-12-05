@@ -40,6 +40,14 @@ export class ApiService {
     return (await this.post<TokenModel>(await this.authTypeRefresh(), "auth/token/refresh", null));
   }
 
+  public async loginUser(username: string, password: string){
+    return (await this.post<AuthResponse>(await this.authTypeNone(), "auth/login", {username: username, password: password}));
+  }
+
+  public async registerUser(email: string, username: string, password: string){
+    return (await this.post(await this.authTypeNone(), "auth/register", {email: email, username: username, password: password}));
+  }
+
   public async authGuest(): Promise<AuthResponse> {
     return (await this.post<AuthResponse>(await this.authTypeNone(), "auth/guest", null));
   }

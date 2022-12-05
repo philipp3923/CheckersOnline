@@ -4,6 +4,8 @@ import {PageNotFoundComponent} from "./pages/page-not-found/page-not-found.compo
 import {BoardComponent} from "./pages/game/board/board.component";
 import {PlayComponent} from "./pages/play/play/play.component";
 import {GameComponent} from "./pages/game/game/game.component";
+import {ProfileComponent} from "./pages/profile/profile/profile.component";
+import {AuthComponent} from "./pages/profile/auth/auth.component";
 
 const routes: Routes = [
   {
@@ -17,6 +19,18 @@ const routes: Routes = [
   {
     path: 'play',
     component: PlayComponent
+  },
+  {
+    path: 'profile',
+    component: ProfileComponent
+  },
+  {
+    path: 'login',
+    component: AuthComponent
+  },
+  {
+    path: 'register',
+    component: AuthComponent
   },
   {
     path: '404',

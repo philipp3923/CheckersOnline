@@ -1,9 +1,14 @@
 <div class="footer">
-  <ul>
-    <li><a routerLink="/popular" routerLinkActive="active">Popular</a></li>
-    <li><a routerLink="/league" routerLinkActive="active">League</a></li>
+  <ul class="list">
+    <ul>
+      <li><a routerLink="/popular" routerLinkActive="active">Popular</a></li>
+      <li><a routerLink="/league" routerLinkActive="active">League</a></li>
+    </ul>
     <li><a routerLink="/play" routerLinkActive="active">Play</a></li>
-    <li><a routerLink="/friends" routerLinkActive="active">Friends</a></li>
-    <li><a routerLink="/profile" routerLinkActive="active">Profile</a></li>
+    <ul>
+      <li *ngIf="!userService.isUser()"><a routerLink="/login" routerLinkActive="active">Login</a></li>
+      <li *ngIf="userService.isUser()"><a routerLink="/friends" routerLinkActive="active">Friends</a></li>
+      <li *ngIf="userService.isUser()"><a routerLink="/profile" routerLinkActive="active">Profile</a></li>
+    </ul>
   </ul>
 </div>

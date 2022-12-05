@@ -120,7 +120,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
   }
 
   onMousedown($event: MouseEvent) {
-    this.boundingRect = <DOMRect>this.boundingRect;
+    this.boundingRect = <DOMRect>this.canvas?.nativeElement.getBoundingClientRect();
     if (this.animation) {
       return;
     }

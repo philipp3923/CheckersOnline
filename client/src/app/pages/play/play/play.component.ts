@@ -90,7 +90,7 @@ export class PlayComponent implements OnInit {
 
     switch (this.state){
       case "join_custom":
-        const key = this.game_keyInput?.nativeElement.value;
+        const key = this.game_keyInput?.nativeElement.value.toUpperCase();
         if(!key) return;
         this.socketService.joinCustomGame(key, (res)=>{
           console.log(res);

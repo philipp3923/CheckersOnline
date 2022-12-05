@@ -57,7 +57,6 @@ export class GameComponent implements OnInit, AfterViewInit {
         if (this.game) {
           this.init(gameKey);
           clearInterval(checkGameLoadedInterval);
-
         }
       }, 50);
     });

@@ -16,3 +16,18 @@ li{
 .active{
   background-color: darkseagreen;
 }
+
+.info{
+  margin: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.timer-box{
+  display: flex;
+}
+
+.timer-sub{
+  width: 128px;
+}

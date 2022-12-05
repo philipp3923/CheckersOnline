@@ -1,8 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {GameService} from "../../../core/services/game.service";
 import GameStateModel, {WaitingStateModel} from "../../../models/gamestate.model";
 import {Observable} from "rxjs";
 import {Router} from "@angular/router";
+import {TimerComponent} from "../../game/timer/timer.component";
+import {UserService} from "../../../core/services/user.service";
 
 @Component({
   selector: 'app-active-games-overview',
@@ -14,8 +16,9 @@ export class ActiveGamesOverviewComponent implements OnInit {
   public games: Observable<{ [p: string]: GameStateModel | WaitingStateModel }>;
   public waitingGames: WaitingStateModel[];
   public activeGames: GameStateModel[];
+  @ViewChild("timerComponent") public timer: TimerComponent | undefined;
 
-  constructor(private gameService: GameService, public router: Router) {
+  constructor(private gameService: GameService, public router: Router, private userService: UserService) {
     this.waitingGames = [];
     this.activeGames = [];
 
@@ -42,6 +45,23 @@ export class ActiveGamesOverviewComponent implements OnInit {
         }
       }
     })
+  }
+
+  public getPlayerTerm(gameState: GameStateModel, color: number){
+    let player = null;
+    if(color === 1){
+      player = gameState.white;
+    } else if(color === -1){
+      player = gameState.black;
+    }else{
+      throw new Error("Illegal color submitted");
+    }
+
+    if(player.id === this.userService.getUser().id){
+      return "YOU"
+    }else{
+      return "GUEST"
+    }
   }
 
   ngOnInit(): void {
