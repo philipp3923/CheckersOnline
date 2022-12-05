@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {io, Socket} from "socket.io-client";
 import GameStateModel from "../../models/gamestate.model";
+import {Subject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -8,12 +9,23 @@ import GameStateModel from "../../models/gamestate.model";
 export class SocketService {
 
   private socket: Socket | null = null;
-  private listeners: {event: string, listener: Function}[];
+  private connected: Subject<boolean>;
+  private readonly listeners: {event: string, listener: Function}[];
   private pendingEmits: {event: string, args: any, callback?: Function}[];
 
   constructor() {
     this.listeners = [];
     this.pendingEmits = [];
+    this.connected = new Subject();
+    this.connected.next(this.isConnected());
+  }
+
+  public isConnected(){
+    return !!this.socket?.connected;
+  }
+
+  public isConnectedObserver(){
+    return this.connected.asObservable();
   }
 
   public connect(token: string) {
@@ -26,6 +38,9 @@ export class SocketService {
         token: token
       },
     });
+    this.socket.on("connect", () => this.connected.next(true));
+    this.socket.on("disconnect", () => this.connected.next(false));
+
 
     for(const listener of this.listeners){
       this.socket.on(listener.event, (args:any) => listener.listener(args));
@@ -95,6 +110,7 @@ export class SocketService {
 
   public disconnect() {
     this.socket?.disconnect();
+    this.connected.next(false);
     this.socket = null;
   }
 }

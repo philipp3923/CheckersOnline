@@ -15,6 +15,8 @@ import { GameComponent } from './pages/game/game/game.component';
 import { TimerComponent } from './pages/game/timer/timer.component';
 import { ProfileComponent } from './pages/profile/profile/profile.component';
 import { AuthComponent } from './pages/profile/auth/auth.component';
+import { DisconnectedComponent } from './pages/disconnected/disconnected/disconnected.component';
+import { UserPropertyComponent } from './pages/profile/user-property/user-property.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { AuthComponent } from './pages/profile/auth/auth.component';
     GameComponent,
     TimerComponent,
     ProfileComponent,
-    AuthComponent
+    AuthComponent,
+    DisconnectedComponent,
+    UserPropertyComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,20 @@
+<div class="property-box">
+  <div class="text-display">
+    <div class="text-field">{{name}}</div>
+    <div class="flex-row">
+      <div class="text-field">{{value}}</div>
+      <button (click)="switchEdit()">EDIT</button>
+    </div>
+  </div>
+  <form *ngIf="edit" class="form-display" (submit)="update()">
+    <div>
+      <div *ngIf="!inputsMatch">
+        {{name}} does not match.
+      </div>
+      <input type="{{name.toLowerCase()}}" #input placeholder="Enter a new {{name}}">
+      <input type="{{name.toLowerCase()}}" (input)="compareInputs()" #input_repeat *ngIf="repetitionOnUpdate"
+             placeholder="Repeat new {{name}}">
+    </div>
+    <button>OK</button>
+  </form>
+</div>
