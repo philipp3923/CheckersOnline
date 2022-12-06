@@ -11,8 +11,11 @@
       <div *ngIf="!inputsMatch">
         {{name}} does not match.
       </div>
-      <input type="{{name.toLowerCase()}}" #input placeholder="Enter a new {{name}}">
-      <input type="{{name.toLowerCase()}}" (input)="compareInputs()" #input_repeat *ngIf="repetitionOnUpdate"
+      <input autocomplete="section-{{name.toLowerCase()}} old-{{name.toLowerCase()}}" type="{{name.toLowerCase()}}" #input_old
+             *ngIf="needsOldValue" placeholder="Enter old {{name}}">
+      <input autocomplete="section-{{name.toLowerCase()}} new-{{name.toLowerCase()}}" type="{{name.toLowerCase()}}" #input placeholder="Enter a new {{name}}">
+      <input autocomplete="section-{{name.toLowerCase()}} new-{{name.toLowerCase()}}" type="{{name.toLowerCase()}}"
+      (input)="compareInputs()" #input_repeat *ngIf="repetitionOnUpdate"
              placeholder="Repeat new {{name}}">
     </div>
     <button>OK</button>

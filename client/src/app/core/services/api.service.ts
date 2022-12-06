@@ -3,6 +3,8 @@ import {TokenModel} from "../../models/token.model";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {catchError, firstValueFrom, throwError} from "rxjs";
 import {AuthResponse} from "../../models/auth-response.model";
+import {UserModel} from "../../models/user.model";
+import UserInfoModel from "../../models/user-info.model";
 
 const API = "/api/";
 
@@ -40,6 +42,26 @@ export class ApiService {
     return (await this.post<TokenModel>(await this.authTypeRefresh(), "auth/token/refresh", null));
   }
 
+  public async changeUsername(user_id : string, username: string){
+    return (await this.patch(await this.authTypeAccess(), `/user/${user_id}/username`, {username: username}));
+  }
+
+  public async changeEmail(user_id : string, email: string){
+    return (await this.patch(await this.authTypeAccess(), `/user/${user_id}/email`, {email: email}));
+  }
+
+  public async changePassword(user_id : string, password_old: string, password_new: string){
+    return (await this.patch(await this.authTypeAccess(), `/user/${user_id}/password`, {password_old: password_old, password_new : password_new}));
+  }
+
+  public async getUser(user_id: string){
+    return (await this.get<UserInfoModel>(await this.authTypeNone(), `user/${user_id}`));
+  }
+
+  public async getUserEmail(user_id: string){
+    return (await this.get<{email: string}>(await this.authTypeAccess(), `user/${user_id}/email`));
+  }
+
   public async loginUser(username: string, password: string){
     return (await this.post<AuthResponse>(await this.authTypeNone(), "auth/login", {username: username, password: password}));
   }
@@ -70,6 +92,13 @@ export class ApiService {
 
   private async post<T>(headers: HttpHeaders, url: string, body?: any): Promise<T> {
     return firstValueFrom(this.http.post<T>(API + url, body, {headers: headers}).pipe(catchError((err: any) => {
+      console.log('In Service:', err);
+      return throwError(err);
+    })));
+  }
+
+  private async patch<T>(headers: HttpHeaders, url: string, body?: any): Promise<T> {
+    return firstValueFrom(this.http.patch<T>(API + url, body, {headers: headers}).pipe(catchError((err: any) => {
       console.log('In Service:', err);
       return throwError(err);
     })));

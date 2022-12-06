@@ -4,6 +4,7 @@ import {ApiService} from "./api.service";
 import {UserModel} from "../../models/user.model";
 import {SocketService} from "./socket.service";
 import {TokenModel} from "../../models/token.model";
+import {retry} from "rxjs";
 
 //#TODO move USER_KEY to Constants File
 const USER_KEY = "user";
@@ -73,5 +74,47 @@ export class UserService {
     await this.tokenService.saveRefreshToken(authResponse.refreshToken);
     this.socketService.connect((await this.tokenService.getAccessToken()).string);
     this.save(authResponse.user);
+  }
+
+  public async getInfo(): Promise<{id: string, username: string, email: string}>{
+    const id = this.getUser().id;
+    const publicInfo = await this.apiService.getUser(id);
+    const email = await this.apiService.getUserEmail(id);
+    return {id: id, username: publicInfo.username, email: email.email};
+  }
+
+  public async changePassword(oldPassword: string, newPassword: string): Promise<boolean>{
+    const id = this.getUser().id;
+    try{
+      await this.apiService.changePassword(id, oldPassword, newPassword);
+      return true;
+    }
+    catch (e) {
+      return false;
+    }
+  }
+
+  public async changeUsername(username: string): Promise<boolean>{
+    const id = this.getUser().id;
+    try{
+      await this.apiService.changeUsername(id, username);
+      return true;
+    }
+    catch (e) {
+      console.log(e);
+      return false;
+    }
+  }
+
+  public async changeEmail(email: string): Promise<boolean>{
+    const id = this.getUser().id;
+    try{
+      await this.apiService.changeEmail(id, email);
+      return true;
+    }
+    catch (e) {
+      console.log(e);
+      return false;
+    }
   }
 }
