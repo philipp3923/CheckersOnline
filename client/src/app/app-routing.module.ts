@@ -1,13 +1,13 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {PageNotFoundComponent} from "./pages/page-not-found/page-not-found.component";
-import {BoardComponent} from "./pages/game/board/board.component";
 import {PlayComponent} from "./pages/play/play/play.component";
 import {GameComponent} from "./pages/game/game/game.component";
 import {ProfileComponent} from "./pages/profile/profile/profile.component";
 import {AuthComponent} from "./pages/profile/auth/auth.component";
 import {DisconnectedComponent} from "./pages/disconnected/disconnected/disconnected.component";
-import {PlayerComponent} from "./pages/player/player/player.component";
+import {PlayerDetailComponent} from "./pages/player/player-detail/player-detail.component";
+import {PlayerSearchComponent} from "./pages/player/player-search/player-search.component";
 
 const routes: Routes = [
   {
@@ -24,11 +24,11 @@ const routes: Routes = [
   },
   {
     path: 'player/:id',
-    component: PlayerComponent
+    component: PlayerDetailComponent
   },
   {
     path: 'player',
-    component: PlayerComponent
+    component: PlayerSearchComponent
   },
   {
     path: 'profile',
