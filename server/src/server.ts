@@ -52,13 +52,7 @@ const friendshipRepository = new FriendshipRepository(
     userRepository
 );
 
-const userService = new UserService(
-    userRepository,
-    encryptionRepository,
-    identityRepository,
-    accountRepository,
-    friendshipRepository
-);
+
 const tokenService = new TokenService(
     tokenRepository,
     accountRepository,
@@ -79,7 +73,14 @@ const friendshipService = new FriendshipService(
     socketService
 );
 const accountService = new AccountService(accountRepository);
-
+const userService = new UserService(
+    userRepository,
+    encryptionRepository,
+    identityRepository,
+    accountRepository,
+    friendshipService,
+    socketService
+);
 const authenticateSocketMiddleware = new DecryptAccessTokenMiddleware(
     socketService,
     tokenService,

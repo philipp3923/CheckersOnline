@@ -7,6 +7,7 @@ import {GameComponent} from "./pages/game/game/game.component";
 import {ProfileComponent} from "./pages/profile/profile/profile.component";
 import {AuthComponent} from "./pages/profile/auth/auth.component";
 import {DisconnectedComponent} from "./pages/disconnected/disconnected/disconnected.component";
+import {PlayerComponent} from "./pages/player/player/player.component";
 
 const routes: Routes = [
   {
@@ -20,6 +21,14 @@ const routes: Routes = [
   {
     path: 'play',
     component: PlayComponent
+  },
+  {
+    path: 'player/:id',
+    component: PlayerComponent
+  },
+  {
+    path: 'player',
+    component: PlayerComponent
   },
   {
     path: 'profile',

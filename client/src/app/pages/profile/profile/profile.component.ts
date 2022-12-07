@@ -58,4 +58,12 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  async deleteUser(password: string) {
+    const deleteSuccess = await this.userService.deleteUser(password);
+    if(deleteSuccess){
+
+    }else{
+      //TODO show error message
+    }
+  }
 }

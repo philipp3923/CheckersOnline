@@ -1,9 +1,9 @@
 import {Server, Socket} from "socket.io";
-import {AuthenticatableSocket, SocketEventListener,Socket as ConnectionSocket} from "../services/Socket.service";
+import {AuthenticatableSocket, Socket as ConnectionSocket, SocketEventListener} from "../services/Socket.service";
 import GameRepository from "./Game.repository";
 import Connection from "../models/Connection.model";
 
-export interface ExtendedAuthenticatedSocket extends Socket{
+export interface ExtendedAuthenticatedSocket extends Socket {
     connection?: Connection,
 }
 
@@ -34,17 +34,18 @@ export default class SocketRepository {
             }
 
             const connectionSocket: ConnectionSocket = {
-              id: socket.id,
-              join: (room: string) => socket.join(room),
-              leave: (room: string)=> socket.leave(room),
-              send: (event: string, msg: any) => socket.emit(event, msg)
+                id: socket.id,
+                join: (room: string) => socket.join(room),
+                leave: (room: string) => socket.leave(room),
+                send: (event: string, msg: any) => socket.emit(event, msg),
+                disconnect: () => socket.disconnect()
             };
 
             await socket.connection.addSocket(connectionSocket);
 
             for (const eventListener of this.eventListeners) {
                 socket.on(eventListener.event, (args, callback) => {
-                    eventListener.fn(<Connection>socket.connection, args, callback? callback: (args) => null)
+                    eventListener.fn(<Connection>socket.connection, args, callback ? callback : (args) => null)
                 });
             }
 
@@ -64,12 +65,12 @@ export default class SocketRepository {
         return this.connections[id] ?? null;
     }
 
-    public emitIn(room: string, event: string, msg: any){
+    public emitIn(room: string, event: string, msg: any) {
         this.io.in(room).emit(event, msg);
     }
 
-    public emitTo(id: string, event: string, msg: any){
-        this.io.to(id).emit(event,msg);
+    public emitTo(id: string, event: string, msg: any) {
+        this.io.to(id).emit(event, msg);
     }
 
 }

@@ -17,7 +17,8 @@ export interface Socket{
     id: string,
     send: (event: string, msg: any) => void,
     join: (room: string) => void,
-    leave: (room: string) => void
+    leave: (room: string) => void,
+    disconnect: () => void
 }
 
 export interface SocketEventListener{

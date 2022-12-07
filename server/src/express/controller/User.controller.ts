@@ -1,6 +1,7 @@
 import AbstractController from "./Abstract.controller";
 import UserService from "../../services/User.service";
 import {NextFunction, Request, Response} from "express";
+import {DecryptedToken} from "../../services/Token.service";
 
 export default class UserController extends AbstractController {
     constructor(private userService: UserService) {
@@ -27,9 +28,10 @@ export default class UserController extends AbstractController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const password: string = req.body.password;
+        const password = req.query.password;
+        const decryptedToken: DecryptedToken = {id: res.locals.id, role: res.locals.role};
 
-        if (!password) {
+        if (!password || typeof password !== "string") {
             res.status(406).send();
             return;
         }
@@ -39,7 +41,7 @@ export default class UserController extends AbstractController {
             return;
         }
 
-        await this.userService.delete(res.locals.id);
+        await this.userService.delete(decryptedToken);
 
         res.status(204).send();
     }

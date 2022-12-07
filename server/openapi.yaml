@@ -390,19 +390,12 @@ paths:
             type: string
           required: true
           description: ID of the user
-      requestBody:
-        description: delete information
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - password
-              properties:
-                password:
-                  example: "123456"
-                  type: string
+        - in: query
+          name: password
+          schema:
+            type: string
+          required: true
+          description: Password of the user
       responses:
         '201':
           description: user deleted

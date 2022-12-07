@@ -70,6 +70,19 @@ export class ApiService {
     return (await this.post(await this.authTypeNone(), "auth/register", {email: email, username: username, password: password}));
   }
 
+  public async deleteUser(user_id: string, password: string){
+    return (await this.delete(await this.authTypeAccess(), `user/${user_id}?password=${password}`));
+
+  }
+
+  public async findUserByUsername(username: string){
+    return (await this.get<{user: UserInfoModel[] }>(await this.authTypeAccess(), `user?username=${username}`));
+  }
+
+  public async findUserByEmail(email: string){
+    return (await this.get<{user: UserInfoModel[] }>(await this.authTypeAccess(), `user?email=${email}`));
+  }
+
   public async authGuest(): Promise<AuthResponse> {
     return (await this.post<AuthResponse>(await this.authTypeNone(), "auth/guest", null));
   }
@@ -99,6 +112,13 @@ export class ApiService {
 
   private async patch<T>(headers: HttpHeaders, url: string, body?: any): Promise<T> {
     return firstValueFrom(this.http.patch<T>(API + url, body, {headers: headers}).pipe(catchError((err: any) => {
+      console.log('In Service:', err);
+      return throwError(err);
+    })));
+  }
+
+  private async delete<T>(headers: HttpHeaders, url: string): Promise<T> {
+    return firstValueFrom(this.http.delete<T>(API + url, {headers: headers}).pipe(catchError((err: any) => {
       console.log('In Service:', err);
       return throwError(err);
     })));

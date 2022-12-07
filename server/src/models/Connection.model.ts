@@ -6,7 +6,7 @@ import FriendshipService from "../services/Friendship.service";
 import GameService from "../services/Game.service";
 
 export default class ConnectionModel {
-    private readonly sockets: Socket[];
+    private sockets: Socket[];
     private readonly games: {[id: string]: GameModel};
 
     constructor(private gameService: GameService, private socketService: SocketService, private friendshipService: FriendshipService, private decryptedToken: DecryptedToken) {
@@ -88,6 +88,14 @@ export default class ConnectionModel {
 
     public send(event: string, msg: any){
         this.socketService.sendTo(this.decryptedToken.id,event,msg);
+    }
+
+    public async disconnectAllSockets(){
+        for(let socket of this.sockets){
+            socket.disconnect();
+        }
+        this.sockets = [];
+        await this.socketService.removeConnection(this);
     }
 
 

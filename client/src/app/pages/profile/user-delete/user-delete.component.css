@@ -1,0 +1,42 @@
+
+.text-display{
+  justify-content: center;
+}
+
+.form-display{
+  justify-content: space-between;
+}
+
+.text-display, .form-display{
+  display: flex;
+  width: 100%;
+  max-width: 400px;
+}
+
+input, button, .text-field{
+  padding: 4px;
+  margin: 4px;
+}
+
+input{
+  flex-grow: 1;
+}
+
+.text-field{
+  display: flex;
+  align-items: center;
+  align-content: center;
+}
+
+.flex-row{
+  display: flex;
+}
+
+.property-box{
+  margin-top: 16px;
+  width: 100%;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}

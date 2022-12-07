@@ -117,4 +117,18 @@ export class UserService {
       return false;
     }
   }
+
+  public async deleteUser(password: string){
+    const id = this.getUser().id;
+    try{
+      await this.apiService.deleteUser(id, password);
+      this.logout();
+      await this.guest();
+      return true;
+    }
+    catch (e) {
+      console.log(e);
+      return false;
+    }
+  }
 }

@@ -3,6 +3,9 @@ import EncryptionRepository from "../repositories/Encryption.repository";
 import IdentityRepository from "../repositories/Identity.repository";
 import AccountRepository from "../repositories/Account.repository";
 import FriendshipRepository from "../repositories/Friendship.repository";
+import {DecryptedToken} from "./Token.service";
+import SocketService from "./Socket.service";
+import FriendshipService from "./Friendship.service";
 
 export default class UserService {
     constructor(
@@ -10,7 +13,9 @@ export default class UserService {
         private encryptionRepository: EncryptionRepository,
         private identRepository: IdentityRepository,
         private accountRepository: AccountRepository,
-        private friendshipRepository: FriendshipRepository
+        private friendshipService: FriendshipService,
+
+        private socketService: SocketService
     ) {
     }
 
@@ -150,9 +155,14 @@ export default class UserService {
         return await this.userRepository.getByAccountID(id);
     }
 
-    public async delete(id: string) {
-        await this.accountRepository.setDeleted(id);
-        await this.friendshipRepository.deleteAllFriendships(id);
-        await this.userRepository.deleteUser(id);
+    public async delete(decryptedToken: DecryptedToken) {
+        const connection = this.socketService.getConnection(decryptedToken);
+        const friendships = await this.friendshipService.getFriends(decryptedToken.id);
+        for(let friend of friendships){
+            await this.friendshipService.delete(friend.user, friend.friend);
+        }
+        await connection?.disconnectAllSockets();
+        await this.accountRepository.setDeleted(decryptedToken.id);
+        await this.userRepository.deleteUser(decryptedToken.id);
     }
 }

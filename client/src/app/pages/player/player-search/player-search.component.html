@@ -1,0 +1,12 @@
+<div>
+  <input placeholder="Search for username" [ngModel]="filteredInput | async"
+         (ngModelChange)="filteredInput.next($event)">
+  <ul>
+    <li *ngFor="let user of results" routerLink="/player/{{user.id}}">
+      {{user.username}}
+      <button *ngIf="user.id !== userService.getUser().id">
+        ADD FRIEND
+      </button>
+    </li>
+  </ul>
+</div>
