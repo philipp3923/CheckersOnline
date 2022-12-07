@@ -1,28 +1,30 @@
+@import url("../../../../styles.css");
+
 .highlight {
-  background-color: aqua;
+  background-color: deepskyblue;
 }
 
 .switch {
-  padding: 8px;
+  padding: 10px;
   border: none;
-  margin: 8px;
+  margin: 10px;
 }
 
-input {
+.game-key-input {
   text-transform: uppercase;
-  padding: 2px;
-  margin: 8px;
   text-align: center;
+  margin: 5px;
+  min-height: 70%;
 }
 
 .box {
-  width: calc(100% - 32px);
+  width: calc(100% - 40px);
   display: flex;
   justify-content: center;
-  margin: 8px;
-  background-color: olivedrab;
-  border-radius: 4px;
-  padding: 8px;
+  margin: 10px;
+  background-color: lightgray;
+  border-radius: 10px;
+  padding: 10px;
 }
 
 .select-box {
@@ -34,15 +36,29 @@ input {
 }
 
 .sub-box {
-  width: 100%;
+  width: calc(100% - 40px);
+  margin: 5px;
   display: flex;
   justify-content: center;
 }
 
 .slider-box {
   width: 100%;
+  margin: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+}
+
+.finish-button {
+  min-width: 10%;
+  font-weight: bold;
+}
+
+.time-info-text {
+  font-size: 20px;
+  margin: 10px;
+  font-family: Bahnschrift;
+  color: black;
 }

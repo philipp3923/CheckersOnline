@@ -1,3 +1,4 @@
+<h1>Login to your Account</h1>
 <form class="form" (submit)="isLogin ? login() : register()">
   <input autocomplete="section-auth email" #email_input name="email" *ngIf="!isLogin" placeholder="E-Mail">
   <input autocomplete="section-auth username" #name_input name="username" placeholder="Username">

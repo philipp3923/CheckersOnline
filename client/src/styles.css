@@ -1,8 +1,17 @@
 html, body {
+  box-sizing: border-box;
   width: 100%;
   height: 100%;
   margin: 0;
   overflow: hidden;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 48
 }
 
 .text{
@@ -12,4 +21,38 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+h1 {
+  margin: 10px;
+  font-size: 50px;
+  font-family: Bahnschrift;
+  color: blue;
+}
+
+p {
+  color: black;
+  margin: 10px;
+  font-size: 25px;
+  font-family: Bahnschrift;
+}
+
+input {
+  padding: 2px;
+  font-size: 25px;
+  font-family: Bahnschrift;
+  background: lightgray;
+  outline: 1px solid black;
+  min-width: 60px;
+  color: blue;
+}
+
+button {
+  font-size: 25px;
+  font-family: Bahnschrift;
+  background: lightgray;
+  min-width: 60px;
+  color: black;
+  outline: 1px solid black;
+  border-radius: 5px;
 }
