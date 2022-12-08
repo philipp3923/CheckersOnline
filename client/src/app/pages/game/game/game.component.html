@@ -1,23 +1,24 @@
-<div class="game">
 <div class="info" *ngIf="!game?.waiting">
   <div>
     <img style="display: none;" #wp src="assets/board/wp.png" height="32px"/>
     <div class="user white">
-      <div class="name white">WHITE</div>
+      <p class="name white">WHITE</p>
       <app-timer #player_timer></app-timer>
     </div>
   </div>
   <div>
     <div class="user black">
-      <div class="name black">BLACK</div>
+      <p class="name black">BLACK</p>
       <app-timer #enemy_timer></app-timer>
     </div>
     <img style="display: none;" #bp src="assets/board/bp.png" height="32px"/>
   </div>
 </div>
-<app-board #board></app-board>
-<div class="info info-waiting" *ngIf="game?.waiting">
-  <div class="user">Waiting for Opponent to join...</div>
-  <div>Use the Website Link to invite Friends to the Game!</div>
+<div class="info" *ngIf="game?.waiting">
+  <p>
+    Waiting for Opponent to join...
+  </p>
 </div>
-</div>
+
+<app-board #board class="board"></app-board>
+

@@ -43,7 +43,7 @@ input {
   font-family: Bahnschrift;
   background: lightgray;
   outline: 1px solid black;
-  min-width: 30%;
+  min-width: 100px;
   color:  deepskyblue;
 }
 
@@ -71,6 +71,7 @@ button:hover {
   background-color: lightgray;
   border-radius: 10px;
   padding: 20px 5% 20px 5%;
+  min-width: 260px;
 }
 
 .box-vertical {
@@ -81,6 +82,7 @@ button:hover {
   background-color: lightgray;
   border-radius: 10px;
   padding: 20px 5% 20px 5%;
+  min-width: 260px;
 }
 
 .centered {
@@ -90,6 +92,8 @@ button:hover {
 a {
   text-decoration: None;
   color: deepskyblue;
+  text-align: center;
+  text-justify: auto;
 }
 
 a:hover {

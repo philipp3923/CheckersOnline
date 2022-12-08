@@ -1,6 +1,11 @@
 @import url("../../../styles.css");
 
 .footer {
+  position: fixed;
+  bottom: 0;
+  justify-content: center;
+  width: calc(100% - 20px);
+  min-width: 300px;
   flex-basis: auto;
   background-image: linear-gradient(to bottom right, darkgray, black);
   line-height: 56px;

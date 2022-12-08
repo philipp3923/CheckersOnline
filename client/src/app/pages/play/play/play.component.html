@@ -1,5 +1,5 @@
-<app-active-games-overview></app-active-games-overview>
 <h1>Play a Game</h1>
+
 <div class="box-horizontal">
   <button class="select-button" #join_casual [classList]="state==='join_casual' ? 'highlight switch': 'switch'"
           (click)="switchJoinCasual()">Join Casual Game
@@ -41,5 +41,6 @@
       <button class="finish-button" (click)="enterGame()">{{state==='join_casual'? "Join" : "Create"}}</button>
     </div>
   </div>
-</div>
 
+</div>
+<app-active-games-overview></app-active-games-overview>

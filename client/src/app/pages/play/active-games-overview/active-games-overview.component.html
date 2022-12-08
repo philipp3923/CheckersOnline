@@ -1,10 +1,14 @@
-<ul>
-  <li class="waiting" *ngFor="let info of this.waitingGames; index as i">{{info.key}}, {{info.timeType ? "DYNAMIC" :
+<div class="waiting" *ngFor="let info of this.waitingGames; index as i">
+    <p>
+      {{info.key}}, {{info.timeType ? "DYNAMIC" :
     "STATIC"}}
-    <button>Leave</button>
-    <a routerLink="/game/{{info.key}}">Play</a>
-  </li>
-  <li class="active" *ngFor="let info of this.activeGames; index as i">
+    </p>
+    <div>
+      <button class="padded-button">Leave</button>
+      <button class="padded-button" routerLink="/game/{{info.key}}">Play</button>
+    </div>
+</div>
+<div class="active" *ngFor="let info of this.activeGames; index as i">
     <div class="info">{{info.key}}
       <div class="timer-box">
         <div class="timer-sub">WHITE ({{getPlayerTerm(info, 1)}})
@@ -19,5 +23,4 @@
         <a routerLink="/game/{{info.key}}">Play</a>
       </div>
     </div>
-  </li>
-</ul>
+  </div>

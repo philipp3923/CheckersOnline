@@ -8,8 +8,3 @@
 .main{
   flex-grow: 1;
 }
-
-.main-content {
-  padding: 24px;
-  flex: 1;
-}

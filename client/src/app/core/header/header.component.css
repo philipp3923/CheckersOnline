@@ -2,11 +2,12 @@
   background-color: black;
   padding: 10px 20px;
   height: 56px;
+  min-width: 300px;
 }
 
 .home-menu-link {
   padding: 5px;
-  font-size: 40px;
+  font-size: 35px;
   font-family: Bahnschrift;
   color: lightgray;
   text-decoration: None;
