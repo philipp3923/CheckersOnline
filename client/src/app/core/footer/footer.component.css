@@ -1,10 +1,15 @@
 @import url("../../../styles.css");
 
 .footer {
-  background-color: #000000;
+  flex-basis: auto;
+  background-image: linear-gradient(to bottom right, darkgray, black);
   line-height: 56px;
   text-align: center;
-  color: #999999;
+  color: lightgray;
+  border-radius: 10px;
+  padding: 5px;
+  margin: 5px;
+  display: flex;
 }
 
 .list{
@@ -12,12 +17,15 @@
 }
 
 .item-with-icon{
+  font-family: Bahnschrift;
+  min-width: 60px;
   margin: auto;
   display: flex;
   flex-direction: column-reverse;
   line-height: 100%;
   padding: 5px;
   text-align: center;
+  border-radius: 10px;
 }
 
 ul{
@@ -46,9 +54,9 @@ a:visited {
 }
 
 a:hover {
-  background-color: blue;
+  background-color: deepskyblue;
 }
 
 a:active {
-  color: blue;
+  color: deepskyblue;
 }

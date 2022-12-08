@@ -1,10 +1,13 @@
 <h1>Login to your Account</h1>
-<form class="form" (submit)="isLogin ? login() : register()">
-  <input autocomplete="section-auth email" #email_input name="email" *ngIf="!isLogin" placeholder="E-Mail">
-  <input autocomplete="section-auth username" #name_input name="username" placeholder="Username">
-  <input autocomplete="section-auth password" #password_input type="password" placeholder="Password">
-  <button *ngIf="isLogin">LOGIN</button>
-  <button *ngIf="!isLogin" >REGISTER</button>
-  <a *ngIf="isLogin" routerLink="/register">Don't have an Account? Register instead</a>
-  <a *ngIf="!isLogin" routerLink="/login">Already have an Account? Login instead</a>
-</form>
+<div class="box-vertical">
+  <form class="form" (submit)="isLogin ? login() : register()">
+    <input autocomplete="section-auth email" #email_input name="email" *ngIf="!isLogin" placeholder="E-Mail">
+    <input autocomplete="section-auth username" #name_input name="username" placeholder="Username">
+    <input autocomplete="section-auth password" #password_input type="password" placeholder="Password">
+    <button *ngIf="isLogin">LOGIN</button>
+    <button *ngIf="!isLogin" >REGISTER</button>
+    <a *ngIf="isLogin" routerLink="/register">Don't have an Account? Register instead</a>
+    <a *ngIf="!isLogin" routerLink="/login">Already have an Account? Login instead</a>
+  </form>
+</div>
+

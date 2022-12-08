@@ -1,4 +1,5 @@
 html, body {
+  background-image: linear-gradient(white, rgba(0,191,255,0.1));
   box-sizing: border-box;
   width: 100%;
   height: 100%;
@@ -15,44 +16,84 @@ html, body {
 }
 
 .text{
-  font-weight: bolder;
   color: white;
-  font-size: 20px;
+  font-size: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 h1 {
-  margin: 10px;
-  font-size: 50px;
+  margin: 20px 5% 20px 5%;
+  font-size: 150%;
   font-family: Bahnschrift;
-  color: blue;
+  color: black;
 }
 
 p {
   color: black;
-  margin: 10px;
-  font-size: 25px;
+  margin: 20px 5% 20px 5%;
+  font-size: 100%;
   font-family: Bahnschrift;
 }
 
 input {
-  padding: 2px;
-  font-size: 25px;
+  padding: 5px;
+  font-size: 100%;
   font-family: Bahnschrift;
   background: lightgray;
   outline: 1px solid black;
-  min-width: 60px;
-  color: blue;
+  min-width: 30%;
+  color:  deepskyblue;
 }
 
 button {
-  font-size: 25px;
+  font-size: 100%;
   font-family: Bahnschrift;
   background: lightgray;
   min-width: 60px;
   color: black;
+  outline: 2px solid black;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+button:hover {
+  background-color: deepskyblue;
   outline: 1px solid black;
+}
+
+.box-horizontal {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 20px 5% 20px 5%;
+  background-color: lightgray;
+  border-radius: 10px;
+  padding: 20px 5% 20px 5%;
+}
+
+.box-vertical {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 20px 5% 20px 5%;
+  background-color: lightgray;
+  border-radius: 10px;
+  padding: 20px 5% 20px 5%;
+}
+
+.centered {
+  margin: auto;
+}
+
+a {
+  text-decoration: None;
+  color: deepskyblue;
+}
+
+a:hover {
+  color: black;
+  background-color: deepskyblue;
   border-radius: 5px;
 }

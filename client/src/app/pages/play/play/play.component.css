@@ -17,16 +17,6 @@
   min-height: 70%;
 }
 
-.box {
-  width: calc(100% - 40px);
-  display: flex;
-  justify-content: center;
-  margin: 10px;
-  background-color: lightgray;
-  border-radius: 10px;
-  padding: 10px;
-}
-
 .select-box {
   flex-direction: column;
 }

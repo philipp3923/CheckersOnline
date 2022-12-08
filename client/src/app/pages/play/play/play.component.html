@@ -1,6 +1,6 @@
 <app-active-games-overview></app-active-games-overview>
 <h1>Play a Game</h1>
-<div class="box">
+<div class="box-horizontal">
   <button class="select-button" #join_casual [classList]="state==='join_casual' ? 'highlight switch': 'switch'"
           (click)="switchJoinCasual()">Join Casual Game
   </button>
@@ -11,7 +11,7 @@
           (click)="switchCreateCustom()">Create Custom Game
   </button>
 </div>
-<div class="select-box box">
+<div class="box-vertical">
   <div class="sub-box" *ngIf="state==='join_custom'">
     <input class="game-key-input" #game_key placeholder="GAME KEY">
     <button class="finish-button" (click)="enterGame()">Join</button>

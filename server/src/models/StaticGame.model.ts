@@ -11,7 +11,7 @@ export default class StaticGameModel extends UserGameModel{
     public constructor(gameService: GameService, id: string, key: string, type: GameType, time: number) {
         super(gameService, id, key, type, staticTimes[time]);
         this.timeIndex = time;
-        if(!StaticGameModel.isValidTime(time)){throw new Error("Illegal time provided")};
+        if(!StaticGameModel.isValidTime(time)){throw new Error("Illegal time provided")}
     }
 
     protected updateTime(player: Player, play: Play) {

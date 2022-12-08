@@ -1,9 +1,11 @@
 
 .info{
-  background-color: blue;
+  background-color: deepskyblue;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-radius: 5px;
+  margin: 20px;
 }
 
 .info-waiting{

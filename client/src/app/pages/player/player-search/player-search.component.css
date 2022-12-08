@@ -1,5 +1,6 @@
 @import url("../../../../styles.css");
 
-.add-friends-box {
-  margin: 10px;
+.search-user-input {
+  width: 40%;
+  margin: 5px;
 }

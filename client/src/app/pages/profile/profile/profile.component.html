@@ -1,9 +1,13 @@
-<app-user-property (updateEvent)="updateEmail($event.new)" [name]="'E-Mail'" [value]="email"></app-user-property>
-<app-user-property (updateEvent)="updateUsername($event.new)" [name]="'Username'"
-                   [value]="username"></app-user-property>
-<app-user-property (updateEvent)="updatePassword($event.old, $event.new)" [name]="'Password'" value="******"
-                   [needsOldValue]="true" [repetitionOnUpdate]="true"></app-user-property>
-<app-user-delete (updateEvent)="deleteUser($event)"></app-user-delete>
+<h1>Your Profile</h1>
+<div class="box-vertical">
+  <app-user-property (updateEvent)="updateEmail($event.new)" [name]="'E-Mail'" [value]="email"></app-user-property>
+  <app-user-property (updateEvent)="updateUsername($event.new)" [name]="'Username'"
+                     [value]="username"></app-user-property>
+  <app-user-property (updateEvent)="updatePassword($event.old, $event.new)" [name]="'Password'" value="******"
+                     [needsOldValue]="true" [repetitionOnUpdate]="true"></app-user-property>
+  <app-user-delete (updateEvent)="deleteUser($event)"></app-user-delete>
+
+</div>
 
 
 

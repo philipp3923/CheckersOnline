@@ -1,8 +1,12 @@
 <div>
   <h1>Add Friends</h1>
-  <div class="add-friends-box">
+
+  <div class="box-horizontal">
     <input class="search-user-input" placeholder="Username" [ngModel]="filteredInput | async"
            (ngModelChange)="filteredInput.next($event)">
+    <button>Search</button>
+  </div>
+  <div class="box-vertical">
     <ul>
       <li *ngFor="let user of results" routerLink="/player/{{user.id}}">
         {{user.username}}

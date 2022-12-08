@@ -1,0 +1,19 @@
+body {
+  //background-image: url("../../../../assets/background-tiles.png");
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+
+.subheader {
+  color: deepskyblue;
+  font-size: 100%;
+  line-height: 0%;
+}
+
+.quick-button {
+  margin: 5px auto 5px auto;
+  height: 70%;
+  width: 30%;
+  border-radius: 5px;
+}

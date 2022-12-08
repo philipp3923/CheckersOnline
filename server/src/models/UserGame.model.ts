@@ -179,7 +179,7 @@ export default abstract class UserGameModel extends GameModel {
         if (lostPlayer === null) {
             throw new Error("Player does not exist")
         }
-        ;
+
 
         lostPlayer.time = 0;
         await this.finish();

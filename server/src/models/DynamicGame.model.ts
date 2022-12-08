@@ -20,7 +20,7 @@ export default class DynamicGameModel extends UserGameModel{
     }
 
     protected updateTime(player: Player, play: Play): void {
-        if(typeof play.time === "undefined"){throw new Error("play has no time")};
+        if(typeof play.time === "undefined"){throw new Error("play has no time")}
         player.time-= play.time;
         player.time += this.increment;
     }
