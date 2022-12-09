@@ -8,11 +8,13 @@ import {AuthComponent} from "./pages/profile/auth/auth.component";
 import {DisconnectedComponent} from "./pages/disconnected/disconnected/disconnected.component";
 import {PlayerDetailComponent} from "./pages/player/player-detail/player-detail.component";
 import {PlayerSearchComponent} from "./pages/player/player-search/player-search.component";
+import {FriendsComponent} from "./pages/friends/friends/friends.component";
 
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./pages/welcome/welcome.module').then(m => m.WelcomeModule)
+    redirectTo: "play",
+    pathMatch: "full"
   },
   {
     path: 'game/:key',
@@ -29,6 +31,10 @@ const routes: Routes = [
   {
     path: 'player',
     component: PlayerSearchComponent
+  },
+  {
+    path: 'friends',
+    component: FriendsComponent
   },
   {
     path: 'profile',
@@ -53,7 +59,11 @@ const routes: Routes = [
   {
     path: '**',
     redirectTo: '404'
-  }
+  },
+  {
+    path: '',
+    loadChildren: () => import('./pages/welcome/welcome.module').then(m => m.WelcomeModule)
+  },
 ];
 
 @NgModule({

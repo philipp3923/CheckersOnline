@@ -44,7 +44,7 @@ export class AuthComponent implements OnInit {
     this.apiService.loginUser(username, password)
       .then((res) => this.userService.login(res.user, res.accessToken, res.refreshToken))
       .catch(err => console.log(err))
-      .then(()=>this.router.navigate(["/profile"]));
+      .then(()=>this.router.navigate(["/"]));
   }
 
   isLoginInputValid() {
@@ -58,20 +58,21 @@ export class AuthComponent implements OnInit {
       (this.emailInput?.nativeElement.value.length ?? 0 > 0);
   }
 
-  register() {
+  async register() {
     console.log("TEST")
     if (!this.isRegisterInputValid()) {
       return
     }
-    const username = this.passwordInput?.nativeElement.value ?? "";
+    const username = this.nameInput?.nativeElement.value ?? "";
     const email = this.emailInput?.nativeElement.value ?? "";
     const password = this.passwordInput?.nativeElement.value ?? "";
 
-    this.apiService.registerUser(email, username, password)
-      .catch((err) => console.log(err))
-      .then(() => this.apiService.loginUser(username, password))
-      .then((res) => this.userService.login(res.user, res.accessToken, res.refreshToken))
-      .then(()=>this.router.navigate(["/profile"]));
+    try{
+      const reg_res = await this.apiService.registerUser(email, username, password);
+      this.login();
+    }catch (e){
+      console.log(e);
+    }
   }
 
   ngOnInit(): void {

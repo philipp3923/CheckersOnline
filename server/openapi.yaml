@@ -116,7 +116,7 @@ paths:
         '204':
           description: Logout successful
         '401':
-          description: Access token is missing or invalid
+          description: Refresh token is missing or invalid
 
   /auth/token/access:
     post:

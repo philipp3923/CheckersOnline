@@ -20,6 +20,7 @@ import { UserPropertyComponent } from './pages/profile/user-property/user-proper
 import { UserDeleteComponent } from './pages/profile/user-delete/user-delete.component';
 import { PlayerSearchComponent } from './pages/player/player-search/player-search.component';
 import { PlayerDetailComponent } from './pages/player/player-detail/player-detail.component';
+import { FriendsComponent } from './pages/friends/friends/friends.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { PlayerDetailComponent } from './pages/player/player-detail/player-detai
     UserPropertyComponent,
     UserDeleteComponent,
     PlayerSearchComponent,
-    PlayerDetailComponent
+    PlayerDetailComponent,
+    FriendsComponent
   ],
   imports: [
     BrowserModule,
