@@ -5,4 +5,5 @@
   <div class="header-nav right">
     Rechts
   </div>
+  <button *ngIf="userService.isUser()" (click)="logout()">LOGOUT</button>
 </div>

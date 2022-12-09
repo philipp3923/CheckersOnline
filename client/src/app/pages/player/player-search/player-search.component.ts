@@ -5,6 +5,8 @@ import UserInfoModel from "../../../models/user-info.model";
 import {ApiService} from "../../../core/services/api.service";
 import {BehaviorSubject, debounceTime, skip} from "rxjs";
 import {UserService} from "../../../core/services/user.service";
+import {Socket} from "socket.io-client";
+import {SocketService} from "../../../core/services/socket.service";
 
 @Component({
   selector: 'app-player-search',
@@ -17,7 +19,7 @@ export class PlayerSearchComponent implements OnInit {
 
   results: UserInfoModel[];
 
-  constructor(private apiService: ApiService, public userService: UserService) {
+  constructor(private apiService: ApiService, public userService: UserService, private socketService: SocketService) {
     this.results = [];
     this.filteredInput = new BehaviorSubject<string>('');
   }
@@ -38,4 +40,11 @@ export class PlayerSearchComponent implements OnInit {
     }
     this.results = (await this.apiService.findUserByUsername(query)).user;
   }
+
+  public requestFriend(id : string){
+    this.socketService.requestFriend(id, (args) => {
+        console.log(args);
+    });
+  }
+
 }

@@ -16,6 +16,26 @@ export class UserService {
 
   constructor(private tokenService: TokenService, private apiService: ApiService, private socketService: SocketService) {
     this.auth().then(r => null);
+    this.socketService.addWelcomeListener((args) => this.welcome(args));
+    this.socketService.addFriendAcceptListener(
+      (f)=>{
+        console.log(f);
+      }
+    );
+    this.socketService.addFriendDeleteListener(
+      (f)=>{
+        console.log(f);
+      }
+    );
+    this.socketService.addFriendRequestListener(
+      (f)=>{
+        console.log(f);
+      }
+    );
+  }
+
+  private welcome(args: any){
+    console.log(args);
   }
 
   public isUser() {
@@ -35,7 +55,7 @@ export class UserService {
   }
 
   public async login(user: UserModel, accessToken: TokenModel, refreshToken: TokenModel) {
-    this.logout();
+    await this.logout();
     this.socketService.clearPendingEmits();
     this.socketService.connect(accessToken.string);
     await this.tokenService.saveAccessToken(accessToken);
@@ -50,14 +70,17 @@ export class UserService {
       this.socketService.connect((await this.tokenService.getAccessToken()).string);
     } catch {
       this.tokenService.removeTokens();
-      this.logout();
+      await this.logout();
       await this.guest();
     }
   }
 
-  private logout() {
-    this.tokenService.removeTokens();
+  public async logout() {
+    if(this.isUser()){
+      await this.apiService.logoutUser();
+    }
     this.socketService.disconnect();
+    this.tokenService.removeTokens();
     window.localStorage.clear();
     window.sessionStorage.clear();
   }
@@ -67,7 +90,7 @@ export class UserService {
     window.localStorage.setItem(USER_KEY, JSON.stringify(user));
   }
 
-  private async guest() {
+  public async guest() {
     const authResponse = await this.apiService.authGuest();
     console.log(authResponse);
     await this.tokenService.saveAccessToken(authResponse.accessToken);
@@ -122,7 +145,7 @@ export class UserService {
     const id = this.getUser().id;
     try{
       await this.apiService.deleteUser(id, password);
-      this.logout();
+      await this.logout();
       await this.guest();
       return true;
     }
