@@ -6,6 +6,7 @@ interface Friendship {
     user: string;
     friend: string;
     status: "ACTIVE" | "REQUEST" | "DELETED";
+    online?: boolean;
 }
 
 export default class FriendshipService {
@@ -46,11 +47,13 @@ export default class FriendshipService {
             user: user_id,
             friend: friend_id,
             status: "ACTIVE",
+            online: this.socketService.isOnline(friend_id)
         };
         const friendship_friend: Friendship = {
             user: friend_id,
             friend: user_id,
             status: "ACTIVE",
+            online: this.socketService.isOnline(user_id)
         };
 
         this.socketService.sendTo(user_id, "friendAccept", friendship_user);
@@ -88,6 +91,18 @@ export default class FriendshipService {
                 if (user_acc === null || friend_acc === null) {
                     throw new Error("User has no account");
                 }
+
+                const friend_id = user_acc.ext_id === user_id ? friend_acc.ext_id : user_acc.ext_id;
+
+                if(friendship.type === "ACTIVE"){
+                    return {
+                        user: user_acc.ext_id,
+                        friend: friend_acc.ext_id,
+                        status: <any>friendship.type,
+                        online: this.socketService.isOnline(friend_id)
+                    };
+                }
+
                 return {
                     user: user_acc.ext_id,
                     friend: friend_acc.ext_id,

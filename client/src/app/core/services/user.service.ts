@@ -5,6 +5,7 @@ import {UserModel} from "../../models/user.model";
 import {SocketService} from "./socket.service";
 import {TokenModel} from "../../models/token.model";
 import {retry} from "rxjs";
+import {FriendsService} from "./friends.service";
 
 //#TODO move USER_KEY to Constants File
 const USER_KEY = "user";
@@ -14,28 +15,16 @@ const USER_KEY = "user";
 })
 export class UserService {
 
-  constructor(private tokenService: TokenService, private apiService: ApiService, private socketService: SocketService) {
+  constructor(private tokenService: TokenService, private apiService: ApiService, private socketService: SocketService, private friendsService: FriendsService) {
     this.auth().then(r => null);
     this.socketService.addWelcomeListener((args) => this.welcome(args));
-    this.socketService.addFriendAcceptListener(
-      (f)=>{
-        console.log(f);
-      }
-    );
-    this.socketService.addFriendDeleteListener(
-      (f)=>{
-        console.log(f);
-      }
-    );
-    this.socketService.addFriendRequestListener(
-      (f)=>{
-        console.log(f);
-      }
-    );
   }
 
   private welcome(args: any){
     console.log(args);
+    if(this.isUser()){
+      this.friendsService.init(this.getUser().id, args.friends);
+    }
   }
 
   public isUser() {
@@ -81,6 +70,7 @@ export class UserService {
     }
     this.socketService.disconnect();
     this.tokenService.removeTokens();
+    this.friendsService.reset();
     window.localStorage.clear();
     window.sessionStorage.clear();
   }
