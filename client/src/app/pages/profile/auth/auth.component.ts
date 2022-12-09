@@ -38,7 +38,7 @@ export class AuthComponent implements OnInit {
       return;
     }
 
-    const username = this.passwordInput?.nativeElement.value ?? "";
+    const username = this.nameInput?.nativeElement.value ?? "";
     const password = this.passwordInput?.nativeElement.value ?? "";
 
     this.apiService.loginUser(username, password)

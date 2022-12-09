@@ -121,6 +121,14 @@ export class SocketService {
     this.addListener("friendDelete", listener);
   }
 
+  public addFriendOnlineListener(listener: (friend_id: string) => void){
+    this.addListener("online", listener);
+  }
+
+  public addFriendOfflineListener(listener: (friend_id: string) => void){
+    this.addListener("offline", listener);
+  }
+
   public addWelcomeListener(listener: (res: any) => void){
     this.addListener("welcome", listener);
   }

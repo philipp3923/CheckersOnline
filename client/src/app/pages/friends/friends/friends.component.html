@@ -1,13 +1,28 @@
-<ul>
-  <li class="requests"></li>
-</ul>
-
-<ul>
-  <li class="active online"></li>
-</ul>
-<ul>
-  <li class="active offline"></li>
-</ul>
-<ul>
-  <li class="pending"></li>
-</ul>
+<div>
+  <ul>
+    Requests:
+    <li *ngFor="let friend of incomingRequests" class="requests">
+      {{friend.username}}
+      <button (click)="friendsService.acceptFriend(friend.id)">ACCEPT</button>
+      <button (click)="friendsService.deleteFriend(friend.id)">DENY</button>
+    </li>
+  </ul>
+  <ul>
+    Online Friends:
+    <li *ngFor="let friend of onlineFriends" class="active online">
+      {{friend.username}}
+      <button (click)="friendsService.deleteFriend(friend.id)">REMOVE</button></li>
+  </ul>
+  <ul>
+    Offline Friends:
+    <li *ngFor="let friend of offlineFriends" class="active offline">
+      {{friend.username}}
+      <button (click)="friendsService.deleteFriend(friend.id)">REMOVE</button></li>
+  </ul>
+  <ul>
+    Pending:
+    <li *ngFor="let friend of outgoingRequests" class="pending">
+      {{friend.username}}
+      <button (click)="friendsService.deleteFriend(friend.id)">REVOKE</button></li>
+  </ul>
+</div>
