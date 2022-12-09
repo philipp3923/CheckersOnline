@@ -11,4 +11,5 @@
       </span>
     </a>
   </div>
+  <button *ngIf="userService.isUser()" (click)="logout()">LOGOUT</button>
 </div>

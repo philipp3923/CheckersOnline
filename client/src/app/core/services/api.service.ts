@@ -66,6 +66,11 @@ export class ApiService {
     return (await this.post<AuthResponse>(await this.authTypeNone(), "auth/login", {username: username, password: password}));
   }
 
+  public async logoutUser(){
+    return (await this.post(await this.authTypeRefresh(), "auth/logout"));
+
+  }
+
   public async registerUser(email: string, username: string, password: string){
     return (await this.post(await this.authTypeNone(), "auth/register", {email: email, username: username, password: password}));
   }

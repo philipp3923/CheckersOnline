@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {io, Socket} from "socket.io-client";
 import GameStateModel from "../../models/gamestate.model";
 import {Subject} from "rxjs";
+import FriendshipModel from "../../models/friendship.model";
 
 @Injectable({
   providedIn: 'root'
@@ -77,12 +78,47 @@ export class SocketService {
     }, (res: any) => callback(res));
   }
 
+  public requestFriend(id: string, callback: (res:any)=> void){
+    this.emit("friend", {
+      type: "REQUEST",
+      friend: id
+    }
+    ,(res: any) => callback(res))
+  }
+
+  public acceptFriend(id: string, callback: (res:any)=> void){
+    this.emit("friend", {
+        type: "ACCEPT",
+        friend: id
+      }
+      ,(res: any) => callback(res))
+  }
+
+  public deleteFriend(id: string, callback: (res:any)=> void){
+    this.emit("friend", {
+        type: "DELETE",
+        friend: id
+      }
+      ,(res: any) => callback(res))
+  }
+
   public playMove(key: string, index: number){
     this.emit("gameTurn", {key: key, index: index}, (res: any) => console.log(res));
   }
 
   public addGameStateListener(listener: (gameState: GameStateModel) => void){
     this.addListener("gameState", listener);
+  }
+
+  public addFriendRequestListener(listener: (friendship: FriendshipModel) => void){
+    this.addListener("friendRequest", listener);
+  }
+
+  public addFriendAcceptListener(listener: (friendship: FriendshipModel) => void){
+    this.addListener("friendAccept", listener);
+  }
+  public addFriendDeleteListener(listener: (friendship: FriendshipModel) => void){
+    this.addListener("friendDelete", listener);
   }
 
   public addWelcomeListener(listener: (res: any) => void){

@@ -18,9 +18,9 @@ import { AuthComponent } from './pages/profile/auth/auth.component';
 import { DisconnectedComponent } from './pages/disconnected/disconnected/disconnected.component';
 import { UserPropertyComponent } from './pages/profile/user-property/user-property.component';
 import { UserDeleteComponent } from './pages/profile/user-delete/user-delete.component';
-import { PlayerComponent } from './pages/player/player/player.component';
 import { PlayerSearchComponent } from './pages/player/player-search/player-search.component';
 import { PlayerDetailComponent } from './pages/player/player-detail/player-detail.component';
+import { FriendsComponent } from './pages/friends/friends/friends.component';
 
 @NgModule({
   declarations: [
@@ -38,9 +38,9 @@ import { PlayerDetailComponent } from './pages/player/player-detail/player-detai
     DisconnectedComponent,
     UserPropertyComponent,
     UserDeleteComponent,
-    PlayerComponent,
     PlayerSearchComponent,
-    PlayerDetailComponent
+    PlayerDetailComponent,
+    FriendsComponent
   ],
   imports: [
     BrowserModule,
