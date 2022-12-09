@@ -3,6 +3,7 @@
     Requests:
     <li *ngFor="let friend of incomingRequests" class="requests">
       {{friend.username}}
+      <a routerLink="/player/{{friend.id}}">PROFILE</a>
       <button (click)="friendsService.acceptFriend(friend.id)">ACCEPT</button>
       <button (click)="friendsService.deleteFriend(friend.id)">DENY</button>
     </li>
@@ -10,19 +11,22 @@
   <ul>
     Online Friends:
     <li *ngFor="let friend of onlineFriends" class="active online">
-      {{friend.username}}
+            {{friend.username}}
+      <a routerLink="/player/{{friend.id}}">PROFILE</a>
       <button (click)="friendsService.deleteFriend(friend.id)">REMOVE</button></li>
   </ul>
   <ul>
     Offline Friends:
     <li *ngFor="let friend of offlineFriends" class="active offline">
       {{friend.username}}
+      <a routerLink="/player/{{friend.id}}">PROFILE</a>
       <button (click)="friendsService.deleteFriend(friend.id)">REMOVE</button></li>
   </ul>
   <ul>
     Pending:
     <li *ngFor="let friend of outgoingRequests" class="pending">
       {{friend.username}}
+      <a routerLink="/player/{{friend.id}}">PROFILE</a>
       <button (click)="friendsService.deleteFriend(friend.id)">REVOKE</button></li>
   </ul>
 </div>

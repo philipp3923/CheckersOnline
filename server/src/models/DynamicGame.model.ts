@@ -33,6 +33,14 @@ export default class DynamicGameModel extends UserGameModel{
         return state;
     }
 
+    public getTimeType(): string {
+        return "DYNAMIC";
+    }
+
+    public getIncrement(): number {
+        return dynamicIncrements[this.incrementIndex];
+    }
+
     public static isValidTime(time: number, increment: number){
         return time < dynamicTimes.length && time >= 0 && increment < dynamicIncrements.length && increment >= 0;
 

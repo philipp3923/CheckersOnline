@@ -557,7 +557,7 @@ components:
         finish:
           type: integer
           example: 1313292325517
-        won:
+        winner:
           type: string
           enum: [ BLACK, WHITE ]
         white:

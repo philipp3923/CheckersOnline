@@ -58,6 +58,8 @@ export class UserService {
       await this.tokenService.saveAccessToken(await this.apiService.updateAccessToken());
       this.socketService.connect((await this.tokenService.getAccessToken()).string);
     } catch {
+      window.localStorage.clear();
+      window.sessionStorage.clear();
       this.tokenService.removeTokens();
       await this.logout();
       await this.guest();

@@ -27,6 +27,8 @@ model Game {
   ext_id     String   @unique
   type       String
   time_limit Int
+  time_increment Int
+  time_type String
   startedAt  DateTime @default(now())
   winner     String?
   id_white   Int
@@ -48,7 +50,8 @@ model RefreshToken {
 model Play {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-  time      Int
+  timestamp     Int
+  time_left Int
   capture   Boolean
   color     String
   index     Int
@@ -57,7 +60,7 @@ model Play {
   target_x  Int
   target_y  Int
   id_game   Int
-  game      Game     @relation(fields: [id_game], references: [id])
+  game      Game     @relation(fields: [id_game], references: [id], onDelete: Cascade)
 }
 
 model User {

@@ -40,6 +40,14 @@ export default abstract class UserGameModel extends GameModel {
         this.invitation = id;
     }
 
+    public getIncrement(){
+        return 0;
+    }
+
+    public getTimeType(){
+        return "STATIC";
+    }
+
     public async join(player: string): Promise<void> {
         if (this.player.length >= 2) {
             throw new Error("Game is full");

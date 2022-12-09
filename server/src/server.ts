@@ -63,6 +63,7 @@ const tokenService = new TokenService(
 const socketService = new SocketService(socketRepository);
 const guestService = new GuestService(guestRepository, identityRepository);
 const gameService = new GameService(
+    accountRepository,
     gameRepository,
     identityRepository,
     socketService
