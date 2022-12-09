@@ -1,6 +1,6 @@
 
 .info{
-  background-color: deepskyblue;
+  background-color: var(--secondary);
   display: flex;
   align-items: center;
   justify-content: space-between;

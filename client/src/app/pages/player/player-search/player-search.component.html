@@ -1,13 +1,27 @@
-<div class="content">
-  <input placeholder="Search for username" [ngModel]="filteredInput | async"
-         (ngModelChange)="filteredInput.next($event)">
+<h1>Find Players</h1>
+<div class="box-vertical">
+  <input (ngModelChange)="filteredInput.next($event)" [ngModel]="filteredInput | async"
+         placeholder="Search for username">
+</div>
+<div class="box-vertical">
   <ul>
-    <li *ngFor="let user of results">
-      {{user.username}}
-      <a routerLink="/player/{{user.id}}">SHOW PROFILE</a>
-      <button *ngIf="user.id !== userService.getUser().id"
-              (click)="requestFriend(user.id)">
-        ADD FRIEND
+    <li class="player-list" *ngFor="let user of results">
+      <p class="user-name">{{user.username}}</p>
+      <a class="show-detail-link" routerLink="/player/{{user.id}}">
+        <span class="material-symbols-outlined">
+          badge
+        </span>
+      </a>
+      <button (click)="requestFriend(user.id)"
+              *ngIf="user.id !== userService.getUser().id">
+        <span class="material-symbols-outlined">
+          person_add
+        </span>
+      </button>
+      <button *ngIf="user.id == userService.getUser().id" routerLink="/profile">
+        <span class="material-symbols-outlined">
+          account_circle
+        </span>
       </button>
     </li>
   </ul>

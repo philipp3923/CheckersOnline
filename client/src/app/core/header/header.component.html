@@ -10,6 +10,10 @@
       info
       </span>
     </a>
+    <button class="logout-button" (click)="logout()" *ngIf="userService.isUser()">
+      <span class="material-symbols-outlined">
+        logout
+      </span>
+    </button>
   </div>
-  <button *ngIf="userService.isUser()" (click)="logout()">LOGOUT</button>
 </div>

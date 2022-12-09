@@ -10,6 +10,26 @@ input, li{
   max-width: 400px;
 }
 
+.show-detail-link {
+  width: 40px;
+  height: 40px;
+  font-size: 200%;
+}
+
+.user-name {
+  font-size: 25px;
+  font-weight: bold;
+  width: 200px;
+}
+
+.player-list {
+  align-items: center;
+  justify-items: center;
+  display: flex;
+  flex-direction: row;
+  min-width: 300px;
+}
+
 input{
   margin: 16px;
   width: calc(100% - 40px);
@@ -22,11 +42,11 @@ li{
   flex-direction: row;
   justify-content: space-between;
   border-radius: 4px;
-  border: 2px solid black;
+  border: 2px solid var(--black);
 }
 
 li:hover{
-  background-color: grey;
+  background-color: var(--primary);
 }
 
 ul{

@@ -8,6 +8,6 @@
       <li *ngIf="userService.isUser()"><a class=item-with-icon routerLink="/friends" routerLinkActive="active">Friends<span class="material-symbols-outlined">group</span></a></li>
       <li><a class=item-with-icon routerLink="/play" routerLinkActive="active">Play<span class="material-symbols-outlined">play_circle</span></a></li>
       <li *ngIf="!userService.isUser()"><a class=item-with-icon routerLink="/login" routerLinkActive="active">Login<span class="material-symbols-outlined">login</span></a></li>
-      <li *ngIf="userService.isUser()"><a class=item-with-icon routerLink="/profile" routerLinkActive="active">Profile<span class="material-symbols-outlined">manage_account</span></a></li>
+      <li *ngIf="userService.isUser()"><a class=item-with-icon routerLink="/profile" routerLinkActive="active">Profile<span class="material-symbols-outlined">account_circle</span></a></li>
   </ul>
 </div>

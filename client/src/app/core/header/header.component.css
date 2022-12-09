@@ -1,24 +1,37 @@
 .header {
-  background-color: black;
+  background-color: var(--black);
   padding: 10px 20px;
   height: 56px;
   min-width: 300px;
+}
+
+.logout-button {
+  font-size: 50px;
+  line-height: 5px;
+  height: 55px;
+  width: 60px;
+  background-color: var(--secondary);
+  margin-left: 10px;
+}
+
+.logout-button:hover {
+  background-color: var(--warning);
 }
 
 .home-menu-link {
   padding: 5px;
   font-size: 35px;
   font-family: Bahnschrift;
-  color: lightgray;
+  color: var(--background);
   text-decoration: None;
 }
 
 .home-menu-link:hover {
-  background-color: deepskyblue;
+  background-color: var(--secondary);
 }
 
 .header-nav {
-  color: black;
+  color: var(--black);
   display: inline-block;
   line-height: 56px;
 }
