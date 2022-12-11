@@ -1,5 +1,5 @@
 html, body {
-  background-image: linear-gradient(white, rgba(0,191,255,0.1));
+  background-color: var(--background);
   box-sizing: border-box;
   width: 100%;
   height: 100%;
@@ -16,7 +16,7 @@ html, body {
 }
 
 .text{
-  color: white;
+  color: var(--primary);
   font-size: 100%;
   display: flex;
   align-items: center;
@@ -27,13 +27,12 @@ h1 {
   margin: 20px 5% 20px 5%;
   font-size: 150%;
   font-family: Bahnschrift;
-  color: black;
+  color: var(--black);
 }
 
 p {
-  color: black;
+  color: var(--black);
   margin: 20px 5% 20px 5%;
-  font-size: 100%;
   font-family: Bahnschrift;
 }
 
@@ -41,26 +40,26 @@ input {
   padding: 5px;
   font-size: 100%;
   font-family: Bahnschrift;
-  background: lightgray;
-  outline: 1px solid black;
+  background: var(--item-background);
+  outline: 1px solid var(--black);
   min-width: 100px;
-  color:  deepskyblue;
+  color:  var(--secondary);
 }
 
 button {
   font-size: 100%;
   font-family: Bahnschrift;
-  background: lightgray;
+  background: var(--item-background);
   min-width: 60px;
-  color: black;
-  outline: 2px solid black;
+  color: var(--black);
+  outline: 2px solid var(--black);
   border-radius: 5px;
   padding: 5px;
 }
 
 button:hover {
-  background-color: deepskyblue;
-  outline: 1px solid black;
+  background-color: var(--secondary);
+  outline: 1px solid var(--black);
 }
 
 .box-horizontal {
@@ -68,7 +67,7 @@ button:hover {
   flex-direction: row;
   justify-content: center;
   margin: 20px 5% 20px 5%;
-  background-color: lightgray;
+  background-color: var(--primary);
   border-radius: 10px;
   padding: 20px 5% 20px 5%;
   min-width: 260px;
@@ -79,7 +78,7 @@ button:hover {
   flex-direction: column;
   justify-content: center;
   margin: 20px 5% 20px 5%;
-  background-color: lightgray;
+  background-color: var(--primary);
   border-radius: 10px;
   padding: 20px 5% 20px 5%;
   min-width: 260px;
@@ -91,13 +90,29 @@ button:hover {
 
 a {
   text-decoration: None;
-  color: deepskyblue;
+  color: var(--secondary);
   text-align: center;
   text-justify: auto;
 }
 
 a:hover {
-  color: black;
-  background-color: deepskyblue;
+  color: var(--black);
+  background-color: var(--tertiary);
   border-radius: 5px;
+}
+
+:root {
+  --black: black;
+  --primary: #7fb7be;
+  --background: #d3f3ee;
+  --secondary: #3d57d9;
+  --warning: #bc2c1a;
+  --tertiary: #7d1538;
+  --item-background: darkgray;
+}
+
+.text-field {
+  color: var(--black);
+  font-family: Bahnschrift;
+
 }

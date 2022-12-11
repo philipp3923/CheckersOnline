@@ -7,6 +7,11 @@
   justify-content: space-between;
 }
 
+.delete-account-button:hover {
+  background-color: var(--warning);
+  font-weight: bold;
+}
+
 .text-display, .form-display{
   display: flex;
   width: 100%;

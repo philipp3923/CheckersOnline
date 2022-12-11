@@ -1,7 +1,7 @@
 .waiting{
   margin: 5px 10% 5px 10%;
   border-radius: 5px;
-  background-color: darkgray;
+  background-color: var(--primary);
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -11,7 +11,7 @@
 .active{
   margin: 5px 10% 5px 10%;
   border-radius: 5px;
-  background-color: deepskyblue;
+  background-color: var(--secondary);
   display: flex;
   flex-direction: row;
   justify-content: space-between;

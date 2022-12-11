@@ -5,7 +5,7 @@ body {
 
 
 .subheader {
-  color: deepskyblue;
+  color: var(--secondary);
   font-size: 100%;
   line-height: 0%;
 }

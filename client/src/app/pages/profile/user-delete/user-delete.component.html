@@ -1,7 +1,7 @@
 <h1>Delete Your Account</h1>
 <div class="box-vertical">
   <div class="text-display">
-      <button (click)="switchEdit()">DELETE ACCOUNT</button>
+      <button class="delete-account-button" (click)="switchEdit()">DELETE ACCOUNT</button>
   </div>
   <form *ngIf="edit" class="form-display" (submit)="update()">
     <div>
