@@ -1,19 +1,23 @@
 <div class="header">
-  <div class="header-nav left">
-    <a class="home-menu-link" routerLink="/" routerLinkActive="active">
-      CheckersOnline
-    </a>
-  </div>
-  <div class="header-nav right">
-    <a class="home-menu-link" routerLink="/settings" routerLinkActive="active">
+  <ul class="nav-list">
+    <li class="nav-element">
+      <a class="nav-link" (click)="goToLastPage()">
+      <span class="material-symbols-outlined">
+      chevron_left
+      </span>
+      </a>
+    </li>
+    <li class="nav-element">
+      <a class="nav-link title" routerLink="/">
+        CheckersOnline
+      </a>
+    </li>
+    <li class="nav-element">
+      <a class="nav-link" routerLink="/about">
       <span class="material-symbols-outlined">
       info
       </span>
-    </a>
-    <button class="logout-button" (click)="logout()" *ngIf="userService.isUser()">
-      <span class="material-symbols-outlined">
-        logout
-      </span>
-    </button>
-  </div>
+      </a>
+    </li>
+  </ul>
 </div>

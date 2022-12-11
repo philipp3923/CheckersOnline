@@ -1,10 +1,16 @@
 :host {
-  display: flex;
-  flex-flow: column;
   min-height: 100vh;
-  justify-content: space-between;
 }
 
-.main{
+.main {
+  width: 100vw;
+  height: calc(100vh - 128px);
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.page{
   flex-grow: 1;
+  max-width: 1000px;
 }
