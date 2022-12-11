@@ -1,45 +1,13 @@
 .header {
-  background-color: var(--black);
-  padding: 10px 20px;
-  height: 56px;
-  min-width: 300px;
+  background-color: var(--two);
+  border-bottom: 8px solid var(--one);
 }
 
-.logout-button {
-  font-size: 50px;
-  line-height: 5px;
-  height: 55px;
-  width: 60px;
-  background-color: var(--secondary);
-  margin-left: 10px;
+
+.title{
+  font-size: 28px;
 }
 
-.logout-button:hover {
-  background-color: var(--warning);
-}
-
-.home-menu-link {
-  padding: 5px;
-  font-size: 35px;
-  font-family: Bahnschrift;
-  color: var(--background);
-  text-decoration: None;
-}
-
-.home-menu-link:hover {
-  background-color: var(--secondary);
-}
-
-.header-nav {
-  color: var(--black);
-  display: inline-block;
-  line-height: 56px;
-}
-
-.left {
-  float: left;
-}
-
-.right {
-  float: right;
+.nav-list{
+  justify-content: space-between;
 }

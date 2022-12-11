@@ -4,52 +4,18 @@
   position: fixed;
   bottom: 0;
   justify-content: center;
-  width: calc(100% - 20px);
-  min-width: 300px;
+  width: 100%;
   flex-basis: auto;
-  background-color: var(--black);
+  background-color: var(--two);
   line-height: 56px;
-  text-align: center;
-  color: var(--background);
-  border-radius: 10px;
-  padding: 5px;
-  margin: 5px;
   display: flex;
 }
 
-.list{
-  width: 100%;
-}
+
 
 .item-with-icon{
-  font-family: Bahnschrift;
-  min-width: 60px;
-  margin: auto;
   display: flex;
   flex-direction: column-reverse;
-  line-height: 100%;
-  padding: 5px;
-  text-align: center;
-  border-radius: 10px;
 }
 
-ul{
-  width: 100%;
-  display: flex;
-  justify-content: space-evenly;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  flex-wrap: nowrap;
-  flex-direction: row;
-}
 
-a {
-  margin: auto;
-  color: var(--primary);
-  text-decoration: none;
-}
-
-a:hover {
-  background-color: var(--secondary);
-}

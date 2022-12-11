@@ -4,3 +4,5 @@ mariadb/container
 */src/*.js
 *.rest
 server/build
+
+*\node_modules

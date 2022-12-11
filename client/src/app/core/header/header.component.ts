@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../services/user.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-header',
@@ -9,16 +9,33 @@ import {Router} from "@angular/router";
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(public userService: UserService, private router: Router) {
+  private history: string[];
+  constructor(public userService: UserService, private route: ActivatedRoute, private router: Router) {
+
+    this.history = [];
+
+    this.router.events.subscribe(()=>{
+      if(this.history.length >= 0 && this.router.url === this.history[this.history.length-1]){
+        return;
+      }
+      if(this.history.length >= 1 && this.router.url === this.history[this.history.length-2]){
+        this.history.splice(this.history.length-1);
+        return;
+      }
+      this.history.push(this.router.url);
+    });
+  }
+
+  async goToLastPage() {
+    if(this.history.length <= 2){
+      return;
+    }
+    await this.router.navigate([this.history[this.history.length-2]]);
   }
 
   ngOnInit(): void {
   }
 
-  async logout(){
-    await this.userService.logout();
-    await this.userService.guest();
-    await this.router.navigate([""]);
-  }
+
 
 }

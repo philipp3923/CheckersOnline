@@ -5,6 +5,7 @@ html, body {
   height: 100%;
   margin: 0;
   overflow: hidden;
+  font-family: Bahnschrift;
 }
 
 .material-symbols-outlined {
@@ -95,24 +96,68 @@ a {
   text-justify: auto;
 }
 
-a:hover {
-  color: var(--black);
-  background-color: var(--tertiary);
-  border-radius: 5px;
-}
+
 
 :root {
+  --one: #3A8891;
+  --two: #0E5E6F;
+  --three: #FFEFD6;
+  --four: #F2DEBA;
+  --five: #FF4A4A;
+  --six: #FF9551;
+  --seven: #186839;
   --black: black;
-  --primary: #7fb7be;
-  --background: #d3f3ee;
-  --secondary: #3d57d9;
+  --white: white;
+  --primary: #7E0605;
+  --background: #D5943C;
+  --secondary: #6C492C;
   --warning: #bc2c1a;
-  --tertiary: #7d1538;
-  --item-background: darkgray;
+  --tertiary: #CA480A;
+  --text: #B0A792;
+  --highlight: #186839;
+  --secondary-highlight: #03BF53;
 }
 
 .text-field {
-  color: var(--black);
-  font-family: Bahnschrift;
+  color: var(--black)
+}
 
+ul{
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+li{
+  padding: 8px;
+}
+
+.nav-link{
+  color: var(--four);
+  text-decoration: none;
+  padding: 4px;
+  line-height: 100%;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.nav-link:hover{
+  color: var(--five);
+}
+
+.nav-list{
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  height: 64px;
+}
+
+.nav-element{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
 }
