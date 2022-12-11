@@ -9,6 +9,7 @@ import {DisconnectedComponent} from "./pages/disconnected/disconnected/disconnec
 import {PlayerDetailComponent} from "./pages/player/player-detail/player-detail.component";
 import {PlayerSearchComponent} from "./pages/player/player-search/player-search.component";
 import {FriendsComponent} from "./pages/friends/friends/friends.component";
+import {ViewGameComponent} from "./pages/game/view-game/view-game.component";
 
 const routes: Routes = [
   {
@@ -17,8 +18,12 @@ const routes: Routes = [
     pathMatch: "full"
   },
   {
-    path: 'game/:key',
+    path: 'play/:key',
     component: GameComponent
+  },
+  {
+    path: 'game/:id',
+    component: ViewGameComponent
   },
   {
     path: 'play',

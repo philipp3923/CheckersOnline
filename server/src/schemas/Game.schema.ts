@@ -7,8 +7,6 @@ export default interface GameSchema {
 
     start: number
 
-    finish: number
-
     winner: string
 
     white: string

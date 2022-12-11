@@ -5,6 +5,7 @@ import {catchError, firstValueFrom, throwError} from "rxjs";
 import {AuthResponse} from "../../models/auth-response.model";
 import {UserModel} from "../../models/user.model";
 import UserInfoModel from "../../models/user-info.model";
+import GameModel from "../../models/game.model";
 
 const API = "/api/";
 
@@ -86,6 +87,14 @@ export class ApiService {
 
   public async findUserByEmail(email: string){
     return (await this.get<{user: UserInfoModel[] }>(await this.authTypeAccess(), `user?email=${email}`));
+  }
+
+  public async getFinishedGame(id: string){
+    return (await this.get<GameModel>(await this.authTypeNone(), `/game/${id}`));
+  }
+
+  public async getFinishedGamesOfUser(id: string){
+    return (await this.get<GameModel[]>(await this.authTypeNone(), `/user/${id}/games`));
   }
 
   public async authGuest(): Promise<AuthResponse> {

@@ -100,7 +100,7 @@ export class PlayComponent implements OnInit {
           if(!this.gameService.getGame(key)){
             this.gameService.addWaitingGame(key,0,0,0);
           }
-          this.router.navigate(["/game/"+key]);
+          this.router.navigate(["/play/"+key]).then();
         });
         break
       case "join_casual":
@@ -110,7 +110,7 @@ export class PlayComponent implements OnInit {
             return;
           }
           this.gameService.addWaitingGame(res.key,timeType,time,increment);
-          this.router.navigate(["/game/"+res.key]);
+          this.router.navigate(["/play/"+res.key]).then();
         });
         break
       case "create_custom":
@@ -120,7 +120,7 @@ export class PlayComponent implements OnInit {
             return;
           }
           this.gameService.addWaitingGame(res.key,timeType,time,increment);
-          this.router.navigate(["/game/"+res.key]);
+          this.router.navigate(["/play/"+res.key]).then();
         });
         break
     }

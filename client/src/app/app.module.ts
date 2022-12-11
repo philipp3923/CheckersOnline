@@ -21,6 +21,8 @@ import { UserDeleteComponent } from './pages/profile/user-delete/user-delete.com
 import { PlayerSearchComponent } from './pages/player/player-search/player-search.component';
 import { PlayerDetailComponent } from './pages/player/player-detail/player-detail.component';
 import { FriendsComponent } from './pages/friends/friends/friends.component';
+import { GameHistoryComponent } from './pages/player/game-history/game-history.component';
+import { ViewGameComponent } from './pages/game/view-game/view-game.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import { FriendsComponent } from './pages/friends/friends/friends.component';
     UserDeleteComponent,
     PlayerSearchComponent,
     PlayerDetailComponent,
-    FriendsComponent
+    FriendsComponent,
+    GameHistoryComponent,
+    ViewGameComponent
   ],
   imports: [
     BrowserModule,

@@ -9,6 +9,8 @@ import IsThisUserMiddleware from "../middleware/IsThisUser.middleware";
 import DecryptAccessTokenMiddleware from "../middleware/DecryptAccessToken.middleware";
 import UserController from "../controller/User.controller";
 import UsersController from "../controller/Users.controller";
+import UserGamesController from "../controller/UserGames.controller";
+import GameService from "../../services/Game.service";
 
 export default class UserRouter extends AbstractRouter {
 
@@ -16,6 +18,7 @@ export default class UserRouter extends AbstractRouter {
                 private tokenService: TokenService,
                 private userService: UserService,
                 private accountService: AccountService,
+                private gameService: GameService,
                 private decryptAccessTokenMiddleware: DecryptAccessTokenMiddleware,
                 private isUserParameterValidMiddleware: UserExistsMiddleware,
                 private isThisUserMiddleware: IsThisUserMiddleware) {
@@ -23,7 +26,9 @@ export default class UserRouter extends AbstractRouter {
 
         const userController = new UserController(userService);
         const usersController = new UsersController(userService);
+        const userGamesController = new UserGamesController(gameService);
 
+        this.router.get("/:id/games", (req, res, next) => userGamesController.get(req,res,next));
         this.router.get("/:id", (req, res, next) => userController.get(req,res,next));
         this.router.get("/", (req, res, next) => usersController.get(req,res,next));
 
