@@ -1,28 +1,25 @@
-<h1>Find Players</h1>
-<div class="box-vertical">
+<div class="content search">
   <input (ngModelChange)="filteredInput.next($event)" [ngModel]="filteredInput | async"
          placeholder="Search for username">
 </div>
-<div class="box-vertical">
-  <ul>
-    <li class="player-list" *ngFor="let user of results">
-      <p class="user-name">{{user.username}}</p>
-      <a class="show-detail-link" routerLink="/player/{{user.id}}">
-        <span class="material-symbols-outlined">
-          badge
-        </span>
-      </a>
-      <button (click)="requestFriend(user.id)"
-              *ngIf="user.id !== userService.getUser().id">
-        <span class="material-symbols-outlined">
+<div *ngIf="results.length <= 0 && query" class="content-transparent">No results found.</div>
+
+<ul *ngIf="results.length > 0">
+  <li class="content result" *ngFor="let user of results">
+    <a class="profile-link" routerLink="/player/{{user.id}}">{{user.username}}</a>
+    <button class="icon-button" (click)="requestFriend(user.id)"
+            *ngIf="!(friendService.isFriend(user.id)) && user.id !== userService.getUser().id">
           person_add
-        </span>
-      </button>
-      <button *ngIf="user.id == userService.getUser().id" routerLink="/profile">
+    </button>
+    <button class="icon-button" (click)="removeFriend(user.id)"
+            *ngIf="friendService.isFriend(user.id)">
+          person_remove
+    </button>
+    <button *ngIf="user.id === userService.getUser().id" routerLink="/profile">
         <span class="material-symbols-outlined">
           account_circle
         </span>
-      </button>
-    </li>
-  </ul>
-</div>
+    </button>
+  </li>
+</ul>
+

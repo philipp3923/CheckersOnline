@@ -1,18 +1,33 @@
-ul{
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-}
-
-li{
-
-}
 
 .won{
-  background-color: greenyellow;
+  background-color: var(--seven);
 }
 
 .lost{
-  background-color: indianred;
+  background-color: var(--five);
+}
+
+.content-transparent{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content{
+  display: flex;
+  justify-content: space-between;
+  width: calc(100% - 24px);
+}
+
+a{
+  color: black;
+}
+
+.link-symbol{
+  width: 40px;
+  font-size: 24px;
+}
+
+.game-info-list{
+  max-width: 80vw;
 }

@@ -1,25 +1,28 @@
+.scroll{
+  overflow-y: auto;
+  height: 100vh;
+}
+
+.scroll-block{
+  height: 570px;
+}
+
+.overview{
+}
+
 .waiting{
-  margin: 5px 10% 5px 10%;
-  border-radius: 5px;
-  background-color: var(--primary);
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+  background-color: var(--six);
 }
 
 .active{
-  margin: 5px 10% 5px 10%;
-  border-radius: 5px;
-  background-color: var(--secondary);
+  background-color: var(--seven);
+}
+
+.active, .waiting{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-}
-
-.padded-button {
-  margin: 5px;
 }
 
 .info{
@@ -29,9 +32,13 @@
 }
 
 .timer-box{
-  display: flex;
 }
 
 .timer-sub{
-  width: 20%;
+}
+
+@media (max-width: 390px) {
+  .optional{
+    display: none;
+  }
 }

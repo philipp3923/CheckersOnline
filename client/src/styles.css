@@ -25,8 +25,7 @@ html, body {
 }
 
 h1 {
-  margin: 20px 5% 20px 5%;
-  font-size: 150%;
+  font-size: 20px;
   font-family: Bahnschrift;
   color: var(--black);
 }
@@ -46,35 +45,35 @@ input {
 }
 
 input:focus{
-  border: 2px solid var(--two);
-  outline: 2px solid var(--two);
+  border: 2px solid var(--five);
+  outline: 2px solid var(--five);
 }
 
 input, button{
   font-family: var(--font);
-  font-size: 16px;
+  font-size: 18px ;
   border-radius: 4px;
-  padding: 4px;
   margin: 4px;
-  border: 2px solid var(--one);
+  padding: 4px;
+  border: 2px solid var(--two);
+  box-sizing: border-box;
 }
 
 button{
   background-color: var(--two);
   color: white;
+  user-select: none;
 }
 
-.button {
-  font-family: Bahnschrift;
-  color: var(--black);
-  outline: 2px solid var(--black);
-  border-radius: 5px;
-  padding: 5px;
+.icon-button{
+  font-family: 'Material Symbols Outlined';
+  font-size: 22px;
+  padding: 2px;
 }
 
 button:hover {
-  background-color: var(--secondary);
-  outline: 1px solid var(--black);
+  background-color: var(--five);
+  border: 2px solid var(--five);
 }
 
 .box-horizontal {
@@ -108,8 +107,13 @@ a {
   color: var(--secondary);
   text-align: center;
   text-justify: auto;
+  border-bottom: 2px solid transparent;
+  padding: 4px;
 }
 
+a:hover{
+  border-bottom: 2px solid;
+}
 
 
 :root {
@@ -156,6 +160,7 @@ li{
   text-align: center;
   font-size: 16px;
   cursor: pointer;
+  user-select: none;
 }
 
 .nav-link:hover{
@@ -178,21 +183,58 @@ li{
   user-select: none;
 }
 
-.content{
+.content-transparent, .content{
   flex-grow: 1;
   max-width: 1000px;
-  background-color: var(--four);
   border-radius: 4px;
-  box-shadow: 2px 2px 2px 1px var(--shadow-color);
   margin: 8px;
   padding: 4px;
   width: calc(100% - 24px);
+  overflow-y: auto;
+  max-height: calc(100vh - 152px);
 }
 
+.content{
+  background-color: var(--four);
+  box-shadow: 1px 1px 4px 2px var(--shadow-color);
+}
 
+.game-info{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 110px;
+  height: 48px;
+}
 
+.game-info-list{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+}
 
+.game-info-type{
+  font-size: 12px;
+  user-select: none;
+}
 
+.game-button-container{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.profile-link{
+  width: 200px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: left;
+  padding-left: 8px;
+}
 
 
 
@@ -296,4 +338,7 @@ input[type=range]:focus::-ms-fill-upper {
 
 input[type=range]{
 background-color: transparent;
+  border: 0;
+  margin: 0;
+  padding: 0;
 }

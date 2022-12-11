@@ -5,6 +5,7 @@ import {Observable} from "rxjs";
 import {Router} from "@angular/router";
 import {TimerComponent} from "../../game/timer/timer.component";
 import {UserService} from "../../../core/services/user.service";
+import {DYN_INC_MAP, DYN_TIME_MAP, STAT_TIME_MAP} from "../play/play.component";
 
 @Component({
   selector: 'app-active-games-overview',
@@ -17,11 +18,16 @@ export class ActiveGamesOverviewComponent implements OnInit {
   public waitingGames: WaitingStateModel[];
   public activeGames: GameStateModel[];
   @ViewChild("timerComponent") public timer: TimerComponent | undefined;
+  public DYN_TIME_MAP: string[];
+  public DYN_INC_MAP: string[];
+  public STAT_TIME_MAP: string[];
 
   constructor(private gameService: GameService, public router: Router, private userService: UserService) {
     this.waitingGames = [];
     this.activeGames = [];
-
+    this.DYN_TIME_MAP = DYN_TIME_MAP;
+    this.DYN_INC_MAP = DYN_INC_MAP;
+    this.STAT_TIME_MAP = STAT_TIME_MAP;
     const games = this.gameService.getGames();
     for (const key of Object.keys(games)) {
       if (games[key].waiting) {

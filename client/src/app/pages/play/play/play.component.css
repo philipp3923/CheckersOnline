@@ -9,12 +9,6 @@
   border-bottom: 4px solid transparent;
 }
 
-@media (max-width: 600px)  {
-  .switch{
-    font-size: 16px;
-  }
-}
-
 .switch:hover{
   outline: none;
   border-bottom: 4px solid var(--one);
@@ -74,4 +68,10 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
+}
+
+@media (max-width: 600px)  {
+  .switch, .time-info-text{
+    font-size: 16px;
+  }
 }

@@ -1,48 +1,50 @@
-<div class="content mode-select">
-  <button #join_casual [classList]="state==='join_casual' ? 'highlight switch': 'switch'"
-          (click)="switchJoinCasual()">Join Casual Game
-  </button>
-  <button #join_custom [classList]="state==='join_custom' ? 'highlight switch': 'switch'"
-          (click)="switchJoinCustom()">Join Custom Game
-  </button>
-  <button #create_custom [classList]="state==='create_custom' ? 'highlight switch': 'switch'"
-          (click)="switchCreateCustom()">Create Custom Game
-  </button>
-</div>
 <div class="content">
-  <div class="sub-box" *ngIf="state==='join_custom'">
-    <input class="game-key-input" #game_key placeholder="GAME KEY">
-    <button class="finish-button" (click)="enterGame()">Join</button>
+  <div class="mode-select">
+    <button #join_casual [classList]="state==='join_casual' ? 'highlight switch': 'switch'"
+            (click)="switchJoinCasual()">Join Casual Game
+    </button>
+    <button #join_custom [classList]="state==='join_custom' ? 'highlight switch': 'switch'"
+            (click)="switchJoinCustom()">Join Custom Game
+    </button>
+    <button #create_custom [classList]="state==='create_custom' ? 'highlight switch': 'switch'"
+            (click)="switchCreateCustom()">Create Custom Game
+    </button>
   </div>
-  <div *ngIf="state==='join_casual' || state==='create_custom' ">
-    <div class="sub-box">
-      <button (click)="switchType(0)" [classList]="type===0 ? 'highlight switch': 'switch'">
-        Static Game
-      </button>
-      <button (click)="switchType(1)" [classList]="type===1 ? 'highlight switch': 'switch'">
-        Dynamic Game
-      </button>
+  <div class="content">
+    <div class="sub-box" *ngIf="state==='join_custom'">
+      <input class="game-key-input" #game_key placeholder="GAME KEY">
+      <button class="finish-button" (click)="enterGame()">Join</button>
     </div>
-    <div class="slider-box">
-      <div class="time-info-text">
-        <div>Time:</div>
-        <div>{{type ? DYN_TIME_MAP[time] : STAT_TIME_MAP[time]}}</div>
+    <div *ngIf="state==='join_casual' || state==='create_custom' ">
+      <div class="sub-box">
+        <button (click)="switchType(0)" [classList]="type===0 ? 'highlight switch': 'switch'">
+          Static Game
+        </button>
+        <button (click)="switchType(1)" [classList]="type===1 ? 'highlight switch': 'switch'">
+          Dynamic Game
+        </button>
       </div>
-      <input (input)="updateTime()" #time_slider class="slider" type="range" min="0" value="2"
-             max="{{STAT_TIME_MAP.length-1}}">
+      <div class="slider-box">
+        <div class="time-info-text">
+          <div>Time:</div>
+          <div>{{type ? DYN_TIME_MAP[time] : STAT_TIME_MAP[time]}}</div>
+        </div>
+        <input (input)="updateTime()" #time_slider class="slider" type="range" min="0" value="2"
+               max="{{STAT_TIME_MAP.length-1}}">
+      </div>
+      <div class="slider-box" *ngIf="type===1">
+        <div class="time-info-text">
+          <div>Increment: </div><div>{{DYN_INC_MAP[increment]}}</div></div>
+        <input (input)="updateIncrement()" #increment_slider class="slider" type="range" min="0" value="2"
+               max="{{DYN_INC_MAP.length-1}}" min="0"
+        >
+      </div>
+      <div class="sub-box">
+        <button class="finish-button" (click)="enterGame()">{{state === 'join_casual' ? "Join" : "Create"}}</button>
+      </div>
     </div>
-    <div class="slider-box" *ngIf="type===1">
-      <div class="time-info-text">
-        <div>Increment: </div><div>{{DYN_INC_MAP[increment]}}</div></div>
-      <input (input)="updateIncrement()" #increment_slider class="slider" type="range" min="0" value="2"
-             max="{{DYN_INC_MAP.length-1}}" min="0"
-      >
-    </div>
-    <div class="sub-box">
-      <button class="finish-button" (click)="enterGame()">{{state === 'join_casual' ? "Join" : "Create"}}</button>
-    </div>
-  </div>
 
+  </div>
 </div>
 <app-active-games-overview></app-active-games-overview>
 

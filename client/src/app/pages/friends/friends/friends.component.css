@@ -1,15 +1,25 @@
-
-div{
-  overflow-y: auto;
-}
 ul{
-  list-style: none;
-  padding: 0;
   margin: 0 0 32px;
 }
 
-li{
-  border: 2px solid var(--black);
-  padding: 4px;
-  margin: 8px;
+.online{
+  color: var(--seven);
+}
+
+.offline{
+  color: var(--five);
+}
+
+.content{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.empty{
+  padding: 8px;
+}
+
+.h1{
+  font-size: 20px;
 }

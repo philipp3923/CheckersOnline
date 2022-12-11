@@ -1,8 +1,10 @@
-<div>
-  <button routerLink="/player">BACK TO SEARCH</button>
-  <div>
-    {{userInfo?.username}}
+<div class="content">
+  <div class="info">
+    <a class="profile-link">
+      {{userInfo?.username}}
+    </a>
     <button>ADD FRIEND</button>
   </div>
   <app-game-history [user_id]="userInfo?.id ?? ''" [games]="userGames"></app-game-history>
 </div>
+
