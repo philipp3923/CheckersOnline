@@ -39,11 +39,29 @@ p {
 
 input {
   font-family: Bahnschrift;
-  padding: 4px;
-  margin: 4px;
   font-size: 100%;
   min-width: 100px;
-  color:  var(--secondary);
+  color:  var(--black);
+  max-width: 400px;
+}
+
+input:focus{
+  border: 2px solid var(--two);
+  outline: 2px solid var(--two);
+}
+
+input, button{
+  font-family: var(--font);
+  font-size: 16px;
+  border-radius: 4px;
+  padding: 4px;
+  margin: 4px;
+  border: 2px solid var(--one);
+}
+
+button{
+  background-color: var(--two);
+  color: white;
 }
 
 .button {
@@ -171,10 +189,20 @@ li{
   width: calc(100% - 24px);
 }
 
-button{
-  font-family: var(--font);
-  font-size: 16px;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 input[type=range] {
   height: 32px;

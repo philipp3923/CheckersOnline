@@ -1,5 +1,6 @@
 
 .switch {
+  color: black;
   font-size: 20px;
   background-color: transparent;
   padding: 10px;
@@ -35,8 +36,7 @@
 .game-key-input {
   text-transform: uppercase;
   text-align: center;
-  margin: 5px;
-  min-height: 70%;
+  flex-grow: 1;
 }
 
 .select-box {
