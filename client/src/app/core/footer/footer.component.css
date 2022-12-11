@@ -9,6 +9,7 @@
   background-color: var(--two);
   line-height: 56px;
   display: flex;
+  box-shadow: 0 -2px 2px 1px var(--shadow-color);
 }
 
 
