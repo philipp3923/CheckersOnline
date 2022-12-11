@@ -1,26 +1,111 @@
-<div class="waiting" *ngFor="let info of this.waitingGames; index as i">
-    <p>
-      {{info.key}}, {{info.timeType ? "DYNAMIC" :
-    "STATIC"}}
-    </p>
-    <div>
-      <button class="padded-button">Leave</button>
-      <button class="padded-button" routerLink="/play/{{info.key}}">Play</button>
-    </div>
-</div>
-<div class="active" *ngFor="let info of this.activeGames; index as i">
-    <div class="info">{{info.key}}
-      <div class="timer-box">
-        <div class="timer-sub">WHITE ({{getPlayerTerm(info, 1)}})
-          <app-timer [colorToDisplay]="1" [gameKey]="info.key"></app-timer>
+<div class="overview">
+  <div class="scroll">
+    <div class="content active" *ngFor="let info of this.activeGames; index as i">
+      <div class="game-info-list">
+        <div class="game-info">
+          <div class="game-info-value">
+            {{info.key}}
+          </div>
+          <div class="game-info-type">
+            KEY
+          </div>
         </div>
-        <div class="timer-sub">BLACK ({{getPlayerTerm(info, -1)}})
-          <app-timer [colorToDisplay]="-1" [gameKey]="info.key"></app-timer>
+        <div class="game-info">
+          <div class="game-info-value">
+            {{info.timeType ? "DYNAMIC" :
+            "STATIC"}}
+          </div>
+          <div class="game-info-type">
+            TYPE
+          </div>
+        </div>
+        <div class="game-info optional">
+          <div class="game-info-value">
+            {{info.timeType ? DYN_TIME_MAP[info.time] : STAT_TIME_MAP[info.time]}}
+          </div>
+          <div class="game-info-type">
+            TOTAL-TIME
+          </div>
+        </div>
+        <div class="game-info optional">
+          <div *ngIf="info.timeType" class="game-info-value">
+            {{DYN_INC_MAP[info.increment]}}
+          </div>
+          <div *ngIf="info.timeType" class="game-info-type">
+            TOTAL-INCREMENT
+          </div>
         </div>
       </div>
-      <div class="info">
-        <button>Leave</button>
-        <a routerLink="/game/{{info.key}}">Play</a>
+      <div class="game-info-list">
+        <div class="game-info">
+          <div class="game-info-value">
+            <app-timer [colorToDisplay]="1" [gameKey]="info.key"></app-timer>
+          </div>
+          <div class="game-info-type">WHITE ({{getPlayerTerm(info, 1)}})
+          </div></div>
+        <div class="game-info">
+          <div class="game-info-value">
+            <app-timer [colorToDisplay]="-1" [gameKey]="info.key"></app-timer>
+          </div>
+          <div class="game-info-type">
+            BLACK ({{getPlayerTerm(info, -1)}})
+          </div>
+        </div>
+      </div>
+      <div class="game-button-container">
+        <button class="icon-button">close</button>
+        <button class="icon-button" routerLink="/play/{{info.key}}">
+          chevron_right
+        </button>
       </div>
     </div>
+    <div class="content waiting" *ngFor="let info of this.waitingGames; index as i">
+      <div class="game-info-list">
+        <div class="game-info">
+          <div class="game-info-value">
+            {{info.key}}
+          </div>
+          <div class="game-info-type">
+            KEY
+          </div>
+        </div>
+        <div class="game-info">
+          <div class="game-info-value">
+            {{info.timeType ? "DYNAMIC" :
+            "STATIC"}}
+          </div>
+          <div class="game-info-type">
+            TYPE
+          </div>
+        </div>
+        <div class="game-info">
+          <div class="game-info-value">
+            {{info.timeType ? DYN_TIME_MAP[info.time] : STAT_TIME_MAP[info.time]}}
+          </div>
+          <div class="game-info-type">
+            TOTAL-TIME
+          </div>
+        </div>
+        <div class="game-info">
+          <div *ngIf="info.timeType" class="game-info-value">
+            {{DYN_INC_MAP[info.increment]}}
+          </div>
+          <div *ngIf="info.timeType" class="game-info-type">
+            TOTAL-INCREMENT
+          </div>
+        </div>
+      </div>
+      <div class="game-button-container">
+        <button class="icon-button">close</button>
+        <button class="icon-button" routerLink="/play/{{info.key}}">
+          chevron_right
+        </button>
+      </div>
+    </div>
+    <div class="scroll-block">
+
   </div>
+  </div>
+
+</div>
+

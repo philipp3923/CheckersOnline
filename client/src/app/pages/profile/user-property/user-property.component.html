@@ -1,16 +1,15 @@
-<h1>Change {{name}}</h1>
-<div class="box-vertical">
+<div class="content">
   <div class="text-display">
     <div class="text-field">{{name}}</div>
     <div class="flex-row">
       <div class="text-field">{{value}}</div>
-      <button (click)="switchEdit()">EDIT</button>
+      <button class="icon-button" (click)="switchEdit()">edit</button>
     </div>
   </div>
   <form *ngIf="edit" class="form-display" (submit)="update()">
     <div>
       <div *ngIf="!inputsMatch">
-        {{name}} does not match.
+        {{name}}s do not match.
       </div>
       <input autocomplete="section-{{name.toLowerCase()}} old-{{name.toLowerCase()}}" type="{{name.toLowerCase()}}" #input_old
              *ngIf="needsOldValue" placeholder="Enter old {{name}}">
@@ -19,6 +18,7 @@
       (input)="compareInputs()" #input_repeat *ngIf="repetitionOnUpdate"
              placeholder="Repeat new {{name}}">
     </div>
-    <button>OK</button>
+    <button class="icon-button">done</button>
   </form>
 </div>
+

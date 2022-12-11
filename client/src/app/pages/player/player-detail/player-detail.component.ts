@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import UserInfoModel from "../../../models/user-info.model";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {ApiService} from "../../../core/services/api.service";
 import GameModel from "../../../models/game.model";
 
@@ -13,15 +13,20 @@ export class PlayerDetailComponent implements OnInit {
 
   userInfo: UserInfoModel | undefined;
   userGames: GameModel[];
-  constructor(private route: ActivatedRoute, private apiService: ApiService) {
+  constructor(private route: ActivatedRoute, private apiService: ApiService, private router: Router) {
     this.userGames = [];
     route.params.subscribe(next => this.changeUser(next["id"]));
 
   }
 
   private async changeUser(id: string){
-    this.userInfo = await this.apiService.getUser(id);
-    this.userGames = await this.apiService.getFinishedGamesOfUser(id);
+    try{
+      this.userInfo = await this.apiService.getUser(id);
+      this.userGames = await this.apiService.getFinishedGamesOfUser(id);
+    }catch (e) {
+     await this.router.navigate(["404"]);
+    }
+
   }
 
   ngOnInit(): void {

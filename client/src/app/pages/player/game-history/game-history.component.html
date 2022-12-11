@@ -1,21 +1,45 @@
-<div *ngIf="games.length <= 0">
+<div class="content-transparent" *ngIf="games.length <= 0">
   No games so far...
 </div>
-<div *ngIf="games.length > 0">
-  <ul >
-    <li *ngFor="let game of games" class=" {{isWinner(game) ? 'won' : 'lost'}}" (click)="router.navigate(['/game/',
-    game.id])">
-      <div>
-        {{isWinner(game) ? 'WON' : 'LOST'}}
-        {{getTimeString(game.start)}}
+  <ul *ngIf="games.length > 0">
+    <li *ngFor="let game of games" class="content {{isWinner(game) ? 'won' : 'lost'}}">
+      <div class="game-info-list">
+        <div class="game-info">
+          <div class="game-info-value">
+            {{isWinner(game) ? 'WON' : 'LOST'}}
+          </div>
+          <div class="game-info-type">
+            RESULT
+          </div>
+        </div>
+        <div class="game-info">
+          <div class="game-info-value">
+            {{game.timeType}}
+          </div>
+          <div class="game-info-type">
+            TYPE
+          </div>
+        </div>
+        <div class="game-info">
+          <div class="game-info-value">
+            {{getTimeString(game.start)}}
+          </div>
+          <div class="game-info-type">
+            TIME
+          </div>
+        </div>
+        <a class="game-info" routerLink="/player/{{getEnemyID(game)}}">
+        <div class="game-info-value">Unknown</div>
+        <div class="game-info-type">OPPONENT</div>
+      </a>
       </div>
-      <div>
-        {{game.type}}
-        GameType
+      <div class="game-info-list">
+
+        <a class="game-info link-symbol"
+           routerLink="/game/{{game.id}}"><div class="icon-button">chevron_right</div></a>
       </div>
-          <a routerLink="/player/{{getEnemyID(game)}}">Opponent</a>
-        <a routerLink="/game/{{game.id}}">VIEW GAME</a>
+
     </li>
   </ul>
-</div>
+
 

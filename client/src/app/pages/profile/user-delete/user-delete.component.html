@@ -1,13 +1,12 @@
-<h1>Delete Your Account</h1>
-<div class="box-vertical">
+<div class="content">
   <div class="text-display">
-      <button class="delete-account-button" (click)="switchEdit()">DELETE ACCOUNT</button>
+      <button (click)="switchEdit()">DELETE ACCOUNT</button>
   </div>
   <form *ngIf="edit" class="form-display" (submit)="update()">
     <div>
       <input autocomplete="section-delete password" type="password" #input
              placeholder="Enter password">
     </div>
-    <button>OK</button>
+    <button class="icon-button">done</button>
   </form>
 </div>

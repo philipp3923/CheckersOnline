@@ -80,6 +80,12 @@ export class FriendsService {
     });
   }
 
+  public isFriend(id: string){
+    const onlineIndex = this.onlineFriends.value.map((f) => f.id).indexOf(id);
+    const offlineIndex = this.offlineFriends.value.map((f) => f.id).indexOf(id);
+    return onlineIndex >= 0 || offlineIndex >= 0;
+  }
+
   public acceptFriend(id: string) {
     console.log(id);
     this.socketService.acceptFriend(id, (args) => {

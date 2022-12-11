@@ -3,6 +3,9 @@ import {SocketService} from "../../../core/services/socket.service";
 import {GameService} from "../../../core/services/game.service";
 import {Router} from "@angular/router";
 
+export const STAT_TIME_MAP = ["1 Minute", "5 Minutes", "10 Minutes", "30 Minutes", "1 Hour", "1 Day", "30 Days"];
+export const DYN_TIME_MAP = ["10s", "30s", "1 Minute", "10 Minutes", "30 Minutes", "1 Hour"];
+export const DYN_INC_MAP = ["none", "10 Seconds", "30 Seconds", "1 Minute", "10 Minutes"];
 
 @Component({
   selector: 'app-play',
@@ -15,20 +18,22 @@ export class PlayComponent implements OnInit {
   public type: number;
   public time: number;
   public increment: number;
+  public DYN_TIME_MAP: string[];
+  public DYN_INC_MAP: string[];
+  public STAT_TIME_MAP: string[];
 
   @ViewChild("time_slider") public timeSlider: ElementRef<HTMLInputElement> | undefined;
   @ViewChild("increment_slider") public incrementSlider: ElementRef<HTMLInputElement> | undefined;
   @ViewChild("game_key") public game_keyInput: ElementRef<HTMLInputElement> |undefined;
-
-  STAT_TIME_MAP = ["1 Minute", "5 Minutes", "10 Minutes", "30 Minutes", "1 Hour", "1 Day", "30 Days"];
-  DYN_TIME_MAP = ["10s", "30s", "1 Minute", "10 Minutes", "30 Minutes", "1 Hour"];
-  DYN_INC_MAP = ["none", "10 Seconds", "30 Seconds", "1 Minute", "10 Minutes"];
 
   constructor(private socketService: SocketService, private gameService: GameService, private router: Router) {
     this.type = 0;
     this.time = 2;
     this.increment = 2;
     this.state = "join_custom";
+    this.DYN_TIME_MAP = DYN_TIME_MAP;
+    this.DYN_INC_MAP = DYN_INC_MAP;
+    this.STAT_TIME_MAP = STAT_TIME_MAP;
   }
 
   ngOnInit(): void {
@@ -54,7 +59,7 @@ export class PlayComponent implements OnInit {
         //@ts-ignore
         if(this.timeSlider.nativeElement.value >= this.STAT_TIME_MAP.length - 1){
 
-          this.time = this.STAT_TIME_MAP.length - 1;
+          this.time = STAT_TIME_MAP.length - 1;
           //@ts-ignore
           this.timeSlider.nativeElement.value = this.STAT_TIME_MAP.length - 1;
 
@@ -65,7 +70,7 @@ export class PlayComponent implements OnInit {
         this.timeSlider.nativeElement.max = this.DYN_TIME_MAP.length - 1;
         //@ts-ignore
         if(this.timeSlider.nativeElement.value >= this.DYN_TIME_MAP.length - 1){
-          this.time = this.DYN_TIME_MAP.length - 1;
+          this.time = DYN_TIME_MAP.length - 1;
           //@ts-ignore
           this.timeSlider.nativeElement.value = this.DYN_TIME_MAP.length - 1;
 

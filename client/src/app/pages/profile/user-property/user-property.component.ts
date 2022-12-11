@@ -30,9 +30,13 @@ export class UserPropertyComponent implements OnInit {
 
   public switchEdit(){
     this.edit = !this.edit;
+    this.compareInputs();
   }
 
   public update(){
+    if(this.input?.nativeElement.value === ""){
+      return;
+    }
     if(this.compareInputs() || !this.repetitionOnUpdate){
       this.updateEvent.emit({new: this.input?.nativeElement.value ?? "", old: this.inputOld?.nativeElement.value ?? ""});
       if(this.input){
