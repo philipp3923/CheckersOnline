@@ -104,7 +104,8 @@ const expressServer = new ExpressServer(
     tokenService,
     guestService,
     userService,
-    accountService
+    accountService,
+    gameService
 );
 
 server.listen(5000, () => console.log("listening on port 5000"));

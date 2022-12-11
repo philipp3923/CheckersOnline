@@ -1,0 +1,21 @@
+<div *ngIf="games.length <= 0">
+  No games so far...
+</div>
+<div *ngIf="games.length > 0">
+  <ul >
+    <li *ngFor="let game of games" class=" {{isWinner(game) ? 'won' : 'lost'}}" (click)="router.navigate(['/game/',
+    game.id])">
+      <div>
+        {{isWinner(game) ? 'WON' : 'LOST'}}
+        {{getTimeString(game.start)}}
+      </div>
+      <div>
+        {{game.type}}
+        GameType
+      </div>
+          <a routerLink="/player/{{getEnemyID(game)}}">Opponent</a>
+        <a routerLink="/game/{{game.id}}">VIEW GAME</a>
+    </li>
+  </ul>
+</div>
+

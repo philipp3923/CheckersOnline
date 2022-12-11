@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import PositionModel from "../../../models/position.model";
 import {Observable, Subject} from "rxjs";
+import {PlayModel} from "../../../models/play.model";
 
 //TODO move constants
 const TILES = 8;
@@ -66,6 +67,20 @@ export class BoardComponent implements OnInit, AfterViewInit {
   }
 
   private stateWasSet = false;
+
+  public reset(){
+    this.state = [
+      [0, -1, 0, -1, 0, -1, 0, -1],
+      [-1, 0, -1, 0, -1, 0, -1, 0],
+      [0, -1, 0, -1, 0, -1, 0, -1],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 1, 0, 1, 0, 1, 0],
+      [0, 1, 0, 1, 0, 1, 0, 1],
+      [1, 0, 1, 0, 1, 0, 1, 0]
+    ];
+    this.stateWasSet =true;
+  }
 
   public setState(state: number[][]) {
     this.state = state;
@@ -248,7 +263,6 @@ export class BoardComponent implements OnInit, AfterViewInit {
         this.flushScreen();
         this.drawBackground();
         this.drawPieces();
-
       }
 
     }

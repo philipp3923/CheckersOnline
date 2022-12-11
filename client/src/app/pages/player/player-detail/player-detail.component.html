@@ -4,4 +4,5 @@
     {{userInfo?.username}}
     <button>ADD FRIEND</button>
   </div>
+  <app-game-history [user_id]="userInfo?.id ?? ''" [games]="userGames"></app-game-history>
 </div>

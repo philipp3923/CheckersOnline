@@ -6,4 +6,6 @@ export interface PlayModel {
   start: PositionModel
   target: PositionModel
   time?: number
+
+  time_left?: number
 }

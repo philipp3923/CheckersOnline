@@ -39,4 +39,8 @@ export default class GameRepository{
         return await this.prismaClient.game.findUnique({where: {ext_id: id}, include: {plays: {orderBy: {index: "asc"}}}});
     }
 
+    public async getGamesByAccountID(id: number){
+        return await this.prismaClient.game.findMany({where: {AND: [{OR: [{id_black: id}, {id_white: id}]}, {NOT : {winner: null}}]}, orderBy: {startedAt: "desc"}, take: 50});
+    }
+
 }

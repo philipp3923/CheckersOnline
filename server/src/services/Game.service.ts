@@ -51,7 +51,7 @@ export default class GameService {
             throw new Error("play.time is not defined");
         }
         const player = play.color === Color.WHITE ? game.getWhite() : game.getBlack();
-        await this.gameRepository.savePlay(game.getID(), play.color, play.capture, play.start, play.target, play.time, index, player?.time ?? 0);
+        await this.gameRepository.savePlay(game.getID(), play.color, play.capture, play.start, play.target, play.time, player?.time ?? 0, index);
     }
 
     public async createGame(gameType: GameType, timeType: number, time?: number, increment?: number): Promise<Game> {
@@ -117,6 +117,32 @@ export default class GameService {
         return game;
     }
 
+    public async getFinishedGamesOfUser(id: string): Promise<GameSchema[] |null>{
+        const user = await this.accountRepository.getByExtID(id);
+        if(!user){
+            return null;
+        }
+        const games = await this.gameRepository.getGamesByAccountID(user.id);
+
+        if(!games){
+            return null;
+        }
+
+        return await Promise.all(games.map(async (game): Promise<GameSchema> => {
+            return {
+                black: (await this.accountRepository.getByID(game.id_black))?.ext_id ?? "",
+                start: game.startedAt.getTime(),
+                timeIncrement: game.time_increment,
+                timeLimit: game.time_limit,
+                timeType: game.time_type,
+                type: game.type,
+                white: (await this.accountRepository.getByID(game.id_white))?.ext_id ?? "",
+                winner: game.winner ?? "",
+                id: game.ext_id
+            };
+        }));
+    }
+
     public async getFinishedGame(id: string): Promise<GameSchema |null>{
         const game = await this.gameRepository.getGame(id);
         if(!game || !game.winner || game.plays.length <= 0){
@@ -144,8 +170,7 @@ export default class GameService {
             type: game.type,
             white: (await this.accountRepository.getByID(game.id_white))?.ext_id ?? "",
             winner: game.winner,
-            id: game.ext_id,
-            finish: game.plays[game.plays.length-1].timestamp
+            id: game.ext_id
         };
     }
 

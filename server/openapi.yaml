@@ -327,7 +327,7 @@ paths:
       summary: get finished games of a user
       operationId: GetUserGames
       description: |
-        Get last finished games played by a user. Maximum amount of 30
+        Get last finished games played by a user. Maximum amount of 50
       parameters:
         - in: path
           name: id
@@ -341,14 +341,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - games
-                properties:
-                  games:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Game'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
         '404':
           description: user not found
 
@@ -551,12 +546,18 @@ components:
         type:
           type: string
           enum: [ FRIEND, CASUAL, CUSTOM ]
+        timeType:
+          type: string
+          enum: [ STATIC, DYNAMIC ]
+        timeLimit:
+          type: integer
+          example: 600000
+        timeIncrement:
+          type: integer
+          example: 600000
         start:
           type: integer
           example: 1313289426592
-        finish:
-          type: integer
-          example: 1313292325517
         winner:
           type: string
           enum: [ BLACK, WHITE ]
@@ -596,6 +597,9 @@ components:
         time:
           type: integer
           example: 1313292324221
+        time_left:
+          type: integer
+          example: 1000
         capture:
           type: boolean
           example: true
