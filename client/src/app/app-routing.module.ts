@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
+import {InfoComponent} from "./pages/info/info.component";
 import {PageNotFoundComponent} from "./pages/page-not-found/page-not-found.component";
 import {PlayComponent} from "./pages/play/play/play.component";
 import {GameComponent} from "./pages/game/game/game.component";
@@ -52,6 +53,10 @@ const routes: Routes = [
   {
     path: 'register',
     component: AuthComponent
+  },
+  {
+    path: 'info',
+    component: InfoComponent
   },
   {
     path: 'disconnected',

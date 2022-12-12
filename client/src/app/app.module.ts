@@ -3,6 +3,7 @@ import {BrowserModule} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
+import {InfoComponent} from './pages/info/info.component';
 import {PageNotFoundComponent} from './pages/page-not-found/page-not-found.component';
 import {FooterComponent} from './core/footer/footer.component';
 import {HeaderComponent} from './core/header/header.component';
@@ -28,6 +29,7 @@ import { ViewGameComponent } from './pages/game/view-game/view-game.component';
   declarations: [
     AppComponent,
     PageNotFoundComponent,
+    InfoComponent,
     FooterComponent,
     HeaderComponent,
     BoardComponent,

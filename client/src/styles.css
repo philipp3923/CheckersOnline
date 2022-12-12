@@ -76,18 +76,7 @@ button:hover {
   border: 2px solid var(--five);
 }
 
-.box-horizontal {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  margin: 20px 5% 20px 5%;
-  background-color: var(--primary);
-  border-radius: 10px;
-  padding: 20px 5% 20px 5%;
-  min-width: 260px;
-}
-
-.box-vertical {
+.box-warning {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -96,6 +85,11 @@ button:hover {
   border-radius: 10px;
   padding: 20px 5% 20px 5%;
   min-width: 260px;
+}
+
+.text-warning {
+  color: var(--white);
+  margin: auto;
 }
 
 .centered {
