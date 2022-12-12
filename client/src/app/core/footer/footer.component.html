@@ -1,13 +1,10 @@
-<link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-      xmlns="http://www.w3.org/1999/html"/>
 <div class="footer">
   <ul class="nav-list">
     <li><a class="item-with-icon nav-link" routerLink="/player" routerLinkActive="active">Players<span
-      class="material-symbols-outlined">group</span></a></li>
+      class="material-symbols-outlined">groups</span></a></li>
     <li *ngIf="userService.isUser()"><a class="item-with-icon nav-link" routerLink="/friends"
                                         routerLinkActive="active">Friends<span
-      class="material-symbols-outlined">group</span></a></li>
+      class="material-symbols-outlined">handshake</span></a></li>
     <li><a class="item-with-icon nav-link" routerLink="/play" routerLinkActive="active">Play<span
       class="material-symbols-outlined">play_circle</span></a></li>
     <li *ngIf="!userService.isUser()"><a class="item-with-icon nav-link" routerLink="/login" routerLinkActive="active">Login
@@ -26,3 +23,6 @@
     </li>
   </ul>
 </div>
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      xmlns="http://www.w3.org/1999/html"/>
