@@ -106,7 +106,7 @@ export class ViewGameComponent implements OnInit, AfterViewInit {
     if(!this.game?.plays){
       return;
     }
-    this.currentMoveIndex = this.game.plays.length-1;
+    this.currentMoveIndex = this.game.plays.length;
     this.board?.setState(this.copyState(this.states[this.currentMoveIndex]));
     this.board?.refresh();
   }

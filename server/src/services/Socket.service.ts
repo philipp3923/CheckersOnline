@@ -50,6 +50,10 @@ export default class SocketService{
         return this.socketRepository.getConnection(decryptedToken.id);
     }
 
+    public getConnectionByAccountID(id: string){
+        return this.socketRepository.getConnection(id);
+    }
+
     public async addConnection(connection: Connection){
         await connection.goOnline();
         this.socketRepository.addConnection(connection);

@@ -36,14 +36,15 @@ export default class GameService {
         if (winner === null) {
             throw new Error("Game has no winner!");
         }
+        await this.remove(game);
         await this.gameRepository.finishGame(game.getID(), winner);
     }
 
-    /**
-     * @deprecated Memory leak when removing game, as game persists in Connection object of each player until these players both disconnect
-     */
-    public remove(game: UserGame) {
 
+    public async remove(game: UserGame) {
+        delete this.games[game.getKey()];
+        this.socketService.getConnectionByAccountID(game.getBlack()?.id ?? "")?.removeGame(game);
+        this.socketService.getConnectionByAccountID(game.getWhite()?.id ?? "")?.removeGame(game);
     }
 
     public async savePlay(game: UserGame, play: Play, index: number) {
@@ -82,7 +83,6 @@ export default class GameService {
     }
 
     public emitGameState(game: UserGame) {
-        console.log(game.getKey());
         this.socketService.sendIn(game.getKey(), "gameState", game.getGameState());
     }
 

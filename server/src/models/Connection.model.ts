@@ -74,6 +74,10 @@ export default class ConnectionModel {
         }
     }
 
+    public removeGame(game: UserGameModel){
+        delete this.games[game.getKey()];
+    }
+
     public getGame(key: string){
         return this.games[key] ?? null;
     }

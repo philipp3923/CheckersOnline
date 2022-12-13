@@ -1,4 +1,5 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {MessageService, MessageType} from "../../../core/services/message.service";
 
 @Component({
   selector: 'app-user-property',
@@ -18,7 +19,7 @@ export class UserPropertyComponent implements OnInit {
   public edit: boolean;
   inputsMatch: boolean;
 
-  constructor() {
+  constructor(private messageService: MessageService) {
     this.name = "NO NAME";
     this.value = "NO VALUE";
     this.edit = false;
@@ -35,10 +36,12 @@ export class UserPropertyComponent implements OnInit {
 
   public update(){
     if(this.input?.nativeElement.value === ""){
+      this.messageService.addMessage(MessageType.WARNING, "Fill out all fields.");
       return;
     }
     if(this.compareInputs() || !this.repetitionOnUpdate){
       this.updateEvent.emit({new: this.input?.nativeElement.value ?? "", old: this.inputOld?.nativeElement.value ?? ""});
+      this.messageService.addMessage(MessageType.INFO, "Updated "+this.name+".");
       if(this.input){
         this.input.nativeElement.value = "";
       }

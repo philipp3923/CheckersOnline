@@ -1,4 +1,5 @@
 import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {MessageService, MessageType} from "../../../core/services/message.service";
 
 @Component({
   selector: 'app-user-delete',
@@ -10,7 +11,7 @@ export class UserDeleteComponent implements OnInit {
   @ViewChild("input") input: ElementRef<HTMLInputElement> | undefined;
   @Output() updateEvent: EventEmitter<string>;
 
-  constructor() {
+  constructor(private messageService: MessageService) {
     this.edit = false;
     this.updateEvent = new EventEmitter<string>();
   }
@@ -24,6 +25,7 @@ export class UserDeleteComponent implements OnInit {
 
   update() {
     if(this.input?.nativeElement.value === "" || !this.input){
+      this.messageService.addMessage(MessageType.WARNING, "Fill out all fields.");
       return;
     }
     this.updateEvent.emit(this.input.nativeElement.value);
