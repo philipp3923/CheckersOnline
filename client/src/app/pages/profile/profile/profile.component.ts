@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from "@angular/router";
 import {UserService} from "../../../core/services/user.service";
+import GameModel from "../../../models/game.model";
+import {ApiService} from "../../../core/services/api.service";
 
 @Component({
   selector: 'app-profile',
@@ -10,14 +12,18 @@ import {UserService} from "../../../core/services/user.service";
 export class ProfileComponent implements OnInit {
 
   username : string;
+  id: string;
   email : string;
+  userGames: GameModel[];
 
-  constructor(private router: Router, private userService: UserService) {
+  constructor(private router: Router, private userService: UserService, private apiService: ApiService) {
     if(!this.userService.isUser()){
       this.router.navigate(["/login"]);
     }
     this.username = "";
     this.email = "";
+    this.id="";
+    this.userGames = [];
 
   }
 
@@ -29,6 +35,8 @@ export class ProfileComponent implements OnInit {
     const info = await  this.userService.getInfo();
     this.username = info.username;
     this.email = info.email;
+    this.id = info.id;
+    this.userGames = await this.apiService.getFinishedGamesOfUser(this.id);
   }
 
   async updateEmail(newEmail : string){

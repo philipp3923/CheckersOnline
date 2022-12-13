@@ -24,6 +24,8 @@ import { PlayerDetailComponent } from './pages/player/player-detail/player-detai
 import { FriendsComponent } from './pages/friends/friends/friends.component';
 import { GameHistoryComponent } from './pages/player/game-history/game-history.component';
 import { ViewGameComponent } from './pages/game/view-game/view-game.component';
+import { MessageComponent } from './core/message/message.component';
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
@@ -46,13 +48,15 @@ import { ViewGameComponent } from './pages/game/view-game/view-game.component';
     PlayerDetailComponent,
     FriendsComponent,
     GameHistoryComponent,
-    ViewGameComponent
+    ViewGameComponent,
+    MessageComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule
   ],
   bootstrap: [AppComponent]
 })

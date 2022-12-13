@@ -2,6 +2,7 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {SocketService} from "../../../core/services/socket.service";
 import {GameService} from "../../../core/services/game.service";
 import {Router} from "@angular/router";
+import {MessageService, MessageType} from "../../../core/services/message.service";
 
 export const STAT_TIME_MAP = ["1 Minute", "5 Minutes", "10 Minutes", "30 Minutes", "1 Hour", "1 Day", "30 Days"];
 export const DYN_TIME_MAP = ["10s", "30s", "1 Minute", "10 Minutes", "30 Minutes", "1 Hour"];
@@ -26,7 +27,7 @@ export class PlayComponent implements OnInit {
   @ViewChild("increment_slider") public incrementSlider: ElementRef<HTMLInputElement> | undefined;
   @ViewChild("game_key") public game_keyInput: ElementRef<HTMLInputElement> |undefined;
 
-  constructor(private socketService: SocketService, private gameService: GameService, private router: Router) {
+  constructor(private socketService: SocketService, private gameService: GameService, private router: Router, private messageService: MessageService) {
     this.type = 0;
     this.time = 2;
     this.increment = 2;
@@ -96,10 +97,22 @@ export class PlayComponent implements OnInit {
     switch (this.state){
       case "join_custom":
         const key = this.game_keyInput?.nativeElement.value.toUpperCase();
-        if(!key) return;
+        if(!key){
+          this.messageService.addMessage(MessageType.WARNING, "Please enter a Game Key.");
+          return;
+        }
         this.socketService.joinCustomGame(key, (res)=>{
-          console.log(res);
           if(!res.success){
+            if(res.error === "Game does not exist"){
+              this.messageService.addMessage(MessageType.ERROR, "A Game with the given Key does not exist.");
+            }
+            else if(res.error === "Exceeded amount of possible simultaneous games"){
+              this.messageService.addMessage(MessageType.ERROR, "You have reached the maximum amount of simultaneous" +
+                " games (20).");
+            }
+            else{
+                this.messageService.addMessage(MessageType.ERROR, "You are not allowed to join this game.");
+              }
             return;
           }
           if(!this.gameService.getGame(key)){
@@ -110,8 +123,8 @@ export class PlayComponent implements OnInit {
         break
       case "join_casual":
         this.socketService.joinCasualGame(this.type===1, this.time, this.increment, (res)=>{
-          console.log(res);
           if(!res.success){
+            this.messageService.addMessage(MessageType.ERROR, "We are sorry, this feature has yet to be implemented.");
             return;
           }
           this.gameService.addWaitingGame(res.key,timeType,time,increment);
@@ -122,6 +135,8 @@ export class PlayComponent implements OnInit {
         this.socketService.createCustomGame(this.type===1, this.time, this.increment, (res)=>{
           console.log(res);
           if(!res.success){
+            this.messageService.addMessage(MessageType.ERROR, "You have reached the maximum amount of simultaneous" +
+              " games (20).");
             return;
           }
           this.gameService.addWaitingGame(res.key,timeType,time,increment);

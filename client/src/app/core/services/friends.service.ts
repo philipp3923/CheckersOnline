@@ -4,6 +4,7 @@ import {BehaviorSubject} from "rxjs";
 import UserInfoModel from "../../models/user-info.model";
 import {ApiService} from "./api.service";
 import {SocketService} from "./socket.service";
+import {MessageService, MessageType} from "./message.service";
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class FriendsService {
   private incomingRequests: BehaviorSubject<UserInfoModel[]>;
   private userID: string;
 
-  constructor(private apiService: ApiService, private socketService: SocketService) {
+  constructor(private apiService: ApiService, private socketService: SocketService, private messageService: MessageService) {
     this.userID = "";
     this.onlineFriends = new BehaviorSubject<UserInfoModel[]>([]);
     this.offlineFriends = new BehaviorSubject<UserInfoModel[]>([]);
@@ -76,6 +77,8 @@ export class FriendsService {
     this.socketService.deleteFriend(id, (args) => {
       if (!args.success) {
         console.log(args);
+      }else{
+        this.messageService.addMessage(MessageType.INFO, "Deleted friend.");
       }
     });
   }
@@ -92,6 +95,7 @@ export class FriendsService {
       if (!args.success) {
         console.log(args);
       }
+
     });
   }
 
@@ -167,11 +171,13 @@ export class FriendsService {
     const newIncomingRequests = this.removeFriend(this.incomingRequests.value, newFriend.id);
     if (newIncomingRequests !== null) {
       this.incomingRequests.next(newIncomingRequests);
+      this.messageService.addMessage(MessageType.INFO, "You and "+newFriend.username+" are now friends.");
     }
 
     const newOutgoingRequests = this.removeFriend(this.outgoingRequests.value, newFriend.id);
     if (newOutgoingRequests !== null) {
       this.outgoingRequests.next(newOutgoingRequests);
+      this.messageService.addMessage(MessageType.INFO, newFriend.username+" accepted your friend request.");
     }
 
     if (friendship.online) {
@@ -220,14 +226,18 @@ export class FriendsService {
   private async updateRequestFriend(friendship: FriendshipModel) {
     if (friendship.user === this.userID) {
       const outgoingRequests = this.getOutgoingRequests();
-      outgoingRequests.push(await this.getFriendInfo(friendship.friend));
+      const info = await this.getFriendInfo(friendship.friend);
+      outgoingRequests.push(info);
       this.outgoingRequests.next(outgoingRequests);
+      this.messageService.addMessage(MessageType.INFO, "You sent a friend request to "+info.username+".");
       return;
     }
     if (friendship.friend === this.userID) {
       const incomingRequests = this.getIncomingRequests();
-      incomingRequests.push(await this.getFriendInfo(friendship.user));
+      const info = await this.getFriendInfo(friendship.user);
+      incomingRequests.push(info);
       this.incomingRequests.next(incomingRequests);
+      this.messageService.addMessage(MessageType.INFO, info.username+" sent you a friend request.");
       return;
     }
     console.log("ERROR IN REQUEST FRIEND");

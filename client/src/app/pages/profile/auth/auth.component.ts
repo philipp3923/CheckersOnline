@@ -2,6 +2,7 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {ApiService} from "../../../core/services/api.service";
 import {UserService} from "../../../core/services/user.service";
+import {MessageService, MessageType} from "../../../core/services/message.service";
 
 @Component({
   selector: 'app-auth',
@@ -17,7 +18,7 @@ export class AuthComponent implements OnInit {
   @ViewChild("name_input") nameInput: ElementRef<HTMLInputElement> | undefined;
 
 
-  constructor(private router: Router, private route: ActivatedRoute, private apiService: ApiService, private userService: UserService) {
+  constructor(private router: Router, private route: ActivatedRoute, private apiService: ApiService, private userService: UserService, private messageService: MessageService) {
     this.isLogin = true;
     this.route.url.subscribe((data) => this.onRouteChange(data[0].path));
   }
@@ -33,18 +34,22 @@ export class AuthComponent implements OnInit {
     }
   }
 
-  login() {
+  async login() {
     if (!this.isLoginInputValid()) {
+      this.messageService.addMessage(MessageType.WARNING, "Please fill out all fields.");
       return;
     }
 
     const username = this.nameInput?.nativeElement.value ?? "";
     const password = this.passwordInput?.nativeElement.value ?? "";
 
-    this.apiService.loginUser(username, password)
-      .then((res) => this.userService.login(res.user, res.accessToken, res.refreshToken))
-      .catch(err => console.log(err))
-      .then(()=>this.router.navigate(["/"]));
+    try{
+      const res = await this.apiService.loginUser(username, password);
+      await this.userService.login(res.user, res.accessToken, res.refreshToken);
+      await this.router.navigate(["/"]);
+    } catch(e) {
+      this.messageService.addMessage(MessageType.ERROR, "Wrong username or password.");
+    }
   }
 
   isLoginInputValid() {
@@ -59,8 +64,8 @@ export class AuthComponent implements OnInit {
   }
 
   async register() {
-    console.log("TEST")
     if (!this.isRegisterInputValid()) {
+      this.messageService.addMessage(MessageType.WARNING, "Please fill out all fields.");
       return
     }
     const username = this.nameInput?.nativeElement.value ?? "";
@@ -71,7 +76,7 @@ export class AuthComponent implements OnInit {
       const reg_res = await this.apiService.registerUser(email, username, password);
       this.login();
     }catch (e){
-      console.log(e);
+      this.messageService.addMessage(MessageType.ERROR, "Username or E-Mail is already in use.");
     }
   }
 
