@@ -8,6 +8,10 @@ html, body {
   font-family: Bahnschrift;
 }
 
+.header{
+  z-index: 1;
+}
+
 .material-symbols-outlined {
   font-variation-settings:
     'FILL' 0,

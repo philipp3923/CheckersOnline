@@ -1,11 +1,21 @@
-<div class="content-transparent">
-  <app-user-property (updateEvent)="updateEmail($event.new)" [name]="'E-Mail'" [value]="email"></app-user-property>
-  <app-user-property (updateEvent)="updateUsername($event.new)" [name]="'Username'"
-                     [value]="username"></app-user-property>
-  <app-user-property (updateEvent)="updatePassword($event.old, $event.new)" [name]="'Password'" value="******"
-                     [needsOldValue]="true" [repetitionOnUpdate]="true"></app-user-property>
-  <app-user-delete (updateEvent)="deleteUser($event)"></app-user-delete>
+<div class="overflow">
+  <div class="content">
+    <h1>Profile Settings</h1>
+    <app-user-property (updateEvent)="updateEmail($event.new)" [name]="'E-Mail'" [value]="email"></app-user-property>
+    <app-user-property (updateEvent)="updateUsername($event.new)" [name]="'Username'"
+                       [value]="username"></app-user-property>
+    <app-user-property (updateEvent)="updatePassword($event.old, $event.new)" [name]="'Password'" value="******"
+                       [needsOldValue]="true" [repetitionOnUpdate]="true"></app-user-property>
+    <app-user-delete (updateEvent)="deleteUser($event)"></app-user-delete>
+  </div>
+  <div class="content history">
+    <h1>Game History</h1>
+    <app-game-history [user_id]="id ?? ''" [games]="userGames"></app-game-history>
+    <div class="scroll-block"></div>
+  </div>
 </div>
+
+
 
 
 

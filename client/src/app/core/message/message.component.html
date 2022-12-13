@@ -1,0 +1,8 @@
+
+<div class="message" *ngFor="let message of messageService.current_messages" [@inOutAnimation]
+     class="{{message.type === 0 ? 'info' : message.type === 1 ? 'warning' : 'error'}}">
+  <div class="message-text">
+    {{message.message}}
+  </div>
+  <button class="icon-button" (click)="messageService.removeMessage(message.id)">close</button>
+</div>

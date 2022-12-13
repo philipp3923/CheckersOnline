@@ -1,0 +1,33 @@
+.message{
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%,0);
+  max-width: 800px;
+  width: calc(100vw - 48px);
+  margin-top: 16px;
+  box-shadow: 2px 2px 8px 4px var(--shadow-color);
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.warning{
+  background-color: var(--six);
+}
+
+.info{
+  background-color: var(--seven);
+}
+
+.error{
+  background-color: var(--five);
+}
+
+.message-text{
+  text-overflow: ellipsis;
+  line-break: auto;
+  overflow: hidden;
+  max-height: 60px;
+}
