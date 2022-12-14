@@ -37,7 +37,7 @@ export class PlayerSearchComponent implements OnInit {
   }
 
   async search(query: string) {
-    if(query.length <= 0){
+    if (query.length <= 0) {
       this.results = [];
       this.query = false;
       return;
@@ -45,17 +45,4 @@ export class PlayerSearchComponent implements OnInit {
     this.results = (await this.apiService.findUserByUsername(query)).user;
     this.query = true;
   }
-
-  public requestFriend(id : string){
-    this.socketService.requestFriend(id, (args) => {
-        console.log(args);
-    });
-  }
-
-  public removeFriend(id: string){
-    this.socketService.deleteFriend(id, (args) => {
-      console.log(args);
-    });
-  }
-
 }

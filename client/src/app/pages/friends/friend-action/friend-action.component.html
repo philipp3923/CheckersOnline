@@ -1,0 +1,8 @@
+<button class="icon-button" (click)="requestFriend()"
+        *ngIf="display === 'NOT_RELATED'">
+  person_add
+</button>
+<button class="icon-button" *ngIf="display === 'THIS_USER'" routerLink="/profile">account_circle
+</button>
+<div class="placeholder" *ngIf="display === 'OUTGOING' || display === 'INCOMING' ||display === 'FRIENDS'||display ===
+ 'NO_USER'"></div>

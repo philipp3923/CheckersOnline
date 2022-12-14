@@ -147,12 +147,19 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
   private fitBoard() {
     if (typeof this.box === "undefined" || typeof this.canvas === "undefined") {
-      return
+      return;
     }
-    const w = this.box.nativeElement.clientWidth;
-    const h = this.box.nativeElement.clientHeight;
-    this.canvas.nativeElement.style.width = w > h ? h + "px" : w + "px";
-    this.canvas.nativeElement.style.height = w > h ? h + "px" : w + "px";
+    /*let w = this.box.nativeElement.clientWidth-10;
+    let h = this.box.nativeElement.clientHeight-10;
+    if(document.body.clientHeight < 700 && document.body.clientWidth > 400){
+      this.canvas.nativeElement.style.maxWidth = "300px";
+    }else if(document.body.clientHeight < 900 && document.body.clientWidth > 520){
+      this.canvas.nativeElement.style.maxWidth = "400px";
+    }else{
+      this.canvas.nativeElement.style.maxWidth = "600px";
+    }*/
+    //console.log(document.body.clientHeight);
+
   }
 
   private flushScreen() {

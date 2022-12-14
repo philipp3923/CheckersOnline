@@ -1,13 +1,21 @@
-<div>
-  <div>
 
+<div class="content full">
+  <div class="content information">
+    <div>
+      WHITE
+      <app-timer #white_timer></app-timer>
+    </div>
+    <div>
+      BLACK
+      <app-timer #black_timer></app-timer>
+    </div>
   </div>
-  <app-board #board></app-board>
-  <div class="content">
-    <button (click)="jumpStart()">JUMP TO START</button>
-    <button (click)="previousMove()">PREVIOUS MOVE</button>
-    <button (click)="nextMove()">NEXT MOVE</button>
-    <button (click)="jumpEnd()">JUMP TO END</button>
+    <app-board #board></app-board>
+  <div class="content buttons">
+    <button class="icon-button" (click)="jumpStart()">first_page</button>
+    <button class="icon-button" (click)="previousMove()">chevron_left</button>
+    <button class="icon-button" (click)="nextMove()">chevron_right</button>
+    <button class="icon-button" (click)="jumpEnd()">last_page</button>
   </div>
 
 </div>

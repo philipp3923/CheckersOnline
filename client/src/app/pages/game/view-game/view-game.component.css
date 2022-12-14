@@ -1,5 +1,20 @@
 
-.content{
+.full{
   display: flex;
+  flex-direction: column;
+}
+
+
+.buttons{
+  display: flex;
+  flex-direction: row;
   justify-content: space-around;
+  align-items: center;
+  height: min-content;
+}
+
+.information{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }

@@ -20,7 +20,7 @@
 }
 
 a{
-  color: black;
+  color: var(--secondary_dark);
 }
 
 .link-symbol{
