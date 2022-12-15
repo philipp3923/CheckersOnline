@@ -1,45 +1,51 @@
-<div class="content-transparent" *ngIf="games.length <= 0">
+<div class="content-transparent" *ngIf="gamesWithEnemy.length <= 0">
   No games so far...
 </div>
-  <ul *ngIf="games.length > 0">
-    <li *ngFor="let game of games" class="content {{isWinner(game) ? 'won' : 'lost'}}">
-      <div class="game-info-list">
-        <div class="game-info">
-          <div class="game-info-value">
-            {{isWinner(game) ? 'WON' : 'LOST'}}
-          </div>
-          <div class="game-info-type">
-            RESULT
-          </div>
+<ul *ngIf="gamesWithEnemy.length > 0">
+  <li *ngFor="let gameWithEnemy of gamesWithEnemy" class="content {{isWinner(gameWithEnemy.game) ? 'won' : 'lost'}}">
+    <div class="game-info-list">
+      <div class="game-info">
+        <div class="game-info-value">
+          {{isWinner(gameWithEnemy.game) ? 'WON' : 'LOST'}}
         </div>
-        <div class="game-info">
-          <div class="game-info-value">
-            {{game.timeType}}
-          </div>
-          <div class="game-info-type">
-            TYPE
-          </div>
+        <div class="game-info-type">
+          RESULT
         </div>
-        <div class="game-info">
-          <div class="game-info-value">
-            {{getTimeString(game.start)}}
-          </div>
-          <div class="game-info-type">
-            TIME
-          </div>
+      </div>
+      <div class="game-info">
+        <div class="game-info-value">
+          {{gameWithEnemy.game.timeType}}
         </div>
-        <a class="game-info" routerLink="/player/{{getEnemyID(game)}}">
-        <div class="game-info-value">Unknown</div>
+        <div class="game-info-type">
+          TYPE
+        </div>
+      </div>
+      <div class="game-info">
+        <div class="game-info-value">
+          {{getTimeString(gameWithEnemy.game.start)}}
+        </div>
+        <div class="game-info-type">
+          TIME
+        </div>
+      </div>
+      <a *ngIf="gameWithEnemy.enemy !== null" class="game-info" routerLink="/player/{{gameWithEnemy.enemy.id}}">
+        <div class="game-info-value">{{gameWithEnemy.enemy.username}}</div>
         <div class="game-info-type">OPPONENT</div>
       </a>
-      </div>
-      <div class="game-info-list">
+      <a *ngIf="gameWithEnemy.enemy === null" class="game-info">
+        <div class="game-info-value">Guest</div>
+        <div class="game-info-type">OPPONENT</div>
+      </a>
+    </div>
+    <div class="game-info-list">
 
-        <a class="game-info link-symbol"
-           routerLink="/game/{{game.id}}"><div class="icon-button">chevron_right</div></a>
-      </div>
+      <a class="game-info link-symbol"
+         routerLink="/game/{{gameWithEnemy.game.id}}">
+        <div class="icon-button">chevron_right</div>
+      </a>
+    </div>
 
-    </li>
-  </ul>
+  </li>
+</ul>
 
 

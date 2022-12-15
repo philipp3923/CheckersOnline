@@ -1,10 +1,13 @@
-<div class="content">
-  <div class="info">
+<div class="overflow">
+  <div class="content info">
     <a class="profile-link">
       {{userInfo?.username}}
     </a>
-    <button>ADD FRIEND</button>
+    <app-friend-action [other_id]="userInfo?.id"></app-friend-action>
   </div>
-  <app-game-history [user_id]="userInfo?.id ?? ''" [games]="userGames"></app-game-history>
+  <div class="content history">
+    <h1>Game History</h1>
+  <app-game-history [user_id]="userInfo?.id ?? ''"></app-game-history>
+  </div>
 </div>
 

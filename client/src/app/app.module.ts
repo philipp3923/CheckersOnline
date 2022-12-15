@@ -26,6 +26,7 @@ import { GameHistoryComponent } from './pages/player/game-history/game-history.c
 import { ViewGameComponent } from './pages/game/view-game/view-game.component';
 import { MessageComponent } from './core/message/message.component';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import { FriendActionComponent } from './pages/friends/friend-action/friend-action.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     FriendsComponent,
     GameHistoryComponent,
     ViewGameComponent,
-    MessageComponent
+    MessageComponent,
+    FriendActionComponent
   ],
   imports: [
     BrowserModule,

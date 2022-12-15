@@ -89,6 +89,15 @@ export class FriendsService {
     return onlineIndex >= 0 || offlineIndex >= 0;
   }
 
+  public isIncoming(id: string){
+    console.log(this.incomingRequests.value);
+    return this.incomingRequests.value.map((f) => f.id).indexOf(id) >= 0;
+  }
+
+  public isOutgoing(id: string){
+    return this.outgoingRequests.value.map((f) => f.id).indexOf(id) >= 0;
+  }
+
   public acceptFriend(id: string) {
     console.log(id);
     this.socketService.acceptFriend(id, (args) => {

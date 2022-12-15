@@ -1,0 +1,7 @@
+.content{
+  background-color: var(--five);
+}
+h1{
+  padding-top: 64px;
+  padding-bottom: 64px;
+}

@@ -1,4 +1,5 @@
 <div class="content search">
+  <h1>Search for players</h1>
   <input (ngModelChange)="filteredInput.next($event)" [ngModel]="filteredInput | async"
          placeholder="Search for username">
 </div>
@@ -7,19 +8,7 @@
 <ul *ngIf="results.length > 0">
   <li class="content result" *ngFor="let user of results">
     <a class="profile-link" routerLink="/player/{{user.id}}">{{user.username}}</a>
-    <button class="icon-button" (click)="requestFriend(user.id)"
-            *ngIf="!(friendService.isFriend(user.id)) && user.id !== userService.getUser().id">
-          person_add
-    </button>
-    <button class="icon-button" (click)="removeFriend(user.id)"
-            *ngIf="friendService.isFriend(user.id)">
-          person_remove
-    </button>
-    <button *ngIf="user.id === userService.getUser().id" routerLink="/profile">
-        <span class="material-symbols-outlined">
-          account_circle
-        </span>
-    </button>
+    <app-friend-action [other_id]="user.id"></app-friend-action>
   </li>
 </ul>
 

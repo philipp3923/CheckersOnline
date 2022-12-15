@@ -28,9 +28,20 @@ html, body {
   justify-content: center;
 }
 
+.history{
+  display: flex;
+  flex-direction: column;
+  overflow: hidden !important;
+  max-height: none !important;
+}
+
 h1 {
   font-size: 20px;
   font-family: Bahnschrift;
+  width: 100%;
+  padding: 0;
+  margin:  16px 0 16px 0;
+  text-align: center;
   color: var(--black);
 }
 
@@ -53,12 +64,19 @@ input:focus{
   outline: 2px solid var(--five);
 }
 
+.overflow{
+  max-height: calc(100vh - 128px);
+  overflow: auto;
+}
+
 input, button{
   font-family: var(--font);
   font-size: 18px ;
   border-radius: 4px;
   margin: 4px;
   padding: 4px;
+  min-height: 36px;
+  min-width: 36px;
   border: 2px solid var(--two);
   box-sizing: border-box;
 }
@@ -73,6 +91,8 @@ button{
   font-family: 'Material Symbols Outlined';
   font-size: 22px;
   padding: 2px;
+  min-height: 36px;
+  min-width: 36px;
 }
 
 button:hover {
@@ -129,6 +149,7 @@ a:hover{
   --primary: #7E0605;
   --background: #D5943C;
   --secondary: #6C492C;
+  --secondary_dark: #f6a563;
   --warning: #bc2c1a;
   --tertiary: #CA480A;
   --text: #B0A792;
