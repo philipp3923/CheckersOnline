@@ -25,6 +25,7 @@ import FriendshipService from "./services/Friendship.service";
 import FriendEvent from "./events/Friend.event";
 import ExpressServer from "./express/Express.server";
 import AccountService from "./services/Account.service";
+import LeaveGameEvent from "./events/LeaveGame.event";
 
 //#TODO move constants to central file
 const JWT_REFRESH_SECRET =
@@ -98,6 +99,7 @@ const createCustomGameEvent = new CreateGameEvent(
 const turnEvent = new TurnEvent(socketService);
 const pingEvent = new PingEvent(socketService);
 const friendEvent = new FriendEvent(socketService, friendshipService);
+const leaveGameEvent = new LeaveGameEvent(socketService, gameService);
 
 const expressServer = new ExpressServer(
     app,

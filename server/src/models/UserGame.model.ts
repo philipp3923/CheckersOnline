@@ -72,6 +72,14 @@ export default abstract class UserGameModel extends GameModel {
         return this.board.getWinner();
     }
 
+    public setWinner(color: Color){
+        this.finished = true;
+        if (this.timeout !== null) {
+            clearTimeout(this.timeout);
+        }
+        this.board.setWinner(color);
+    }
+
     public async play(index: number) {
         if (this.finished) {
             return false;
@@ -181,6 +189,9 @@ export default abstract class UserGameModel extends GameModel {
     protected abstract updateTime(player: Player, play: Play): void;
 
     private async handleTimeout(color: Color) {
+        if(this.finished){
+            return;
+        }
         this.finished = true;
         this.board.setWinner(this.switchColor(color));
         const lostPlayer = this.getPlayerFromColor(color);

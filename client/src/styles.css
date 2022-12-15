@@ -93,6 +93,7 @@ button{
   padding: 2px;
   min-height: 36px;
   min-width: 36px;
+  text-align: center;
 }
 
 button:hover {
@@ -156,6 +157,7 @@ a:hover{
   --highlight: #186839;
   --secondary-highlight: #03BF53;
 }
+
 
 .text-field {
   color: var(--black)
@@ -360,4 +362,14 @@ background-color: transparent;
   border: 0;
   margin: 0;
   padding: 0;
+}
+
+.opacity{
+  opacity: 50%;
+}
+
+@media (max-width: 420px) {
+  .optional{
+    display: none;
+  }
 }

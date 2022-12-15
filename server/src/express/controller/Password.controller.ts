@@ -1,6 +1,5 @@
 import AbstractController from "./Abstract.controller";
 import TokenService from "../../services/Token.service";
-import GuestService from "../../services/Guest.service";
 import {NextFunction, Request, Response} from "express";
 import UserService from "../../services/User.service";
 

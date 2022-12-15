@@ -2,7 +2,6 @@ import UserRepository from "../repositories/User.repository";
 import EncryptionRepository from "../repositories/Encryption.repository";
 import IdentityRepository from "../repositories/Identity.repository";
 import AccountRepository from "../repositories/Account.repository";
-import FriendshipRepository from "../repositories/Friendship.repository";
 import {DecryptedToken} from "./Token.service";
 import SocketService from "./Socket.service";
 import FriendshipService from "./Friendship.service";

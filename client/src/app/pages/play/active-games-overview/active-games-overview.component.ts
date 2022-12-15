@@ -6,6 +6,7 @@ import {Router} from "@angular/router";
 import {TimerComponent} from "../../game/timer/timer.component";
 import {UserService} from "../../../core/services/user.service";
 import {DYN_INC_MAP, DYN_TIME_MAP, STAT_TIME_MAP} from "../play/play.component";
+import {SocketService} from "../../../core/services/socket.service";
 
 @Component({
   selector: 'app-active-games-overview',
@@ -22,7 +23,7 @@ export class ActiveGamesOverviewComponent implements OnInit {
   public DYN_INC_MAP: string[];
   public STAT_TIME_MAP: string[];
 
-  constructor(private gameService: GameService, public router: Router, private userService: UserService) {
+  constructor(private gameService: GameService, public router: Router, private userService: UserService, private socketService:SocketService) {
     this.waitingGames = [];
     this.activeGames = [];
     this.DYN_TIME_MAP = DYN_TIME_MAP;
@@ -68,6 +69,16 @@ export class ActiveGamesOverviewComponent implements OnInit {
     }else{
       return "GUEST"
     }
+  }
+
+
+
+  public leaveGame(key: string){
+    this.socketService.leaveGame(key,(res)=>{
+      if(res.success){
+        this.gameService.removeGame(key);
+      }
+    });
   }
 
   ngOnInit(): void {

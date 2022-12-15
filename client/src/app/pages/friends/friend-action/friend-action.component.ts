@@ -17,10 +17,11 @@ export class FriendActionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if(typeof this.other_id === "undefined"){
+    if(typeof this.other_id === "undefined" || this.other_id === null){
       setTimeout(()=>this.ngOnInit(), 50);
       return;
     }
+
     if(!this.userService.isUser()){
       this.display = "NO_USER";
       return;

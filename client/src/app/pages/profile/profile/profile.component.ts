@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {UserService} from "../../../core/services/user.service";
 import GameModel from "../../../models/game.model";
 import {ApiService} from "../../../core/services/api.service";
+import {MessageService, MessageType} from "../../../core/services/message.service";
 
 @Component({
   selector: 'app-profile',
@@ -16,9 +17,9 @@ export class ProfileComponent implements OnInit {
   email : string;
   userGames: GameModel[];
 
-  constructor(private router: Router, private userService: UserService, private apiService: ApiService) {
+  constructor(private router: Router, private userService: UserService, private apiService: ApiService, private messageService: MessageService) {
     if(!this.userService.isUser()){
-      this.router.navigate(["/login"]);
+      this.router.navigate(["/login"]).then();
     }
     this.username = "";
     this.email = "";
@@ -43,8 +44,9 @@ export class ProfileComponent implements OnInit {
     const changeSuccess = await this.userService.changeEmail(newEmail);
     if(changeSuccess){
       await this.refresh();
+      this.messageService.addMessage(MessageType.INFO, "Changed E-Mail.");
     }else{
-      //TODO show error message
+      this.messageService.addMessage(MessageType.ERROR, "This E-Mail is not available.");
     }
   }
 
@@ -52,8 +54,9 @@ export class ProfileComponent implements OnInit {
     const changeSuccess = await this.userService.changeUsername(newUsername);
     if(changeSuccess){
       await this.refresh();
+      this.messageService.addMessage(MessageType.INFO, "Changed Username.");
     }else{
-      //TODO show error message
+      this.messageService.addMessage(MessageType.ERROR, "This E-Username is not available.");
     }
   }
 
@@ -61,17 +64,19 @@ export class ProfileComponent implements OnInit {
     const changeSuccess = await this.userService.changePassword(oldPassword, newPassword);
     if(changeSuccess){
       await this.refresh();
+      this.messageService.addMessage(MessageType.INFO, "Changed Password.");
+
     }else{
-      //TODO show error message
+      this.messageService.addMessage(MessageType.ERROR, "Wrong Password.");
     }
   }
 
   async deleteUser(password: string) {
     const deleteSuccess = await this.userService.deleteUser(password);
     if(deleteSuccess){
-
+      await this.router.navigate([""]);
     }else{
-      //TODO show error message
+      this.messageService.addMessage(MessageType.ERROR, "Something went wrong.");
     }
   }
 }

@@ -9,6 +9,7 @@ import DynamicGame from "../models/DynamicGame.model";
 import GameSchema from "../schemas/Game.schema";
 import AccountRepository from "../repositories/Account.repository";
 import PlaySchema from "../schemas/Play.schema";
+import UserGameModel from "../models/UserGame.model";
 
 export enum TimeType {
     STATIC, DYNAMIC
@@ -41,10 +42,12 @@ export default class GameService {
     }
 
 
-    public async remove(game: UserGame) {
+    public async remove(game: Game) {
         delete this.games[game.getKey()];
-        this.socketService.getConnectionByAccountID(game.getBlack()?.id ?? "")?.removeGame(game);
-        this.socketService.getConnectionByAccountID(game.getWhite()?.id ?? "")?.removeGame(game);
+        if(game instanceof UserGameModel){
+            this.socketService.getConnectionByAccountID(game.getBlack()?.id ?? "")?.removeGame(game);
+            this.socketService.getConnectionByAccountID(game.getWhite()?.id ?? "")?.removeGame(game);
+        }
     }
 
     public async savePlay(game: UserGame, play: Play, index: number) {
@@ -187,4 +190,27 @@ export default class GameService {
         return key;
     }
 
+    async leaveGame(game_key: string, player_id: string) {
+        const game = this.getGame(game_key);
+        if(game === null){
+            throw new Error("Game does not exist");
+        }
+        await this.socketService.sendIn(game_key, "leave", {key: game_key, id: player_id});
+        if(!(game instanceof UserGameModel)) {
+            await this.remove(game);
+            return;
+        }
+        if(!game.getWhite() || !game.getBlack()){
+            await this.remove(game);
+            return;
+        }
+
+        if(game.getPlays().length < 1){
+            await this.remove(game);
+            return;
+        }
+
+        game.setWinner(game.getWhite()?.id === player_id ? Color.BLACK : Color.WHITE);
+        await this.finish(game);
+    }
 }

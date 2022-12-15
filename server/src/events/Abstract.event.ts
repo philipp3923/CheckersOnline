@@ -1,5 +1,4 @@
 import SocketService, {AuthenticatedSocket, SocketResponse} from "../services/Socket.service";
-import {DecryptedToken} from "../services/Token.service";
 import Connection from "../models/Connection.model";
 
 export default abstract class AbstractEvent {

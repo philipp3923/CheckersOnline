@@ -37,8 +37,3 @@
 .timer-sub{
 }
 
-@media (max-width: 390px) {
-  .optional{
-    display: none;
-  }
-}

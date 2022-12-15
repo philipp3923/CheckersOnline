@@ -17,6 +17,10 @@ export default abstract class GameModel {
         this.timestamp = Date.now();
     }
 
+    public getPlays(){
+        return this.plays;
+    }
+
     protected abstract start(): void;
 
     protected abstract finish(): void;

@@ -1,6 +1,5 @@
 import {AfterContentInit, AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import GameStateModel from "../../../models/gamestate.model";
-import {Observable} from "rxjs";
 import {GameService} from "../../../core/services/game.service";
 
 @Component({
@@ -65,8 +64,8 @@ export class TimerComponent implements OnInit, AfterContentInit {
 
     const days = Math.floor(timeInMilliseconds / 86400000);
     const hours =  Math.floor((timeInMilliseconds / 3600000))-days*24;
-    const minutes = Math.floor((timeInMilliseconds / 60000))-hours*60;
-    const seconds = Math.floor((timeInMilliseconds/1000)) -minutes*60;
+    const minutes = Math.floor((timeInMilliseconds / 60000))-hours*60 - days*24*60;
+    const seconds = Math.floor((timeInMilliseconds/1000)) -minutes*60 - hours*3600 - days*24*3600;
     const tenthOfSeconds = Math.floor(timeInMilliseconds/10)%100;
 
     if(days > 0){
@@ -75,7 +74,7 @@ export class TimerComponent implements OnInit, AfterContentInit {
     }
 
     if(hours > 0){
-      this.time = TimerComponent.addZeroPadding(hours) +":"+TimerComponent.addZeroPadding(minutes)+":"+TimerComponent.addZeroPadding(seconds)+","+TimerComponent.addZeroPadding(tenthOfSeconds);
+      this.time = TimerComponent.addZeroPadding(hours) +":"+TimerComponent.addZeroPadding(minutes)+":"+TimerComponent.addZeroPadding(seconds);
       return
     }
 

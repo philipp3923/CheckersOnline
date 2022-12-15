@@ -15,7 +15,6 @@ export class HeaderComponent implements OnInit {
     this.history = [];
 
     this.router.events.subscribe(()=>{
-      console.log(this.router.url);
       if(this.history.length >= 0 && this.router.url === this.history[this.history.length-1] || this.router.url === "/404"){
         return;
       }

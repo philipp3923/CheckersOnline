@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {SocketService} from "../../../core/services/socket.service";
 import {FriendsService} from "../../../core/services/friends.service";
-import {BehaviorSubject} from "rxjs";
 import UserInfoModel from "../../../models/user-info.model";
 
 @Component({

@@ -18,3 +18,15 @@
   flex-direction: row;
   justify-content: space-between;
 }
+
+.game-info-list{
+  justify-content: center;
+}
+
+a{
+  padding: 0;
+  max-width: 100px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}

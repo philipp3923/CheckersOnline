@@ -1,7 +1,6 @@
 import {PrismaClient} from "@prisma/client";
 import {Color, Location} from "../models/Board.model";
 import {GameType} from "../models/Game.model";
-import {TimeType} from "../services/Game.service";
 
 export default class GameRepository{
 

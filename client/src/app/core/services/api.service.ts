@@ -3,7 +3,6 @@ import {TokenModel} from "../../models/token.model";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {catchError, firstValueFrom, throwError} from "rxjs";
 import {AuthResponse} from "../../models/auth-response.model";
-import {UserModel} from "../../models/user.model";
 import UserInfoModel from "../../models/user-info.model";
 import GameModel from "../../models/game.model";
 

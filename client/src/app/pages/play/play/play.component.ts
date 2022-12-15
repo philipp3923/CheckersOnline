@@ -4,7 +4,7 @@ import {GameService} from "../../../core/services/game.service";
 import {Router} from "@angular/router";
 import {MessageService, MessageType} from "../../../core/services/message.service";
 
-export const STAT_TIME_MAP = ["1 Minute", "5 Minutes", "10 Minutes", "30 Minutes", "1 Hour", "1 Day", "30 Days"];
+export const STAT_TIME_MAP = ["1 Minute", "5 Minutes", "10 Minutes", "30 Minutes", "1 Hour", "1 Day"];
 export const DYN_TIME_MAP = ["10s", "30s", "1 Minute", "10 Minutes", "30 Minutes", "1 Hour"];
 export const DYN_INC_MAP = ["none", "10 Seconds", "30 Seconds", "1 Minute", "10 Minutes"];
 

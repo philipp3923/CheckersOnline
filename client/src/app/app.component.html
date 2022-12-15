@@ -1,7 +1,10 @@
 <app-message></app-message>
 <app-header></app-header>
 <div class="main">
-  <div class="page">
+  <div class="page" *ngIf="!connected">
+    <app-disconnected></app-disconnected>
+  </div>
+  <div class="page" *ngIf="connected">
     <router-outlet></router-outlet>
   </div>
 </div>

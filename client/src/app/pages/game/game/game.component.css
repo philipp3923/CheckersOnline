@@ -21,3 +21,74 @@
 .white {
   color: white;
 }
+
+.finished{
+  opacity: 1 !important;
+  z-index: 1;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%,0);
+  margin: 128px 0 0;
+  width: fit-content;
+  box-shadow: 2px 2px 8px 8px var(--shadow-color);
+  border-radius: 8px;
+  padding: 32px;
+  min-width: 256px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-evenly;
+
+  background-color: var(--six);
+}
+.no{
+  color: var(--five);
+}
+.yes{
+  color: var(--seven);
+}
+
+.won{
+  background-color: var(--seven);
+}
+
+.lost{
+  background-color: var(--five);
+}
+
+.aaa{
+  padding: 0;
+  margin: 16px 0 0;
+  height: 38px;
+}
+
+a{
+  padding: 0;
+  max-width: 100px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.game-info-list{
+  justify-content: center;
+}
+
+
+.aa{
+  color: var(--secondary_dark);
+}
+
+h1{
+  height: 38px;
+  margin: 0 0 8px;
+}
+
+.information{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.page-game{
+  height: calc(100% - 24px);
+}

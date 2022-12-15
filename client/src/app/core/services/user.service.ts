@@ -4,7 +4,6 @@ import {ApiService} from "./api.service";
 import {UserModel} from "../../models/user.model";
 import {SocketService} from "./socket.service";
 import {TokenModel} from "../../models/token.model";
-import {retry} from "rxjs";
 import {FriendsService} from "./friends.service";
 
 //#TODO move USER_KEY to Constants File

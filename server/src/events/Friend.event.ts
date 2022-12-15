@@ -1,7 +1,6 @@
 import AbstractEvent from "./Abstract.event";
 import Connection from "../models/Connection.model";
 import SocketService, {SocketResponse} from "../services/Socket.service";
-import GameService from "../services/Game.service";
 import FriendshipService from "../services/Friendship.service";
 
 export default class FriendEvent extends AbstractEvent{

@@ -3,7 +3,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {ApiService} from "../../../core/services/api.service";
 import GameModel from "../../../models/game.model";
 import {BoardComponent} from "../board/board.component";
+import {DYN_INC_MAP, DYN_TIME_MAP, STAT_TIME_MAP} from "../../play/play/play.component";
 import {TimerComponent} from "../timer/timer.component";
+import UserInfoModel from "../../../models/user-info.model";
 
 @Component({
   selector: 'app-view-game', templateUrl: './view-game.component.html', styleUrls: ['./view-game.component.css']
@@ -17,8 +19,16 @@ export class ViewGameComponent implements OnInit, AfterViewInit {
   private states: number[][][];
   private blackTimes: number[];
   private whiteTimes: number[];
+  public blackPlayer: UserInfoModel | undefined;
+  public whitePlayer: UserInfoModel |undefined;
+  public DYN_TIME_MAP: string[];
+  public DYN_INC_MAP: string[];
+  public STAT_TIME_MAP: string[];
 
   constructor(private route: ActivatedRoute, private router: Router, private apiService: ApiService) {
+    this.DYN_TIME_MAP = DYN_TIME_MAP;
+    this.DYN_INC_MAP = DYN_INC_MAP;
+    this.STAT_TIME_MAP = STAT_TIME_MAP;
     this.game = null;
     this.currentMoveIndex = 0;
     this.blackTimes = [];
@@ -34,12 +44,19 @@ export class ViewGameComponent implements OnInit, AfterViewInit {
       this.game = await this.apiService.getFinishedGame(id);
       this.cacheStates();
       this.setTimes();
-      console.log(this.game);
-      console.log(this.blackTimes);
-      console.log(this.whiteTimes);
     } catch (e) {
       await this.router.navigate([]);
       return;
+    }
+    try{
+      this.blackPlayer = await this.apiService.getUser(this.game.black);
+    }catch (e) {
+
+    }
+    try{
+      this.whitePlayer = await this.apiService.getUser(this.game.white);
+    }catch (e) {
+
     }
   }
 
@@ -139,4 +156,9 @@ export class ViewGameComponent implements OnInit, AfterViewInit {
     console.log(this.states.length);
   }
 
+
+  getTimeString(time: number){
+    const date = new Date(time);
+    return `${date.getDate()}.${date.getMonth()+1}.${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+  }
 }

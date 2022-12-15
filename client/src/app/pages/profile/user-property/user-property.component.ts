@@ -41,7 +41,6 @@ export class UserPropertyComponent implements OnInit {
     }
     if(this.compareInputs() || !this.repetitionOnUpdate){
       this.updateEvent.emit({new: this.input?.nativeElement.value ?? "", old: this.inputOld?.nativeElement.value ?? ""});
-      this.messageService.addMessage(MessageType.INFO, "Updated "+this.name+".");
       if(this.input){
         this.input.nativeElement.value = "";
       }

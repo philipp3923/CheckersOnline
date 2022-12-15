@@ -3,14 +3,13 @@ import {
   AfterViewChecked,
   AfterViewInit,
   Component,
-  ElementRef,
+  ElementRef, Input,
   OnInit,
   Output,
   ViewChild
 } from '@angular/core';
 import PositionModel from "../../../models/position.model";
 import {Observable, Subject} from "rxjs";
-import {PlayModel} from "../../../models/play.model";
 
 //TODO move constants
 const TILES = 8;
@@ -49,7 +48,8 @@ export class BoardComponent implements OnInit, AfterViewInit {
   private clickStream = new Subject<PositionModel>();
   @Output()
   public clickObserver: Observable<PositionModel> = this.clickStream.asObservable();
-
+  @Input()
+  public turnBoard: boolean;
   constructor() {
     this.state = [
       [0, -1, 0, -1, 0, -1, 0, -1],
@@ -61,6 +61,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
       [0, 1, 0, 1, 0, 1, 0, 1],
       [1, 0, 1, 0, 1, 0, 1, 0]
     ];
+    this.turnBoard = false;
     this.animation = false;
     window.addEventListener("resize", () => this.fitBoard());
 
@@ -142,7 +143,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
     const tile_size_onscreen = Math.abs((this.boundingRect.bottom - this.boundingRect.top) / TILES);
     const row = Math.floor(($event.clientY - this.boundingRect.top) / tile_size_onscreen);
     const column = Math.floor(($event.clientX - this.boundingRect.left) / tile_size_onscreen);
-    this.clickStream.next({x: column, y: row});
+    this.clickStream.next({x: this.transformX(column), y: this.transformY(row)});
   }
 
   private fitBoard() {
@@ -189,7 +190,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
     this.context.shadowBlur = TILE_SIZE / 10;
     this.context.lineJoin = "round";
     this.context.lineWidth = TILE_SIZE / 20;
-    this.context.strokeRect((position.x * TILE_SIZE), (position.y * TILE_SIZE), TILE_SIZE, TILE_SIZE);
+    this.context.strokeRect((this.transformX(position.x) * TILE_SIZE), (this.transformY(position.y) * TILE_SIZE), TILE_SIZE, TILE_SIZE);
     this.context.shadowBlur = 0;
     this.context.shadowColor = "rgba(0,0,0,0)";
 
@@ -200,7 +201,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
     this.context.fillStyle = "rgba(0,0,150,0.6)";
     for (let i = 0; i < position.length; i++) {
-      this.context.fillRect(position[i].x * TILE_SIZE, position[i].y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+      this.context.fillRect(this.transformX(position[i].x) * TILE_SIZE, this.transformY(position[i].y) * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     }
   }
 
@@ -209,11 +210,16 @@ export class BoardComponent implements OnInit, AfterViewInit {
     const animationOffset = [0.0, 0.0];
     if (move) {
       this.animation = true;
-      const y_movement = move.to.y - move.from.y;
-      animationOffset[0] = (TILE_SIZE * y_movement * frame) / ANIMATION_LENGTH;
-      const x_movement = move.to.x - move.from.x;
-      animationOffset[1] = (TILE_SIZE * x_movement * frame) / ANIMATION_LENGTH;
+      let y_movement = move.to.y - move.from.y;
+      let x_movement = move.to.x - move.from.x;
 
+      if(this.turnBoard){
+        y_movement*=-1;
+        x_movement*=-1;
+      }
+
+      animationOffset[1] = (TILE_SIZE * x_movement * frame) / ANIMATION_LENGTH;
+      animationOffset[0] = (TILE_SIZE * y_movement * frame) / ANIMATION_LENGTH;
       if (move.capture && frame >= ANIMATION_LENGTH / 2.0) {
         this.state[move.to.y - ((move.to.y - move.from.y) / 2.0)][move.to.x - ((move.to.x - move.from.x) / 2.0)] = 0;
       }
@@ -221,25 +227,27 @@ export class BoardComponent implements OnInit, AfterViewInit {
     //draw pieces
     for (let r = 0; r < TILES; r++) {
       for (let c = 0; c < TILES; c++) {
+        const rt = this.transformX(r);
+        const ct = this.transformY(c);
         if (move != null && r == move.from.y && c == move.from.x) {
           if (this.state[r][c] == 1) {
-            this.context.drawImage(<HTMLImageElement>this.wp_img?.nativeElement, (c * TILE_SIZE) + animationOffset[1], (r * TILE_SIZE) + animationOffset[0], TILE_SIZE, TILE_SIZE);
+            this.context.drawImage(<HTMLImageElement>this.wp_img?.nativeElement, (ct * TILE_SIZE) + animationOffset[1], (rt * TILE_SIZE) + animationOffset[0], TILE_SIZE, TILE_SIZE);
           } else if (this.state[r][c] == -1) {
-            this.context.drawImage(<HTMLImageElement>this.bp_img?.nativeElement, (c * TILE_SIZE) + animationOffset[1], (r * TILE_SIZE) + animationOffset[0], TILE_SIZE, TILE_SIZE);
+            this.context.drawImage(<HTMLImageElement>this.bp_img?.nativeElement, (ct * TILE_SIZE) + animationOffset[1], (rt * TILE_SIZE) + animationOffset[0], TILE_SIZE, TILE_SIZE);
           } else if (this.state[r][c] == 2) {
-            this.context.drawImage(<HTMLImageElement>this.wd_img?.nativeElement, (c * TILE_SIZE) + animationOffset[1], (r * TILE_SIZE) + animationOffset[0], TILE_SIZE, TILE_SIZE);
+            this.context.drawImage(<HTMLImageElement>this.wd_img?.nativeElement, (ct * TILE_SIZE) + animationOffset[1], (rt * TILE_SIZE) + animationOffset[0], TILE_SIZE, TILE_SIZE);
           } else if (this.state[r][c] == -2) {
-            this.context.drawImage(<HTMLImageElement>this.bd_img?.nativeElement, (c * TILE_SIZE) + animationOffset[1], (r * TILE_SIZE) + animationOffset[0], TILE_SIZE, TILE_SIZE);
+            this.context.drawImage(<HTMLImageElement>this.bd_img?.nativeElement, (ct * TILE_SIZE) + animationOffset[1], (rt * TILE_SIZE) + animationOffset[0], TILE_SIZE, TILE_SIZE);
           }
         } else {
           if (this.state[r][c] == 1) {
-            this.context.drawImage(<HTMLImageElement>this.wp_img?.nativeElement, (c * TILE_SIZE), (r * TILE_SIZE), TILE_SIZE, TILE_SIZE);
+            this.context.drawImage(<HTMLImageElement>this.wp_img?.nativeElement, (ct * TILE_SIZE), (rt * TILE_SIZE), TILE_SIZE, TILE_SIZE);
           } else if (this.state[r][c] == -1) {
-            this.context.drawImage(<HTMLImageElement>this.bp_img?.nativeElement, (c * TILE_SIZE), (r * TILE_SIZE), TILE_SIZE, TILE_SIZE);
+            this.context.drawImage(<HTMLImageElement>this.bp_img?.nativeElement, (ct * TILE_SIZE), (rt * TILE_SIZE), TILE_SIZE, TILE_SIZE);
           } else if (this.state[r][c] == 2) {
-            this.context.drawImage(<HTMLImageElement>this.wd_img?.nativeElement, (c * TILE_SIZE), (r * TILE_SIZE), TILE_SIZE, TILE_SIZE);
+            this.context.drawImage(<HTMLImageElement>this.wd_img?.nativeElement, (ct * TILE_SIZE), (rt * TILE_SIZE), TILE_SIZE, TILE_SIZE);
           } else if (this.state[r][c] == -2) {
-            this.context.drawImage(<HTMLImageElement>this.bd_img?.nativeElement, (c * TILE_SIZE), (r * TILE_SIZE), TILE_SIZE, TILE_SIZE);
+            this.context.drawImage(<HTMLImageElement>this.bd_img?.nativeElement, (ct * TILE_SIZE), (rt * TILE_SIZE), TILE_SIZE, TILE_SIZE);
           }
         }
 
@@ -249,7 +257,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
     if (move) {
       if (frame < ANIMATION_LENGTH) {
         frame++;
-        console.log(frame);
+        //console.log(frame);
         setTimeout(() => {
           this.flushScreen();
           this.drawBackground();
@@ -264,8 +272,8 @@ export class BoardComponent implements OnInit, AfterViewInit {
         if (this.state[move.to.y][move.to.x] > 0 && move.to.y == 0 || this.state[move.to.y][move.to.x] < 0 && move.to.y == 7) {
           this.state[move.to.y][move.to.x] *= 2;
         }
-        console.log("AFTER ANIMATION");
-        console.table(this.state);
+        //console.log("AFTER ANIMATION");
+        //console.table(this.state);
         this.animation = false;
         this.flushScreen();
         this.drawBackground();
@@ -273,5 +281,13 @@ export class BoardComponent implements OnInit, AfterViewInit {
       }
 
     }
+  }
+
+  public transformX(x: number){
+    return this.turnBoard ? 7-x : x;
+  }
+
+  public transformY(y: number){
+    return this.turnBoard? 7-y : y;
   }
 }

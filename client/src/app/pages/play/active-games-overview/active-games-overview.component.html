@@ -53,7 +53,7 @@
         </div>
       </div>
       <div class="game-button-container">
-        <button class="icon-button">close</button>
+        <button class="icon-button" (click)="leaveGame(info.key)">close</button>
         <button class="icon-button" routerLink="/play/{{info.key}}">
           chevron_right
         </button>
@@ -96,7 +96,7 @@
         </div>
       </div>
       <div class="game-button-container">
-        <button class="icon-button">close</button>
+        <button class="icon-button" (click)="leaveGame(info.key)">close</button>
         <button class="icon-button" routerLink="/play/{{info.key}}">
           chevron_right
         </button>

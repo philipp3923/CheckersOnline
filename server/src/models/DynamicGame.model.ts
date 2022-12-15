@@ -2,7 +2,6 @@ import UserGameModel, {GameState, Player} from "./UserGame.model";
 import {Play} from "./Board.model";
 import GameService from "../services/Game.service";
 import {GameType} from "./Game.model";
-import {staticTimes} from "./StaticGame.model";
 
 const dynamicTimes: number[] = [10*1000, 30*1000, 60*1000,10*60*1000, 30*60*1000,60*60*1000];
 const dynamicIncrements: number[] = [0,10*1000, 30*1000, 60*1000,10*60*1000];

@@ -20,6 +20,7 @@ export class GameService {
     this.gamesSubject = new Subject<{[p: string]: GameStateModel | WaitingStateModel}>();
     this.socketService.addGameStateListener((gameState: GameStateModel)=>this.updateGameState(gameState));
     this.socketService.addWelcomeListener((res:any)=> this.load(res.games));
+    this.socketService.addGameLeaveListener((res:any)=>this.removeGame(res.key));
   }
 
   public addWaitingGame(key: string, timeType: number, time: number, increment: number){
@@ -42,6 +43,12 @@ export class GameService {
     return this.games[key] ?? null;
   }
 
+  public removeGame(key: string){
+    delete this.games[key];
+    this.gamesSubject.next(this.games);
+    this.games_subjects[key].complete();
+  }
+
   public getGames(){
     return this.games;
   }
@@ -53,6 +60,13 @@ export class GameService {
       this.games_subjects[gameState.key] = new Subject<GameStateModel | WaitingStateModel>();
     }
     this.games_subjects[gameState.key].next(gameState);
+
+    if(gameState.winner){
+      delete this.games[gameState.key];
+      delete this.games_subjects[gameState.key];
+      this.gamesSubject.next(this.games);
+    }
+
   }
 
   /**
