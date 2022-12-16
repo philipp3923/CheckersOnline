@@ -1,7 +1,7 @@
 import UserService from "../../services/User.service";
 import TokenService, {Role} from "../../services/Token.service";
 import AbstractController from "./Abstract.controller";
-import {Request, Response, NextFunction} from "express";
+import {NextFunction, Request, Response} from "express";
 
 export default class LoginController extends AbstractController {
 
@@ -19,7 +19,7 @@ export default class LoginController extends AbstractController {
 
         const user_id = await this.userService.getByUsername(username);
 
-        if(user_id === null){
+        if (user_id === null) {
             res.status(404).send();
             return;
         }

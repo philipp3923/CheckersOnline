@@ -13,8 +13,7 @@
 }
 
 
-
-.item-with-icon{
+.item-with-icon {
   display: flex;
   flex-direction: column-reverse;
 }

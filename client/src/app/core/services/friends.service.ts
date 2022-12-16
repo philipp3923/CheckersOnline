@@ -77,24 +77,24 @@ export class FriendsService {
     this.socketService.deleteFriend(id, (args) => {
       if (!args.success) {
         console.log(args);
-      }else{
+      } else {
         this.messageService.addMessage(MessageType.INFO, "Deleted friend.");
       }
     });
   }
 
-  public isFriend(id: string){
+  public isFriend(id: string) {
     const onlineIndex = this.onlineFriends.value.map((f) => f.id).indexOf(id);
     const offlineIndex = this.offlineFriends.value.map((f) => f.id).indexOf(id);
     return onlineIndex >= 0 || offlineIndex >= 0;
   }
 
-  public isIncoming(id: string){
+  public isIncoming(id: string) {
     console.log(this.incomingRequests.value);
     return this.incomingRequests.value.map((f) => f.id).indexOf(id) >= 0;
   }
 
-  public isOutgoing(id: string){
+  public isOutgoing(id: string) {
     return this.outgoingRequests.value.map((f) => f.id).indexOf(id) >= 0;
   }
 
@@ -180,13 +180,13 @@ export class FriendsService {
     const newIncomingRequests = this.removeFriend(this.incomingRequests.value, newFriend.id);
     if (newIncomingRequests !== null) {
       this.incomingRequests.next(newIncomingRequests);
-      this.messageService.addMessage(MessageType.INFO, "You and "+newFriend.username+" are now friends.");
+      this.messageService.addMessage(MessageType.INFO, "You and " + newFriend.username + " are now friends.");
     }
 
     const newOutgoingRequests = this.removeFriend(this.outgoingRequests.value, newFriend.id);
     if (newOutgoingRequests !== null) {
       this.outgoingRequests.next(newOutgoingRequests);
-      this.messageService.addMessage(MessageType.INFO, newFriend.username+" accepted your friend request.");
+      this.messageService.addMessage(MessageType.INFO, newFriend.username + " accepted your friend request.");
     }
 
     if (friendship.online) {
@@ -238,7 +238,7 @@ export class FriendsService {
       const info = await this.getFriendInfo(friendship.friend);
       outgoingRequests.push(info);
       this.outgoingRequests.next(outgoingRequests);
-      this.messageService.addMessage(MessageType.INFO, "You sent a friend request to "+info.username+".");
+      this.messageService.addMessage(MessageType.INFO, "You sent a friend request to " + info.username + ".");
       return;
     }
     if (friendship.friend === this.userID) {
@@ -246,7 +246,7 @@ export class FriendsService {
       const info = await this.getFriendInfo(friendship.user);
       incomingRequests.push(info);
       this.incomingRequests.next(incomingRequests);
-      this.messageService.addMessage(MessageType.INFO, info.username+" sent you a friend request.");
+      this.messageService.addMessage(MessageType.INFO, info.username + " sent you a friend request.");
       return;
     }
     console.log("ERROR IN REQUEST FRIEND");

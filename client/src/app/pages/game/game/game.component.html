@@ -1,25 +1,86 @@
-
-<div class="info" *ngIf="!game?.waiting">
-  <div>
-    <img style="display: none;" #wp src="assets/board/wp.png" height="32px"/>
-    <div class="user white">
-      <p class="name white">WHITE</p>
-      <app-timer #player_timer></app-timer>
+<div *ngIf="won !== null" class="content finished {{won ? 'won' : 'lost' }}">
+  <h1>{{won ? 'You won!' : 'You lost!' }}</h1>
+  <div>{{end_reason}}</div>
+  <a class="icon-button aaa aa" routerLink="/play">chevron_right</a>
+</div>
+<div *ngIf="end" class="content finished ">
+  <h1>Game aborted.</h1>
+  <div>{{end_reason}}</div>
+  <a class="icon-button" routerLink="/play">chevron_right</a>
+</div>
+<div class="content page-game {{won !== null || end ? 'opacity' : ''}}">
+  <div *ngIf="game?.waiting" class="content information">
+    <button (click)="copy()" class="icon-button">content_copy</button>
+    <div class="game-info-list">
+      <div class="game-info">
+        <div class="game-info-value">
+          {{key}}
+        </div>
+        <div class="game-info-type">
+          KEY
+        </div>
+      </div>
+    </div>
+    <button (click)="share()" class="icon-button">ios_share</button>
+  </div>
+  <div *ngIf="!game?.waiting" class="content information">
+    <div class="game-info-list">
+      <div class="game-info">
+        <div class="game-info-value">
+          <app-timer #white_timer></app-timer>
+        </div>
+        <a *ngIf="whitePlayer" class="game-info aaa" class="game-info-type" routerLink="/player/{{whitePlayer.id}}">
+          WHITE ({{whitePlayer.username}})
+        </a>
+        <div *ngIf="!whitePlayer" class="game-info" class="game-info-type">
+          WHITE (Guest)
+        </div>
+      </div>
+    </div>
+    <div class="game-info-list">
+      <div class="game-info optional">
+        <div class="game-info-value">
+          {{key}}
+        </div>
+        <div class="game-info-type">
+          KEY
+        </div>
+      </div>
+      <div class="game-info">
+        <div class="game-info-value {{hasNextTurn()? 'yes' : 'no'}}">
+          {{hasNextTurn() ? "YOU" : "ENEMY"}}
+        </div>
+        <div class="game-info-type">
+          NEXT TURN
+        </div>
+      </div>
+      <div class="game-info optional">
+        <div class="game-info-value">
+          {{game?.timeType ? "STATIC" :
+          "DYNAMIC"}}
+        </div>
+        <div class="game-info-type">
+          TYPE
+        </div>
+      </div>
+    </div>
+    <div class="game-info-list">
+      <div class="game-info">
+        <div class="game-info-value">
+          <app-timer #black_timer></app-timer>
+        </div>
+        <a *ngIf="blackPlayer" class="game-info" class="game-info-type" routerLink="/player/{{blackPlayer.id}}">
+          BLACK ({{blackPlayer.username}})
+        </a>
+        <div *ngIf="!blackPlayer" class="game-info" class="game-info-type">
+          BLACK (Guest)
+        </div>
+      </div>
     </div>
   </div>
-  <div>
-    <div class="user black">
-      <p class="name black">BLACK</p>
-      <app-timer #enemy_timer></app-timer>
-    </div>
-    <img style="display: none;" #bp src="assets/board/bp.png" height="32px"/>
+  <div class="content-transparent">
+    <app-board #board [turnBoard]="playerColor === -1"></app-board>
   </div>
 </div>
-<div class="info" *ngIf="game?.waiting">
-  <p>
-    Waiting for Opponent to join...
-  </p>
-</div>
 
-<app-board #board ></app-board>
 

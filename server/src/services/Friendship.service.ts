@@ -94,7 +94,7 @@ export default class FriendshipService {
 
                 const friend_id = user_acc.ext_id === user_id ? friend_acc.ext_id : user_acc.ext_id;
 
-                if(friendship.type === "ACTIVE"){
+                if (friendship.type === "ACTIVE") {
                     return {
                         user: user_acc.ext_id,
                         friend: friend_acc.ext_id,

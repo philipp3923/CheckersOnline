@@ -1,5 +1,4 @@
-import SocketService, {AuthenticatedSocket, SocketResponse} from "../services/Socket.service";
-import {DecryptedToken} from "../services/Token.service";
+import SocketService, {SocketResponse} from "../services/Socket.service";
 import Connection from "../models/Connection.model";
 
 export default abstract class AbstractEvent {
@@ -8,7 +7,7 @@ export default abstract class AbstractEvent {
         this.socketService.addEvent(this);
     }
 
-    public getEvent(){
+    public getEvent() {
         return this.event;
     }
 

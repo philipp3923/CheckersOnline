@@ -3,7 +3,7 @@ import {NextFunction, Request, Response} from "express";
 import TokenService from "../../services/Token.service";
 import AccountService from "../../services/Account.service";
 
-export default class LogoutController extends AbstractController{
+export default class LogoutController extends AbstractController {
 
     constructor(private tokenService: TokenService, private accountService: AccountService) {
         super();

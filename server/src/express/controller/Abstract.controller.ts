@@ -1,27 +1,27 @@
-import express, {Request, Response, NextFunction} from "express";
+import {NextFunction, Request, Response} from "express";
 
 
-export default abstract class AbstractController{
+export default abstract class AbstractController {
 
 
-    public async get(req: Request, res: Response, next: NextFunction): Promise<void>{
+    public async get(req: Request, res: Response, next: NextFunction): Promise<void> {
         throw new Error("not implemented");
     }
 
 
-    public async post(req: Request, res: Response, next: NextFunction): Promise<void>{
+    public async post(req: Request, res: Response, next: NextFunction): Promise<void> {
         throw new Error("not implemented");
     }
 
-    public async delete(req: Request, res: Response, next: NextFunction): Promise<void>{
+    public async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
         throw new Error("not implemented");
     }
 
-    public async patch(req: Request, res: Response, next: NextFunction): Promise<void>{
+    public async patch(req: Request, res: Response, next: NextFunction): Promise<void> {
         throw new Error("not implemented");
     }
 
-    public async put(req: Request, res: Response, next: NextFunction): Promise<void>{
+    public async put(req: Request, res: Response, next: NextFunction): Promise<void> {
         throw new Error("not implemented");
     }
 

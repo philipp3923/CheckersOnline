@@ -11,56 +11,58 @@ import UserInfoModel from "../../../models/user-info.model";
 })
 export class GameHistoryComponent implements OnInit {
 
-  @Input() set user_id(value: string){
-    this._user_id = value;
-    this.ngOnInit();
-  }
+  gamesWithEnemy: { game: GameModel, enemy: UserInfoModel | null }[];
 
-  private _user_id: string;
-  gamesWithEnemy: {game: GameModel, enemy: UserInfoModel | null}[];
   constructor(private apiService: ApiService, public router: Router) {
     this.gamesWithEnemy = [];
     this._user_id = "";
   }
 
+  private _user_id: string;
+
+  @Input() set user_id(value: string) {
+    this._user_id = value;
+    this.ngOnInit();
+  }
+
   ngOnInit(): void {
-    if(this._user_id === ""){
+    if (this._user_id === "") {
       return;
     }
     this.retrieveGames().then();
   }
 
-  private async retrieveGames(){
-    console.log(this._user_id);
-    this.gamesWithEnemy = [];
-    const games: GameModel[] = await this.apiService.getFinishedGamesOfUser(this._user_id);
-    for(let game of games){
-      this.gamesWithEnemy.push({game: game, enemy: await this.getEnemy(game)});
-    }
+  isWinner(game: GameModel) {
+    return game.winner === (game.white === this._user_id ? "WHITE" : "BLACK");
   }
 
-  isWinner(game: GameModel){
-    return game.winner === (game.white === this._user_id? "WHITE" : "BLACK");
-  }
-
-  async getGamesWithEnemy(){
+  async getGamesWithEnemy() {
 
   }
 
-  async getEnemy(game: GameModel){
-    try{
-      return (await this.apiService.getUser(game.white === this._user_id? game.black : game.white));
-    }catch (e) {
+  async getEnemy(game: GameModel) {
+    try {
+      return (await this.apiService.getUser(game.white === this._user_id ? game.black : game.white));
+    } catch (e) {
       return null;
     }
   }
 
-  getEnemyID(game: GameModel){
-    return game.white === this._user_id? game.black : game.white;
+  getEnemyID(game: GameModel) {
+    return game.white === this._user_id ? game.black : game.white;
   }
 
-  getTimeString(time: number){
+  getTimeString(time: number) {
     const date = new Date(time);
-    return `${date.getDate()}.${date.getMonth()}.${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+    return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+  }
+
+  private async retrieveGames() {
+    console.log(this._user_id);
+    this.gamesWithEnemy = [];
+    const games: GameModel[] = await this.apiService.getFinishedGamesOfUser(this._user_id);
+    for (let game of games) {
+      this.gamesWithEnemy.push({game: game, enemy: await this.getEnemy(game)});
+    }
   }
 }

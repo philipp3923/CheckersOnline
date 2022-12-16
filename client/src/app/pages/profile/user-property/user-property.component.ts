@@ -13,8 +13,8 @@ export class UserPropertyComponent implements OnInit {
   @Input() repetitionOnUpdate: boolean;
   @Input() needsOldValue: boolean;
   @ViewChild("input") input: ElementRef<HTMLInputElement> | undefined;
-  @ViewChild("input_repeat") inputRepeat: ElementRef<HTMLInputElement> |undefined;
-  @ViewChild("input_old") inputOld: ElementRef<HTMLInputElement> |undefined;
+  @ViewChild("input_repeat") inputRepeat: ElementRef<HTMLInputElement> | undefined;
+  @ViewChild("input_old") inputOld: ElementRef<HTMLInputElement> | undefined;
   @Output() updateEvent: EventEmitter<{ new: string, old: string }>;
   public edit: boolean;
   inputsMatch: boolean;
@@ -29,33 +29,35 @@ export class UserPropertyComponent implements OnInit {
     this.inputsMatch = true;
   }
 
-  public switchEdit(){
+  public switchEdit() {
     this.edit = !this.edit;
     this.compareInputs();
   }
 
-  public update(){
-    if(this.input?.nativeElement.value === ""){
+  public update() {
+    if (this.input?.nativeElement.value === "") {
       this.messageService.addMessage(MessageType.WARNING, "Fill out all fields.");
       return;
     }
-    if(this.compareInputs() || !this.repetitionOnUpdate){
-      this.updateEvent.emit({new: this.input?.nativeElement.value ?? "", old: this.inputOld?.nativeElement.value ?? ""});
-      this.messageService.addMessage(MessageType.INFO, "Updated "+this.name+".");
-      if(this.input){
+    if (this.compareInputs() || !this.repetitionOnUpdate) {
+      this.updateEvent.emit({
+        new: this.input?.nativeElement.value ?? "",
+        old: this.inputOld?.nativeElement.value ?? ""
+      });
+      if (this.input) {
         this.input.nativeElement.value = "";
       }
-      if(this.inputOld){
+      if (this.inputOld) {
         this.inputOld.nativeElement.value = "";
       }
-      if(this.inputRepeat){
+      if (this.inputRepeat) {
         this.inputRepeat.nativeElement.value = "";
       }
       this.edit = false;
     }
   }
 
-  public compareInputs(){
+  public compareInputs() {
     this.inputsMatch = ((this.input?.nativeElement.value === this.inputRepeat?.nativeElement.value)) || !this.repetitionOnUpdate;
     return this.inputsMatch;
   }

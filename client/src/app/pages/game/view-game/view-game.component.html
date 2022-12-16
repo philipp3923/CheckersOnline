@@ -1,21 +1,65 @@
-
 <div class="content full">
   <div class="content information">
-    <div>
-      WHITE
-      <app-timer #white_timer></app-timer>
+    <div class="game-info-list">
+      <div class="game-info">
+        <div class="game-info-value">
+          <app-timer #white_timer></app-timer>
+        </div>
+        <a *ngIf="whitePlayer" class="game-info" class="game-info-type" routerLink="/player/{{game?.white}}">
+          WHITE ({{whitePlayer.username}})
+        </a>
+        <div *ngIf="!whitePlayer" class="game-info" class="game-info-type">
+          WHITE (Guest)
+        </div>
+      </div>
     </div>
-    <div>
-      BLACK
-      <app-timer #black_timer></app-timer>
+    <div class="game-info-list">
+      <div class="game-info">
+        <div class="game-info-value">
+          {{getTimeString(game?.start ?? 0)}}
+        </div>
+        <div class="game-info-type">
+          TIME
+        </div>
+      </div>
+      <div class="game-info optional">
+        <div class="game-info-value">
+          {{game?.timeType === 'DYNAMIC' ? "DYNAMIC" :
+          "STATIC"}}
+        </div>
+        <div class="game-info-type">
+          TYPE
+        </div>
+      </div>
+      <div class="game-info">
+        <div class="game-info-value">
+          {{game?.winner}}
+        </div>
+        <div class="game-info-type">
+          WINNER
+        </div>
+      </div>
+    </div>
+    <div class="game-info-list">
+      <div class="game-info">
+        <div class="game-info-value">
+          <app-timer #black_timer></app-timer>
+        </div>
+        <a *ngIf="blackPlayer" class="game-info" class="game-info-type" routerLink="/player/{{game?.black}}">
+          BLACK ({{blackPlayer.username}})
+        </a>
+        <div *ngIf="!blackPlayer" class="game-info" class="game-info-type">
+          BLACK (Guest)
+        </div>
+      </div>
     </div>
   </div>
-    <app-board #board></app-board>
+  <app-board #board></app-board>
   <div class="content buttons">
-    <button class="icon-button" (click)="jumpStart()">first_page</button>
-    <button class="icon-button" (click)="previousMove()">chevron_left</button>
-    <button class="icon-button" (click)="nextMove()">chevron_right</button>
-    <button class="icon-button" (click)="jumpEnd()">last_page</button>
+    <button (click)="jumpStart()" class="icon-button">first_page</button>
+    <button (click)="previousMove()" class="icon-button">chevron_left</button>
+    <button (click)="nextMove()" class="icon-button">chevron_right</button>
+    <button (click)="jumpEnd()" class="icon-button">last_page</button>
   </div>
 
 </div>

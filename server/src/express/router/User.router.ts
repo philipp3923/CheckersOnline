@@ -28,9 +28,9 @@ export default class UserRouter extends AbstractRouter {
         const usersController = new UsersController(userService);
         const userGamesController = new UserGamesController(gameService);
 
-        this.router.get("/:id/games", (req, res, next) => userGamesController.get(req,res,next));
-        this.router.get("/:id", (req, res, next) => userController.get(req,res,next));
-        this.router.get("/", (req, res, next) => usersController.get(req,res,next));
+        this.router.get("/:id/games", (req, res, next) => userGamesController.get(req, res, next));
+        this.router.get("/:id", (req, res, next) => userController.get(req, res, next));
+        this.router.get("/", (req, res, next) => usersController.get(req, res, next));
 
         new ThisUserRouter("/:id",
             this.router,

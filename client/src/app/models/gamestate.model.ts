@@ -19,7 +19,7 @@ export default interface GameStateModel {
   waiting: undefined
 }
 
-export interface WaitingStateModel{
+export interface WaitingStateModel {
   key: string,
   timeType: number,
   time: number,

@@ -1,9 +1,8 @@
 import AbstractController from "./Abstract.controller";
-import TokenService from "../../services/Token.service";
 import UserService from "../../services/User.service";
 import {NextFunction, Request, Response} from "express";
 
-export default class UsersController extends AbstractController{
+export default class UsersController extends AbstractController {
     constructor(private userService: UserService) {
         super();
     }
@@ -12,22 +11,22 @@ export default class UsersController extends AbstractController{
         const username = req.query.username;
         const email = req.query.email;
 
-        if(!username && !email){
+        if (!username && !email) {
             res.status(400).send();
             return;
         }
 
-        if(typeof username === "string" && typeof email === "string"){
+        if (typeof username === "string" && typeof email === "string") {
             res.status(400).send();
             return;
         }
 
-        if(typeof username === "string"){
+        if (typeof username === "string") {
             res.json({user: await this.userService.getAllMatchingUsername(username)});
             return;
         }
 
-        if(typeof email === "string"){
+        if (typeof email === "string") {
             res.json({user: await this.userService.getAllMatchingEmail(email)});
             return;
         }

@@ -19,16 +19,20 @@ export default class TokenRepository {
     public decryptToken(token: string, secret: string): DecryptedToken | null {
         try {
             const decryptedToken = jwt.verify(token, secret);
-            if(!decryptedToken){
+            if (!decryptedToken) {
                 throw new Error();
             }
-            return {id: (<DecryptedToken>decryptedToken).id, role: (<DecryptedToken>decryptedToken).role, timestamp: ((<JwtPayload>decryptedToken).iat ?? 0) *1000};
+            return {
+                id: (<DecryptedToken>decryptedToken).id,
+                role: (<DecryptedToken>decryptedToken).role,
+                timestamp: ((<JwtPayload>decryptedToken).iat ?? 0) * 1000
+            };
         } catch (err) {
             return null;
         }
     }
 
-    public async isRefreshTokenSaved(token: string): Promise<boolean>{
+    public async isRefreshTokenSaved(token: string): Promise<boolean> {
         const result = await this.prismaClient.refreshToken.findUnique({where: {content: token}});
         return !!result;
     }
@@ -49,14 +53,15 @@ export default class TokenRepository {
     public async updateRefreshToken(oldToken: string, newToken: string) {
         try {
             await this.prismaClient.refreshToken.update({data: {content: newToken}, where: {content: oldToken}});
-        }catch (e) {
+        } catch (e) {
         }
     }
-    public async deleteRefreshToken(token: string){
+
+    public async deleteRefreshToken(token: string) {
         await this.prismaClient.refreshToken.delete({where: {content: token}});
     }
 
-    public setRefreshTokenCount(count: number){
+    public setRefreshTokenCount(count: number) {
         this.refreshTokenCount = count;
     }
 

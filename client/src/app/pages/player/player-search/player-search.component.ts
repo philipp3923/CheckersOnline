@@ -1,11 +1,8 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {Event} from "@angular/router";
-import {UserModel} from "../../../models/user.model";
+import {Component, OnInit} from '@angular/core';
 import UserInfoModel from "../../../models/user-info.model";
 import {ApiService} from "../../../core/services/api.service";
 import {BehaviorSubject, debounceTime, skip} from "rxjs";
 import {UserService} from "../../../core/services/user.service";
-import {Socket} from "socket.io-client";
 import {SocketService} from "../../../core/services/socket.service";
 import {FriendsService} from "../../../core/services/friends.service";
 
@@ -31,7 +28,7 @@ export class PlayerSearchComponent implements OnInit {
     this.filteredInput.pipe(
       skip(1),
       debounceTime(400)
-    ).subscribe(async (next:string) => {
+    ).subscribe(async (next: string) => {
       await this.search(next);
     });
   }

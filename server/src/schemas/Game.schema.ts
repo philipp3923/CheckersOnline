@@ -1,4 +1,3 @@
-import {Play} from "../models/Board.model";
 import PlaySchema from "./Play.schema";
 
 export default interface GameSchema {

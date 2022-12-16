@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {SocketService} from "../../../core/services/socket.service";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -10,13 +10,13 @@ import {ActivatedRoute, Router} from "@angular/router";
 export class DisconnectedComponent implements OnInit {
 
   constructor(private router: Router, private route: ActivatedRoute, private socketService: SocketService) {
-    if(this.socketService.isConnected()){
+    if (this.socketService.isConnected()) {
       this.router.navigate(["/"]);
     }
 
     this.socketService.isConnectedObserver().subscribe({
       next: (connected) => {
-        if(connected){
+        if (connected) {
           this.router.navigate(["/"]);
         }
       }
