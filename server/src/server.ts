@@ -83,25 +83,25 @@ const userService = new UserService(
     friendshipService,
     socketService
 );
-const authenticateSocketMiddleware = new DecryptAccessTokenMiddleware(
+new DecryptAccessTokenMiddleware(
     socketService,
     tokenService,
     gameService,
     friendshipService
 );
 
-const joinCustomGameEvent = new JoinGameEvent(socketService, gameService);
-const createCustomGameEvent = new CreateGameEvent(
+new JoinGameEvent(socketService, gameService);
+new CreateGameEvent(
     socketService,
     gameService,
     friendshipService
 );
-const turnEvent = new TurnEvent(socketService);
-const pingEvent = new PingEvent(socketService);
-const friendEvent = new FriendEvent(socketService, friendshipService);
-const leaveGameEvent = new LeaveGameEvent(socketService, gameService);
+new TurnEvent(socketService);
+new PingEvent(socketService);
+new FriendEvent(socketService, friendshipService);
+new LeaveGameEvent(socketService, gameService);
 
-const expressServer = new ExpressServer(
+new ExpressServer(
     app,
     tokenService,
     guestService,

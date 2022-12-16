@@ -133,7 +133,6 @@ export class PlayComponent implements OnInit {
         break
       case "create_custom":
         this.socketService.createCustomGame(this.type===1, this.time, this.increment, (res)=>{
-          console.log(res);
           if(!res.success){
             this.messageService.addMessage(MessageType.ERROR, "You have reached the maximum amount of simultaneous" +
               " games (20).");

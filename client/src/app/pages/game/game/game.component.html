@@ -31,7 +31,7 @@
             <app-timer #white_timer></app-timer>
           </div>
           <a *ngIf="whitePlayer" class="game-info aaa" routerLink="/player/{{whitePlayer.id}}" class="game-info-type">
-            WHITE ({{whitePlayer?.username}})
+            WHITE ({{whitePlayer.username}})
           </a>
           <div *ngIf="!whitePlayer" class="game-info" class="game-info-type">
             WHITE (Guest)
@@ -71,7 +71,7 @@
             <app-timer #black_timer></app-timer>
           </div>
           <a *ngIf="blackPlayer" class="game-info" routerLink="/player/{{blackPlayer.id}}" class="game-info-type">
-            BLACK ({{blackPlayer?.username}})
+            BLACK ({{blackPlayer.username}})
           </a>
           <div *ngIf="!blackPlayer" class="game-info" class="game-info-type">
             BLACK (Guest)

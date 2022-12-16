@@ -118,21 +118,21 @@ export class ApiService {
 
   private async post<T>(headers: HttpHeaders, url: string, body?: any): Promise<T> {
     return firstValueFrom(this.http.post<T>(API + url, body, {headers: headers}).pipe(catchError((err: any) => {
-      console.log('In Service:', err);
+      //console.log('In Service:', err);
       return throwError(err);
     })));
   }
 
   private async patch<T>(headers: HttpHeaders, url: string, body?: any): Promise<T> {
     return firstValueFrom(this.http.patch<T>(API + url, body, {headers: headers}).pipe(catchError((err: any) => {
-      console.log('In Service:', err);
+      //console.log('In Service:', err);
       return throwError(err);
     })));
   }
 
   private async delete<T>(headers: HttpHeaders, url: string): Promise<T> {
     return firstValueFrom(this.http.delete<T>(API + url, {headers: headers}).pipe(catchError((err: any) => {
-      console.log('In Service:', err);
+      //console.log('In Service:', err);
       return throwError(err);
     })));
   }
@@ -140,7 +140,7 @@ export class ApiService {
 
   private async get<T>(headers: HttpHeaders, url: string): Promise<T> {
     return firstValueFrom(this.http.get<T>(API + url, {headers: headers}).pipe(catchError((err: any) => {
-      console.log('In Service:', err);
+      //console.log('In Service:', err);
       return throwError(err);
     })));
   }

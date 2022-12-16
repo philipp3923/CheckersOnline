@@ -69,11 +69,7 @@ const routes: Routes = [
   {
     path: '**',
     redirectTo: '404'
-  },
-  {
-    path: '',
-    loadChildren: () => import('./pages/welcome/welcome.module').then(m => m.WelcomeModule)
-  },
+  }
 ];
 
 @NgModule({

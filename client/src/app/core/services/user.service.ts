@@ -20,7 +20,6 @@ export class UserService {
   }
 
   private welcome(args: any){
-    console.log(args);
     if(this.isUser()){
       this.friendsService.init(this.getUser().id, args.friends);
     }
@@ -83,7 +82,7 @@ export class UserService {
 
   public async guest() {
     const authResponse = await this.apiService.authGuest();
-    console.log(authResponse);
+    //console.log(authResponse);
     await this.tokenService.saveAccessToken(authResponse.accessToken);
     await this.tokenService.saveRefreshToken(authResponse.refreshToken);
     this.socketService.connect((await this.tokenService.getAccessToken()).string);
@@ -115,7 +114,7 @@ export class UserService {
       return true;
     }
     catch (e) {
-      console.log(e);
+      //console.log(e);
       return false;
     }
   }
@@ -127,7 +126,7 @@ export class UserService {
       return true;
     }
     catch (e) {
-      console.log(e);
+      //console.log(e);
       return false;
     }
   }
@@ -141,7 +140,7 @@ export class UserService {
       return true;
     }
     catch (e) {
-      console.log(e);
+      //console.log(e);
       return false;
     }
   }
