@@ -1,18 +1,17 @@
-div{
+div {
   display: flex;
   align-items: center;
   flex-direction: column;
   justify-content: center;
 }
 
-.warning{
+.warning {
   background-color: var(--five);
   width: fit-content;
   padding: 32px;
-
 }
 
-.content-transparent{
+.content-transparent {
   display: flex;
   align-items: center;
   justify-content: center;

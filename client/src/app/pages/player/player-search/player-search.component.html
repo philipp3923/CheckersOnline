@@ -1,14 +1,20 @@
 <div class="content search">
   <h1>Search for players</h1>
-  <input (ngModelChange)="filteredInput.next($event)" [ngModel]="filteredInput | async"
-         placeholder="Search for username">
+  <input
+    (ngModelChange)="filteredInput.next($event)"
+    [ngModel]="filteredInput | async"
+    placeholder="Search for username"
+  />
 </div>
-<div *ngIf="results.length <= 0 && query" class="content-transparent">No results found.</div>
+<div *ngIf="results.length <= 0 && query" class="content-transparent">
+  No results found.
+</div>
 
 <ul *ngIf="results.length > 0">
   <li class="content result" *ngFor="let user of results">
-    <a class="profile-link" routerLink="/player/{{user.id}}">{{user.username}}</a>
+    <a class="profile-link" routerLink="/player/{{ user.id }}">{{
+      user.username
+    }}</a>
     <app-friend-action [other_id]="user.id"></app-friend-action>
   </li>
 </ul>
-

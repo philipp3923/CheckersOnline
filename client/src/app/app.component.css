@@ -10,7 +10,7 @@
   flex-direction: row;
 }
 
-.page{
+.page {
   flex-grow: 1;
   max-width: 1000px;
   max-height: 100%;

@@ -1,19 +1,19 @@
 import PlaySchema from "./Play.schema";
 
 export default interface GameSchema {
-    id: string
-    type: string
+  id: string;
+  type: string;
 
-    start: number
+  start: number;
 
-    winner: string
+  winner: string;
 
-    white: string
+  white: string;
 
-    black: string
+  black: string;
 
-    timeType: string
-    timeLimit: number
-    timeIncrement: number
-    plays?: PlaySchema[]
+  timeType: string;
+  timeLimit: number;
+  timeIncrement: number;
+  plays?: PlaySchema[];
 }

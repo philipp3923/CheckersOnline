@@ -2,36 +2,70 @@
   <ul *ngIf="incomingRequests.length > 0">
     <h1 class="content-transparent">Friend Requests</h1>
     <li *ngFor="let friend of incomingRequests" class="content request">
-      <a class="profile-link" routerLink="/player/{{friend.id}}">{{friend.username}}</a>
+      <a class="profile-link" routerLink="/player/{{ friend.id }}">{{
+        friend.username
+      }}</a>
       <div>
-        <button class="icon-button" (click)="friendsService.acceptFriend(friend.id)">check_circle</button>
-        <button class="icon-button" (click)="friendsService.deleteFriend(friend.id)">block</button>
+        <button
+          class="icon-button"
+          (click)="friendsService.acceptFriend(friend.id)"
+        >
+          check_circle
+        </button>
+        <button
+          class="icon-button"
+          (click)="friendsService.deleteFriend(friend.id)"
+        >
+          block
+        </button>
       </div>
     </li>
   </ul>
   <ul>
     <h1 class="content-transparent">Friends</h1>
-    <div class="content-transparent empty" *ngIf="onlineFriends.length <= 0 && offlineFriends.length <= 0">
+    <div
+      class="content-transparent empty"
+      *ngIf="onlineFriends.length <= 0 && offlineFriends.length <= 0"
+    >
       You do not have any friends. Go find some friends in the Players-Tab!
     </div>
     <li *ngFor="let friend of onlineFriends" class="content active">
-      <a class="profile-link" routerLink="/player/{{friend.id}}">{{friend.username}}</a>
+      <a class="profile-link" routerLink="/player/{{ friend.id }}">{{
+        friend.username
+      }}</a>
       <div class="online">ONLINE</div>
-      <button class="icon-button" (click)="friendsService.deleteFriend(friend.id)">person_remove</button>
+      <button
+        class="icon-button"
+        (click)="friendsService.deleteFriend(friend.id)"
+      >
+        person_remove
+      </button>
     </li>
     <li *ngFor="let friend of offlineFriends" class="content active">
-
-      <a class="profile-link" routerLink="/player/{{friend.id}}">{{friend.username}}</a>
+      <a class="profile-link" routerLink="/player/{{ friend.id }}">{{
+        friend.username
+      }}</a>
       <div class="offline">OFFLINE</div>
-      <button class="icon-button" (click)="friendsService.deleteFriend(friend.id)">person_remove</button>
+      <button
+        class="icon-button"
+        (click)="friendsService.deleteFriend(friend.id)"
+      >
+        person_remove
+      </button>
     </li>
   </ul>
   <ul *ngIf="outgoingRequests.length > 0">
     <h1 class="content-transparent">Pending Requests</h1>
     <li *ngFor="let friend of outgoingRequests" class="content pending">
-
-      <a class="profile-link" routerLink="/player/{{friend.id}}">{{friend.username}}</a>
-      <button class="icon-button" (click)="friendsService.deleteFriend(friend.id)">close</button>
+      <a class="profile-link" routerLink="/player/{{ friend.id }}">{{
+        friend.username
+      }}</a>
+      <button
+        class="icon-button"
+        (click)="friendsService.deleteFriend(friend.id)"
+      >
+        close
+      </button>
     </li>
   </ul>
 </div>

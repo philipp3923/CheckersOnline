@@ -1,24 +1,42 @@
 <div class="content">
   <div class="text-display">
-    <div class="text-field">{{name}}</div>
+    <div class="text-field">{{ name }}</div>
     <div class="flex-row">
-      <div class="text-field">{{value}}</div>
+      <div class="text-field">{{ value }}</div>
       <button class="icon-button" (click)="switchEdit()">edit</button>
     </div>
   </div>
   <form *ngIf="edit" class="form-display" (submit)="update()">
     <div>
-      <div *ngIf="!inputsMatch">
-        {{name}}s do not match.
-      </div>
-      <input autocomplete="section-{{name.toLowerCase()}} old-{{name.toLowerCase()}}" type="{{name.toLowerCase()}}" #input_old
-             *ngIf="needsOldValue" placeholder="Enter old {{name}}">
-      <input autocomplete="section-{{name.toLowerCase()}} new-{{name.toLowerCase()}}" type="{{name.toLowerCase()}}" #input placeholder="Enter a new {{name}}">
-      <input autocomplete="section-{{name.toLowerCase()}} new-{{name.toLowerCase()}}" type="{{name.toLowerCase()}}"
-      (input)="compareInputs()" #input_repeat *ngIf="repetitionOnUpdate"
-             placeholder="Repeat new {{name}}">
+      <div *ngIf="!inputsMatch">{{ name }}s do not match.</div>
+      <input
+        autocomplete="section-{{ name.toLowerCase() }} old-{{
+          name.toLowerCase()
+        }}"
+        type="{{ name.toLowerCase() }}"
+        #input_old
+        *ngIf="needsOldValue"
+        placeholder="Enter old {{ name }}"
+      />
+      <input
+        autocomplete="section-{{ name.toLowerCase() }} new-{{
+          name.toLowerCase()
+        }}"
+        type="{{ name.toLowerCase() }}"
+        #input
+        placeholder="Enter a new {{ name }}"
+      />
+      <input
+        autocomplete="section-{{ name.toLowerCase() }} new-{{
+          name.toLowerCase()
+        }}"
+        type="{{ name.toLowerCase() }}"
+        (input)="compareInputs()"
+        #input_repeat
+        *ngIf="repetitionOnUpdate"
+        placeholder="Repeat new {{ name }}"
+      />
     </div>
     <button class="icon-button">done</button>
   </form>
 </div>
-

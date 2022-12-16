@@ -1,40 +1,52 @@
-import {Injectable} from '@angular/core';
-import FriendshipModel from "../../models/friendship.model";
-import {BehaviorSubject} from "rxjs";
-import UserInfoModel from "../../models/user-info.model";
-import {ApiService} from "./api.service";
-import {SocketService} from "./socket.service";
-import {MessageService, MessageType} from "./message.service";
+import { Injectable } from '@angular/core';
+import FriendshipModel from '../../models/friendship.model';
+import { BehaviorSubject } from 'rxjs';
+import UserInfoModel from '../../models/user-info.model';
+import { ApiService } from './api.service';
+import { SocketService } from './socket.service';
+import { MessageService, MessageType } from './message.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class FriendsService {
-
   private onlineFriends: BehaviorSubject<UserInfoModel[]>;
   private offlineFriends: BehaviorSubject<UserInfoModel[]>;
   private outgoingRequests: BehaviorSubject<UserInfoModel[]>;
   private incomingRequests: BehaviorSubject<UserInfoModel[]>;
   private userID: string;
 
-  constructor(private apiService: ApiService, private socketService: SocketService, private messageService: MessageService) {
-    this.userID = "";
+  constructor(
+    private apiService: ApiService,
+    private socketService: SocketService,
+    private messageService: MessageService
+  ) {
+    this.userID = '';
     this.onlineFriends = new BehaviorSubject<UserInfoModel[]>([]);
     this.offlineFriends = new BehaviorSubject<UserInfoModel[]>([]);
     this.outgoingRequests = new BehaviorSubject<UserInfoModel[]>([]);
     this.incomingRequests = new BehaviorSubject<UserInfoModel[]>([]);
 
-    this.socketService.addFriendRequestListener((friendship) => this.updateRequestFriend(friendship));
-    this.socketService.addFriendAcceptListener((friendship) => this.updateAcceptFriend(friendship));
-    this.socketService.addFriendDeleteListener((friendship) => this.updateDeleteFriend(friendship));
+    this.socketService.addFriendRequestListener((friendship) =>
+      this.updateRequestFriend(friendship)
+    );
+    this.socketService.addFriendAcceptListener((friendship) =>
+      this.updateAcceptFriend(friendship)
+    );
+    this.socketService.addFriendDeleteListener((friendship) =>
+      this.updateDeleteFriend(friendship)
+    );
 
-    this.socketService.addFriendOnlineListener((id) => this.setFriendOnline(id));
-    this.socketService.addFriendOfflineListener((id) => this.setFriendOffline(id));
+    this.socketService.addFriendOnlineListener((id) =>
+      this.setFriendOnline(id)
+    );
+    this.socketService.addFriendOfflineListener((id) =>
+      this.setFriendOffline(id)
+    );
   }
 
   public reset() {
-    this.userID = "";
+    this.userID = '';
     this.onlineFriends.next([]);
     this.offlineFriends.next([]);
     this.outgoingRequests.next([]);
@@ -77,24 +89,24 @@ export class FriendsService {
     this.socketService.deleteFriend(id, (args) => {
       if (!args.success) {
         console.log(args);
-      }else{
-        this.messageService.addMessage(MessageType.INFO, "Deleted friend.");
+      } else {
+        this.messageService.addMessage(MessageType.INFO, 'Deleted friend.');
       }
     });
   }
 
-  public isFriend(id: string){
+  public isFriend(id: string) {
     const onlineIndex = this.onlineFriends.value.map((f) => f.id).indexOf(id);
     const offlineIndex = this.offlineFriends.value.map((f) => f.id).indexOf(id);
     return onlineIndex >= 0 || offlineIndex >= 0;
   }
 
-  public isIncoming(id: string){
+  public isIncoming(id: string) {
     console.log(this.incomingRequests.value);
     return this.incomingRequests.value.map((f) => f.id).indexOf(id) >= 0;
   }
 
-  public isOutgoing(id: string){
+  public isOutgoing(id: string) {
     return this.outgoingRequests.value.map((f) => f.id).indexOf(id) >= 0;
   }
 
@@ -104,7 +116,6 @@ export class FriendsService {
       if (!args.success) {
         console.log(args);
       }
-
     });
   }
 
@@ -115,31 +126,31 @@ export class FriendsService {
     const incomingRequests: UserInfoModel[] = [];
     const outgoingRequests: UserInfoModel[] = [];
     for (let friendship of friendships) {
-      if (friendship.status === "ACTIVE") {
+      if (friendship.status === 'ACTIVE') {
         this.getFriendInfo(friendship.friend).then((info) => {
           if (friendship.online) {
             onlineFriends.push(info);
           } else {
             offlineFriends.push(info);
           }
-        })
+        });
         continue;
       }
-      if (friendship.status === "REQUEST") {
+      if (friendship.status === 'REQUEST') {
         if (friendship.user === this.userID) {
           this.getFriendInfo(friendship.friend).then((info) => {
             outgoingRequests.push(info);
-          })
+          });
           continue;
         }
         if (friendship.friend === this.userID) {
           this.getFriendInfo(friendship.user).then((info) => {
             incomingRequests.push(info);
-          })
+          });
           continue;
         }
       }
-      console.log("ERROR IN INIT");
+      console.log('ERROR IN INIT');
       console.log(friendship);
     }
     this.offlineFriends.next(offlineFriends);
@@ -175,18 +186,33 @@ export class FriendsService {
   }
 
   private async updateAcceptFriend(friendship: FriendshipModel) {
-    let newFriend = friendship.user === this.userID ? await this.getFriendInfo(friendship.friend) : await this.getFriendInfo(friendship.user);
+    let newFriend =
+      friendship.user === this.userID
+        ? await this.getFriendInfo(friendship.friend)
+        : await this.getFriendInfo(friendship.user);
 
-    const newIncomingRequests = this.removeFriend(this.incomingRequests.value, newFriend.id);
+    const newIncomingRequests = this.removeFriend(
+      this.incomingRequests.value,
+      newFriend.id
+    );
     if (newIncomingRequests !== null) {
       this.incomingRequests.next(newIncomingRequests);
-      this.messageService.addMessage(MessageType.INFO, "You and "+newFriend.username+" are now friends.");
+      this.messageService.addMessage(
+        MessageType.INFO,
+        'You and ' + newFriend.username + ' are now friends.'
+      );
     }
 
-    const newOutgoingRequests = this.removeFriend(this.outgoingRequests.value, newFriend.id);
+    const newOutgoingRequests = this.removeFriend(
+      this.outgoingRequests.value,
+      newFriend.id
+    );
     if (newOutgoingRequests !== null) {
       this.outgoingRequests.next(newOutgoingRequests);
-      this.messageService.addMessage(MessageType.INFO, newFriend.username+" accepted your friend request.");
+      this.messageService.addMessage(
+        MessageType.INFO,
+        newFriend.username + ' accepted your friend request.'
+      );
     }
 
     if (friendship.online) {
@@ -198,16 +224,28 @@ export class FriendsService {
       newOfflineFriends.push(newFriend);
       this.offlineFriends.next(newOfflineFriends);
     }
-
   }
 
   private updateDeleteFriend(friendship: FriendshipModel) {
-    const friend = friendship.user === this.userID ? friendship.friend : friendship.user;
+    const friend =
+      friendship.user === this.userID ? friendship.friend : friendship.user;
 
-    const newOnlineFriends = this.removeFriend(this.onlineFriends.value, friend);
-    const newOfflineFriends = this.removeFriend(this.offlineFriends.value, friend);
-    const newIncomingRequests = this.removeFriend(this.incomingRequests.value, friend);
-    const newOutgoingRequests = this.removeFriend(this.outgoingRequests.value, friend);
+    const newOnlineFriends = this.removeFriend(
+      this.onlineFriends.value,
+      friend
+    );
+    const newOfflineFriends = this.removeFriend(
+      this.offlineFriends.value,
+      friend
+    );
+    const newIncomingRequests = this.removeFriend(
+      this.incomingRequests.value,
+      friend
+    );
+    const newOutgoingRequests = this.removeFriend(
+      this.outgoingRequests.value,
+      friend
+    );
 
     if (newOnlineFriends) {
       this.onlineFriends.next(newOnlineFriends);
@@ -238,7 +276,10 @@ export class FriendsService {
       const info = await this.getFriendInfo(friendship.friend);
       outgoingRequests.push(info);
       this.outgoingRequests.next(outgoingRequests);
-      this.messageService.addMessage(MessageType.INFO, "You sent a friend request to "+info.username+".");
+      this.messageService.addMessage(
+        MessageType.INFO,
+        'You sent a friend request to ' + info.username + '.'
+      );
       return;
     }
     if (friendship.friend === this.userID) {
@@ -246,10 +287,13 @@ export class FriendsService {
       const info = await this.getFriendInfo(friendship.user);
       incomingRequests.push(info);
       this.incomingRequests.next(incomingRequests);
-      this.messageService.addMessage(MessageType.INFO, info.username+" sent you a friend request.");
+      this.messageService.addMessage(
+        MessageType.INFO,
+        info.username + ' sent you a friend request.'
+      );
       return;
     }
-    console.log("ERROR IN REQUEST FRIEND");
+    console.log('ERROR IN REQUEST FRIEND');
     console.log(friendship);
   }
 

@@ -1,33 +1,32 @@
-
-.won{
+.won {
   background-color: var(--seven);
 }
 
-.lost{
+.lost {
   background-color: var(--five);
 }
 
-.content-transparent{
+.content-transparent {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.content{
+.content {
   display: flex;
   justify-content: space-between;
   width: calc(100% - 24px);
 }
 
-a{
+a {
   color: var(--secondary_dark);
 }
 
-.link-symbol{
+.link-symbol {
   width: 40px;
   font-size: 24px;
 }
 
-.game-info-list{
+.game-info-list {
   max-width: 80vw;
 }
