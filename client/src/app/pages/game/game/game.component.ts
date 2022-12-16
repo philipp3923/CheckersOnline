@@ -236,7 +236,7 @@ export class GameComponent implements OnInit, AfterViewInit {
     }
     const index = this.getInputIndex(pos);
     if (this.possible_inputs.length > 0 && index !== null) {
-      this.socketService.playMove(this.game.key, index);
+      this.socketService.playMove(this.game.key, index, ()=>{});
       this.possible_inputs = [];
     } else {
       this.findPossibleInputs(pos);

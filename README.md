@@ -1,17 +1,15 @@
 # CheckersOnline
-
-## How To Install
-
-Play Checkers in your Browser!
-
-Checkers Online features:
-
-- real-time online games against friends or random opponents
-- live-viewing of ongoing games
-- an AI to train against
-
-Possible future features:
-
-- tracking of performance in a ranked mode
-- analyze past games with AI
-- tournaments
+Checkers Online is a multiplayer browser Game for playing Checkers.
+## Get Started
+### Install & Build
+1. Client
+    - `cd client`
+    - `npm install`
+    - `npm run build`
+2. Server
+   - `cd server`
+   - `npm install`
+   - `npm run build`
+### Start
+- `cd server`
+- `npm run start`

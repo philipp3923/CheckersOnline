@@ -26,6 +26,10 @@ import FriendEvent from "./events/Friend.event";
 import ExpressServer from "./express/Express.server";
 import AccountService from "./services/Account.service";
 import LeaveGameEvent from "./events/LeaveGame.event";
+import dotenv from 'dotenv';
+import path from "path";
+
+dotenv.config({path: "../.env"});
 
 //#TODO move constants to central file
 const JWT_REFRESH_SECRET =
@@ -110,5 +114,5 @@ new ExpressServer(
     gameService
 );
 
-server.listen(5000, () => console.log("listening on port 5000"));
+server.listen(process.env.SERVER_PORT, () => console.log(`App listening at http://localhost:${process.env.SERVER_PORT}`));
 socketService.start();
