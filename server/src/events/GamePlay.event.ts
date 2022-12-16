@@ -2,10 +2,10 @@ import AbstractEvent from "./Abstract.event";
 import SocketService, {SocketResponse} from "../services/Socket.service";
 import Connection from "../models/Connection.model";
 
-export default class TurnEvent extends AbstractEvent {
+export default class GamePlayEvent extends AbstractEvent {
 
     public constructor(socketService: SocketService) {
-        super(socketService, "gameTurn");
+        super(socketService, "gamePlay");
     }
 
     public async on(connection: Connection, args: any, respond: SocketResponse): Promise<void> {

@@ -18,16 +18,17 @@ import GameRepository from "./repositories/Game.repository";
 import GameService from "./services/Game.service";
 import PingEvent from "./events/Ping.event";
 import JoinGameEvent from "./events/JoinGame.event";
-import CreateGameEvent from "./events/CreateGame.event";
-import TurnEvent from "./events/Turn.event";
+import TurnEvent from "./events/GamePlay.event";
 import FriendshipRepository from "./repositories/Friendship.repository";
 import FriendshipService from "./services/Friendship.service";
-import FriendEvent from "./events/Friend.event";
 import ExpressServer from "./express/Express.server";
 import AccountService from "./services/Account.service";
 import LeaveGameEvent from "./events/LeaveGame.event";
 import dotenv from 'dotenv';
-import path from "path";
+import FriendRequestEvent from "./events/FriendRequest.event";
+import FriendAcceptEvent from "./events/FriendAccept.event";
+import FriendDeleteEvent from "./events/FriendDelete.event";
+import CreateCustomGameEvent from "./events/CreateCustomGame.event";
 
 dotenv.config({path: "../.env"});
 
@@ -95,14 +96,12 @@ new DecryptAccessTokenMiddleware(
 );
 
 new JoinGameEvent(socketService, gameService);
-new CreateGameEvent(
-    socketService,
-    gameService,
-    friendshipService
-);
+new CreateCustomGameEvent(socketService, gameService);
 new TurnEvent(socketService);
 new PingEvent(socketService);
-new FriendEvent(socketService, friendshipService);
+new FriendRequestEvent(socketService, friendshipService);
+new FriendDeleteEvent(socketService, friendshipService);
+new FriendAcceptEvent(socketService, friendshipService);
 new LeaveGameEvent(socketService, gameService);
 
 new ExpressServer(

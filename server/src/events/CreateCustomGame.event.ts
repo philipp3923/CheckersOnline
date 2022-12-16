@@ -3,16 +3,13 @@ import SocketService, {SocketResponse} from "../services/Socket.service";
 import GameService, {TimeType} from "../services/Game.service";
 import Connection from "../models/Connection.model";
 import Game, {GameType} from "../models/Game.model";
-import FriendshipService from "../services/Friendship.service";
-import UserGame from "../models/UserGame.model";
 
-export default class CreateGameEvent extends AbstractEvent {
+export default class CreateCustomGameEvent extends AbstractEvent {
     public constructor(
         socketService: SocketService,
-        private gameService: GameService,
-        private friendshipService: FriendshipService
+        private gameService: GameService
     ) {
-        super(socketService, "createGame");
+        super(socketService, "createCustomGame");
     }
 
     public async on(connection: Connection, args: any, respond: SocketResponse) {
@@ -25,39 +22,11 @@ export default class CreateGameEvent extends AbstractEvent {
         }
 
         const timeType = this.getTimeTypeKeyByValue(args.timeType);
-        const gameType = this.getGameTypeKeyByValue(args.gameType);
 
         if (
-            typeof gameType === "undefined" ||
-            typeof timeType === "undefined" ||
-            (typeof args.invitation !== "string" && gameType === GameType.FRIEND)
+            typeof timeType === "undefined" || typeof args.time === "undefined"
         ) {
             respond({success: false, error: "Required arguments not provided"});
-            return;
-        }
-
-        if (
-            gameType === GameType.RANKED ||
-            gameType === GameType.CASUAL ||
-            gameType === GameType.COMPUTER
-        ) {
-            respond({success: false, error: "Not implemented"});
-            return;
-        }
-
-        if (
-            gameType === GameType.FRIEND &&
-            !(await this.friendshipService.exists(
-                connection.getID(),
-                args.invitation
-            ))
-        ) {
-            respond({success: false, error: "Friendship does not exist"});
-            return;
-        }
-
-        if (gameType === GameType.FRIEND && !this.socketService.isOnline(args.invitation)) {
-            respond({success: false, error: "Friend is not online"});
             return;
         }
 
@@ -65,7 +34,7 @@ export default class CreateGameEvent extends AbstractEvent {
 
         try {
             game = await this.gameService.createGame(
-                gameType,
+                GameType.CUSTOM,
                 timeType,
                 args.time,
                 args.increment
@@ -85,17 +54,7 @@ export default class CreateGameEvent extends AbstractEvent {
             return;
         }
 
-        if (gameType === GameType.FRIEND) {
-            await this.gameService.invitePlayer(<UserGame>game, args.invitation);
-        }
-
         respond({success: true, key: game.getKey()});
-    }
-
-    private getGameTypeKeyByValue(
-        key: keyof typeof GameType
-    ): GameType | undefined {
-        return GameType[key];
     }
 
     private getTimeTypeKeyByValue(

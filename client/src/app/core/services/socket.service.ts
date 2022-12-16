@@ -57,8 +57,8 @@ export class SocketService {
   }
 
   public createCustomGame(dynamic: boolean, time: number, increment: number, callback: (res: any) => void) {
-    this.socket?.emit("createGame", {
-      gameType: "CUSTOM", timeType: dynamic ? "DYNAMIC" : "STATIC", time: time, increment: increment
+    this.socket?.emit("createCustomGame", {
+      timeType: dynamic ? "DYNAMIC" : "STATIC", time: time, increment: increment
     }, (res: any) => callback(res));
   }
 
@@ -67,26 +67,27 @@ export class SocketService {
   }
 
   public joinCasualGame(dynamic: boolean, time: number, increment: number, callback: (res: any) => void) {
-    this.emit("createGame", {
+    callback({success: false, error: "Not implemented."});
+    /*this.emit("createGame", {
       gameType: "CASUAL", timeType: dynamic ? "DYNAMIC" : "STATIC", time: time, increment: increment
-    }, (res: any) => callback(res));
+    }, (res: any) => callback(res));*/
   }
 
   public requestFriend(id: string, callback: (res: any) => void) {
-    this.emit("friend", {
-      type: "REQUEST", friend: id
+    this.emit("friendRequest", {
+      friend: id
     }, (res: any) => callback(res))
   }
 
   public acceptFriend(id: string, callback: (res: any) => void) {
-    this.emit("friend", {
-      type: "ACCEPT", friend: id
+    this.emit("friendAccept", {
+      friend: id
     }, (res: any) => callback(res))
   }
 
   public deleteFriend(id: string, callback: (res: any) => void) {
-    this.emit("friend", {
-      type: "DELETE", friend: id
+    this.emit("friendDelete", {
+      friend: id
     }, (res: any) => callback(res))
   }
 
@@ -95,7 +96,7 @@ export class SocketService {
   }
 
   public playMove(key: string, index: number, callback: (res: any) => void) {
-    this.emit("gameTurn", {key: key, index: index},(res: any) => callback(res));
+    this.emit("gamePlay", {key: key, index: index},(res: any) => callback(res));
   }
 
   public addGameStateListener(listener: (gameState: GameStateModel) => void) {
