@@ -1,4 +1,9 @@
-.info-list {
-  margin-left: 12%;
-  list-style-type: square;
+.bold-text {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.info-text {
+  font-size: 16px;
+  margin-left: 10%;
 }

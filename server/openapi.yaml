@@ -1,6 +1,6 @@
 openapi: 3.0.3
 servers:
-  - url: localhost:5000
+  - url: localhost:3000
     description: Development server (uses development data)
 info:
   title: Checkers Online OpenAPI
@@ -16,7 +16,7 @@ tags:
   - name: guests
     description: Secured Guest-only calls
 paths:
-  /auth/login:
+  /api/auth/login:
     post:
       summary: log in User
       operationId: LoginUser
@@ -53,7 +53,7 @@ paths:
         '404':
           description: user does not exist
 
-  /auth/register:
+  /api/auth/register:
     post:
       summary: register new User
       operationId: RegisterUser
@@ -88,7 +88,7 @@ paths:
         '409':
           description: user with username or email already exists
 
-  /auth/guest:
+  /api/auth/guest:
     post:
       summary: register new Guest
       operationId: RegisterGuest
@@ -102,7 +102,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authentication'
 
-  /auth/logout:
+  /api/auth/logout:
     post:
       security:
         - auth: [ ]
@@ -118,7 +118,7 @@ paths:
         '401':
           description: Refresh token is missing or invalid
 
-  /auth/token/access:
+  /api/auth/token/access:
     post:
       security:
         - auth: [ ]
@@ -139,7 +139,7 @@ paths:
         '401':
           description: Refresh token is missing or invalid
 
-  /auth/token/refresh:
+  /api/auth/token/refresh:
     post:
       security:
         - auth: [ ]
@@ -160,7 +160,7 @@ paths:
         '401':
           description: Refresh token is missing or invalid
 
-  /user/{id}/password:
+  /api/user/{id}/password:
     patch:
       security:
         - auth: [ ]
@@ -204,7 +204,7 @@ paths:
         '406':
           description: password invalid
 
-  /user/{id}/username:
+  /api/user/{id}/username:
     patch:
       security:
         - auth: [ ]
@@ -246,7 +246,7 @@ paths:
         '406':
           description: username invalid
 
-  /user/{id}/email:
+  /api/user/{id}/email:
     get:
       security:
         - auth: [ ]
@@ -322,7 +322,7 @@ paths:
         '406':
           description: email invalid
 
-  /user/{id}/games:
+  /api/user/{id}/games:
     get:
       summary: get finished games of a user
       operationId: GetUserGames
@@ -347,7 +347,7 @@ paths:
         '404':
           description: user not found
 
-  /user/{id}:
+  /api/user/{id}:
     get:
       summary: get a user by id
       operationId: GetUser
@@ -401,7 +401,7 @@ paths:
         '406':
           description: password invalid
 
-  /user:
+  /api/user:
     get:
       summary: get users by email OR username
       operationId: GetUsers
@@ -437,7 +437,7 @@ paths:
         '400':
           description: neither username nor email provided or both username and email provided
 
-  /game/{id}:
+  /api/game/{id}:
     get:
       summary: get a game by id
       operationId: GetGame
