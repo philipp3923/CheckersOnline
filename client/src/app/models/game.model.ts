@@ -1,19 +1,19 @@
-import { PlayModel } from './play.model';
+import {PlayModel} from "./play.model";
 
 export default interface GameModel {
-  id: string;
-  type: string;
+  id: string
+  type: string
 
-  start: number;
+  start: number
 
-  winner: string;
+  winner: string
 
-  white: string;
+  white: string
 
-  black: string;
+  black: string
 
-  timeType: string;
-  timeLimit: number;
-  timeIncrement: number;
-  plays?: PlayModel[];
+  timeType: string
+  timeLimit: number
+  timeIncrement: number
+  plays?: PlayModel[]
 }

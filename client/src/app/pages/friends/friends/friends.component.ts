@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FriendsService } from '../../../core/services/friends.service';
-import UserInfoModel from '../../../models/user-info.model';
+import {FriendsService} from "../../../core/services/friends.service";
+import UserInfoModel from "../../../models/user-info.model";
 
 @Component({
   selector: 'app-friends',
   templateUrl: './friends.component.html',
-  styleUrls: ['./friends.component.css'],
+  styleUrls: ['./friends.component.css']
 })
 export class FriendsComponent implements OnInit {
   public onlineFriends: UserInfoModel[];
@@ -18,19 +18,21 @@ export class FriendsComponent implements OnInit {
     this.outgoingRequests = this.friendsService.getOutgoingRequests();
     this.incomingRequests = this.friendsService.getIncomingRequests();
 
-    this.friendsService.getOnlineFriendsObserver().subscribe((value) => {
+    this.friendsService.getOnlineFriendsObserver().subscribe((value)=>{
       this.onlineFriends = value;
     });
-    this.friendsService.getOfflineFriendsObserver().subscribe((value) => {
+    this.friendsService.getOfflineFriendsObserver().subscribe((value)=>{
       this.offlineFriends = value;
     });
-    this.friendsService.getOutgoingRequestsObserver().subscribe((value) => {
+    this.friendsService.getOutgoingRequestsObserver().subscribe((value)=>{
       this.outgoingRequests = value;
     });
-    this.friendsService.getIncomingRequestsObserver().subscribe((value) => {
+    this.friendsService.getIncomingRequestsObserver().subscribe((value)=>{
       this.incomingRequests = value;
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
+
 }

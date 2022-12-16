@@ -1,4 +1,4 @@
-export interface TokenModel {
-  string: string;
-  timestamp: number;
+export interface TokenModel{
+  string: string,
+  timestamp: number
 }

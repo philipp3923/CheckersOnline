@@ -3,10 +3,11 @@
   box-shadow: 0 2px 2px 1px var(--shadow-color);
 }
 
-.title {
+
+.title{
   font-size: 28px;
 }
 
-.nav-list {
+.nav-list{
   justify-content: space-between;
 }

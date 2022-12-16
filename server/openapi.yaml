@@ -40,17 +40,17 @@ paths:
                   example: "sijs-x8332!JA"
                   type: string
       responses:
-        "200":
+        '200':
           description: access token, refresh token and account information
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Authentication"
-        "400":
+                $ref: '#/components/schemas/Authentication'
+        '400':
           description: bad input parameter
-        "409":
+        '409':
           description: authentication failed
-        "404":
+        '404':
           description: user does not exist
 
   /auth/register:
@@ -81,11 +81,11 @@ paths:
                   example: "sijs-x8332!JA"
                   type: string
       responses:
-        "204":
+        '204':
           description: register successful
-        "400":
+        '400':
           description: bad input parameter
-        "409":
+        '409':
           description: user with username or email already exists
 
   /auth/guest:
@@ -95,17 +95,17 @@ paths:
       description: |
         Generates a new random Guest account
       responses:
-        "200":
+        '200':
           description: register successful
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Authentication"
+                $ref: '#/components/schemas/Authentication'
 
   /auth/logout:
     post:
       security:
-        - auth: []
+        - auth: [ ]
       tags:
         - users
       summary: logout a User
@@ -113,15 +113,15 @@ paths:
       description: |
         Removes refresh token from server and prevents old access tokens from accessing data by providing a valid refresh token as bearer
       responses:
-        "204":
+        '204':
           description: Logout successful
-        "401":
+        '401':
           description: Refresh token is missing or invalid
 
   /auth/token/access:
     post:
       security:
-        - auth: []
+        - auth: [ ]
       tags:
         - users
         - guests
@@ -130,19 +130,19 @@ paths:
       description: |
         Generates a new user specific access token by providing a valid refresh token as bearer
       responses:
-        "200":
+        '200':
           description: update successful
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Token"
-        "401":
+                $ref: '#/components/schemas/Token'
+        '401':
           description: Refresh token is missing or invalid
 
   /auth/token/refresh:
     post:
       security:
-        - auth: []
+        - auth: [ ]
       tags:
         - users
         - guests
@@ -151,19 +151,19 @@ paths:
       description: |
         Generates a new user specific refresh token and deletes the old refresh token by providing a valid refresh token as bearer
       responses:
-        "200":
+        '200':
           description: update successful
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Token"
-        "401":
+                $ref: '#/components/schemas/Token'
+        '401':
           description: Refresh token is missing or invalid
 
   /user/{id}/password:
     patch:
       security:
-        - auth: []
+        - auth: [ ]
       tags:
         - users
       summary: update password of user
@@ -195,19 +195,19 @@ paths:
                   example: "sijs-x8332!JA"
                   type: string
       responses:
-        "204":
+        '204':
           description: update successful
-        "401":
+        '401':
           description: Access token is missing or invalid
-        "403":
+        '403':
           description: unauthorized
-        "406":
+        '406':
           description: password invalid
 
   /user/{id}/username:
     patch:
       security:
-        - auth: []
+        - auth: [ ]
       tags:
         - users
       summary: update username of user
@@ -235,21 +235,21 @@ paths:
                   example: "maxx23"
                   type: string
       responses:
-        "204":
+        '204':
           description: update successful
-        "401":
+        '401':
           description: Access token is missing or invalid
-        "403":
+        '403':
           description: unauthorized
-        "409":
+        '409':
           description: username unavailable
-        "406":
+        '406':
           description: username invalid
 
   /user/{id}/email:
     get:
       security:
-        - auth: []
+        - auth: [ ]
       tags:
         - users
       summary: get email of user
@@ -264,7 +264,7 @@ paths:
           required: true
           description: ID of the user
       responses:
-        "200":
+        '200':
           description: email
           content:
             application/json:
@@ -276,14 +276,14 @@ paths:
                   email:
                     type: string
                     example: "max-muste@gmail.com"
-        "401":
+        '401':
           description: Access token is missing or invalid
-        "403":
+        '403':
           description: unauthorized
 
     patch:
       security:
-        - auth: []
+        - auth: [ ]
       tags:
         - users
       summary: update email of user
@@ -311,15 +311,15 @@ paths:
                   example: "maxx23@gmail.com"
                   type: string
       responses:
-        "204":
+        '204':
           description: update successful
-        "401":
+        '401':
           description: Access token is missing or invalid
-        "403":
+        '403':
           description: unauthorized
-        "409":
+        '409':
           description: email unavailable
-        "406":
+        '406':
           description: email invalid
 
   /user/{id}/games:
@@ -336,15 +336,15 @@ paths:
           required: true
           description: ID of the user
       responses:
-        "200":
+        '200':
           description: finished games
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Game"
-        "404":
+                  $ref: '#/components/schemas/Game'
+        '404':
           description: user not found
 
   /user/{id}:
@@ -361,17 +361,17 @@ paths:
           required: true
           description: ID of the user
       responses:
-        "200":
+        '200':
           description: user information
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
-        "404":
+                $ref: '#/components/schemas/User'
+        '404':
           description: user not found
     delete:
       security:
-        - auth: []
+        - auth: [ ]
       tags:
         - users
       summary: delete user account
@@ -392,13 +392,13 @@ paths:
           required: true
           description: Password of the user
       responses:
-        "201":
+        '201':
           description: user deleted
-        "401":
+        '401':
           description: Access token is missing or invalid
-        "403":
+        '403':
           description: unauthorized
-        "406":
+        '406':
           description: password invalid
 
   /user:
@@ -421,7 +421,7 @@ paths:
           required: false
           description: username to match users to
       responses:
-        "200":
+        '200':
           description: matching users
           content:
             application/json:
@@ -433,8 +433,8 @@ paths:
                   user:
                     type: array
                     items:
-                      $ref: "#/components/schemas/User"
-        "400":
+                      $ref: '#/components/schemas/User'
+        '400':
           description: neither username nor email provided or both username and email provided
 
   /game/{id}:
@@ -451,13 +451,13 @@ paths:
           required: true
           description: ID of the game
       responses:
-        "200":
+        '200':
           description: game information
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/schemas/Game"
+                  - $ref: '#/components/schemas/Game'
                 type: object
                 required:
                   - plays
@@ -465,8 +465,8 @@ paths:
                   plays:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Play"
-        "404":
+                      $ref: '#/components/schemas/Play'
+        '404':
           description: game not found
 
 components:
@@ -490,6 +490,7 @@ components:
           type: integer
           example: 1616689428325
 
+
     Authentication:
       type: object
       required:
@@ -512,8 +513,8 @@ components:
               example: USER-L9NZUGX01JX69K
             role:
               type: string
-              enum: [USER, GUEST]
-
+              enum: [ USER, GUEST ]
+    
     User:
       type: object
       required:
@@ -526,6 +527,7 @@ components:
         username:
           type: string
           example: MaxMuster23
+
 
     Game:
       type: object
@@ -543,10 +545,10 @@ components:
           example: GAME-GH2ZNGX0X23F9R
         type:
           type: string
-          enum: [FRIEND, CASUAL, CUSTOM]
+          enum: [ FRIEND, CASUAL, CUSTOM ]
         timeType:
           type: string
-          enum: [STATIC, DYNAMIC]
+          enum: [ STATIC, DYNAMIC ]
         timeLimit:
           type: integer
           example: 600000
@@ -558,14 +560,14 @@ components:
           example: 1313289426592
         winner:
           type: string
-          enum: [BLACK, WHITE]
+          enum: [ BLACK, WHITE ]
         white:
           type: string
           example: USER-L9NZUGX01JX69K
         black:
           type: string
           example: USER-L9OFA6QR1WRHPB
-
+    
     Coordinate:
       type: object
       required:
@@ -578,7 +580,7 @@ components:
         y:
           type: integer
           example: 1
-
+    
     Play:
       type: object
       required:
@@ -603,8 +605,8 @@ components:
           example: true
         color:
           type: string
-          enum: [BLACK, WHITE]
+          enum: [ BLACK, WHITE ]
         start:
-          $ref: "#/components/schemas/Coordinate"
+          $ref: '#/components/schemas/Coordinate'
         target:
-          $ref: "#/components/schemas/Coordinate"
+          $ref: '#/components/schemas/Coordinate'

@@ -1,79 +1,80 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { InfoComponent } from './pages/info/info.component';
-import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
-import { PlayComponent } from './pages/play/play/play.component';
-import { GameComponent } from './pages/game/game/game.component';
-import { ProfileComponent } from './pages/profile/profile/profile.component';
-import { AuthComponent } from './pages/profile/auth/auth.component';
-import { DisconnectedComponent } from './pages/disconnected/disconnected/disconnected.component';
-import { PlayerDetailComponent } from './pages/player/player-detail/player-detail.component';
-import { PlayerSearchComponent } from './pages/player/player-search/player-search.component';
-import { FriendsComponent } from './pages/friends/friends/friends.component';
-import { ViewGameComponent } from './pages/game/view-game/view-game.component';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {InfoComponent} from "./pages/info/info.component";
+import {PageNotFoundComponent} from "./pages/page-not-found/page-not-found.component";
+import {PlayComponent} from "./pages/play/play/play.component";
+import {GameComponent} from "./pages/game/game/game.component";
+import {ProfileComponent} from "./pages/profile/profile/profile.component";
+import {AuthComponent} from "./pages/profile/auth/auth.component";
+import {DisconnectedComponent} from "./pages/disconnected/disconnected/disconnected.component";
+import {PlayerDetailComponent} from "./pages/player/player-detail/player-detail.component";
+import {PlayerSearchComponent} from "./pages/player/player-search/player-search.component";
+import {FriendsComponent} from "./pages/friends/friends/friends.component";
+import {ViewGameComponent} from "./pages/game/view-game/view-game.component";
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'play',
-    pathMatch: 'full',
+    redirectTo: "play",
+    pathMatch: "full"
   },
   {
     path: 'play/:key',
-    component: GameComponent,
+    component: GameComponent
   },
   {
     path: 'game/:id',
-    component: ViewGameComponent,
+    component: ViewGameComponent
   },
   {
     path: 'play',
-    component: PlayComponent,
+    component: PlayComponent
   },
   {
     path: 'player/:id',
-    component: PlayerDetailComponent,
+    component: PlayerDetailComponent
   },
   {
     path: 'player',
-    component: PlayerSearchComponent,
+    component: PlayerSearchComponent
   },
   {
     path: 'friends',
-    component: FriendsComponent,
+    component: FriendsComponent
   },
   {
     path: 'profile',
-    component: ProfileComponent,
+    component: ProfileComponent
   },
   {
     path: 'login',
-    component: AuthComponent,
+    component: AuthComponent
   },
   {
     path: 'register',
-    component: AuthComponent,
+    component: AuthComponent
   },
   {
     path: 'info',
-    component: InfoComponent,
+    component: InfoComponent
   },
   {
     path: 'disconnected',
-    component: DisconnectedComponent,
+    component: DisconnectedComponent
   },
   {
     path: '404',
-    component: PageNotFoundComponent,
+    component: PageNotFoundComponent
   },
   {
     path: '**',
-    redirectTo: '404',
-  },
+    redirectTo: '404'
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule {
+}

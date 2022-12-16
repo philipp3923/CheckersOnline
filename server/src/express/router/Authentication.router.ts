@@ -1,5 +1,5 @@
 import AbstractRouter from "./Abstract.router";
-import { Router } from "express";
+import {Router} from "express";
 import GuestController from "../controller/Guest.controller";
 import TokenService from "../../services/Token.service";
 import GuestService from "../../services/Guest.service";
@@ -12,52 +12,21 @@ import LogoutController from "../controller/Logout.controller";
 import AccountService from "../../services/Account.service";
 
 export default class AuthenticationRouter extends AbstractRouter {
-  constructor(
-    path: string,
-    app: Router,
-    private tokenService: TokenService,
-    private guestService: GuestService,
-    private userService: UserService,
-    private accountService: AccountService,
-    private decryptRefreshTokenMiddleware: DecryptRefreshTokenMiddleware
-  ) {
-    super(path, app);
 
-    const guestController = new GuestController(
-      this.tokenService,
-      this.guestService
-    );
-    const loginController = new LoginController(
-      this.userService,
-      this.tokenService
-    );
-    const registerController = new RegisterController(this.userService);
-    const logoutController = new LogoutController(
-      this.tokenService,
-      this.accountService
-    );
+    constructor(path: string, app: Router, private tokenService: TokenService, private guestService: GuestService, private userService: UserService, private accountService: AccountService, private decryptRefreshTokenMiddleware: DecryptRefreshTokenMiddleware) {
+        super(path, app);
 
-    this.router.post("/guest", (req, res, next) =>
-      guestController.post(req, res, next)
-    );
-    this.router.post("/login", (req, res, next) =>
-      loginController.post(req, res, next)
-    );
-    this.router.post("/register", (req, res, next) =>
-      registerController.post(req, res, next)
-    );
-    this.router.post(
-      "/logout",
-      (req, res, next) => decryptRefreshTokenMiddleware.handle(req, res, next),
-      (req, res, next) => logoutController.post(req, res, next)
-    );
+        const guestController = new GuestController(this.tokenService, this.guestService);
+        const loginController = new LoginController(this.userService, this.tokenService);
+        const registerController = new RegisterController(this.userService);
+        const logoutController = new LogoutController(this.tokenService, this.accountService);
 
-    new TokenRouter(
-      "/token",
-      this.router,
-      tokenService,
-      userService,
-      decryptRefreshTokenMiddleware
-    );
-  }
+        this.router.post("/guest", (req, res, next) => guestController.post(req, res, next));
+        this.router.post("/login", (req, res, next) => loginController.post(req, res, next));
+        this.router.post("/register", (req, res, next) => registerController.post(req, res, next));
+        this.router.post("/logout", (req, res, next) => decryptRefreshTokenMiddleware.handle(req, res, next), (req, res, next) => logoutController.post(req, res, next));
+
+        new TokenRouter("/token", this.router, tokenService, userService, decryptRefreshTokenMiddleware);
+    }
+
 }

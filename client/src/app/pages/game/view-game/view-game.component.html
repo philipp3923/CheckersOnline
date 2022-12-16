@@ -1,3 +1,4 @@
+
 <div class="content full">
   <div class="content information">
     <div class="game-info-list">
@@ -5,13 +6,8 @@
         <div class="game-info-value">
           <app-timer #white_timer></app-timer>
         </div>
-        <a
-          *ngIf="whitePlayer"
-          class="game-info"
-          routerLink="/player/{{ game?.white }}"
-          class="game-info-type"
-        >
-          WHITE ({{ whitePlayer.username }})
+        <a *ngIf="whitePlayer" class="game-info" routerLink="/player/{{game?.white}}" class="game-info-type">
+          WHITE ({{whitePlayer.username}})
         </a>
         <div *ngIf="!whitePlayer" class="game-info" class="game-info-type">
           WHITE (Guest)
@@ -21,35 +17,35 @@
     <div class="game-info-list">
       <div class="game-info">
         <div class="game-info-value">
-          {{ getTimeString(game?.start ?? 0) }}
+          {{getTimeString(game?.start ?? 0)}}
         </div>
-        <div class="game-info-type">TIME</div>
+        <div class="game-info-type">
+          TIME
+        </div>
       </div>
       <div class="game-info optional">
         <div class="game-info-value">
-          {{ game?.timeType === "DYNAMIC" ? "DYNAMIC" : "STATIC" }}
+          {{game?.timeType === 'DYNAMIC' ? "DYNAMIC" :
+          "STATIC"}}
         </div>
-        <div class="game-info-type">TYPE</div>
-      </div>
+        <div class="game-info-type">
+          TYPE
+        </div></div>
       <div class="game-info">
         <div class="game-info-value">
-          {{ game?.winner }}
+          {{game?.winner}}
         </div>
-        <div class="game-info-type">WINNER</div>
-      </div>
+        <div class="game-info-type">
+          WINNER
+        </div></div>
     </div>
     <div class="game-info-list">
       <div class="game-info">
         <div class="game-info-value">
           <app-timer #black_timer></app-timer>
         </div>
-        <a
-          *ngIf="blackPlayer"
-          class="game-info"
-          routerLink="/player/{{ game?.black }}"
-          class="game-info-type"
-        >
-          BLACK ({{ blackPlayer.username }})
+        <a *ngIf="blackPlayer" class="game-info" routerLink="/player/{{game?.black}}" class="game-info-type">
+          BLACK ({{blackPlayer.username}})
         </a>
         <div *ngIf="!blackPlayer" class="game-info" class="game-info-type">
           BLACK (Guest)
@@ -57,11 +53,13 @@
       </div>
     </div>
   </div>
-  <app-board #board></app-board>
+    <app-board #board></app-board>
   <div class="content buttons">
     <button class="icon-button" (click)="jumpStart()">first_page</button>
     <button class="icon-button" (click)="previousMove()">chevron_left</button>
     <button class="icon-button" (click)="nextMove()">chevron_right</button>
     <button class="icon-button" (click)="jumpEnd()">last_page</button>
   </div>
+
 </div>
+

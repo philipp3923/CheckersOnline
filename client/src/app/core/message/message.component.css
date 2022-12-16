@@ -1,7 +1,7 @@
-.message {
+.message{
   position: absolute;
   left: 50%;
-  transform: translate(-50%, 0);
+  transform: translate(-50%,0);
   max-width: 800px;
   width: calc(100vw - 48px);
   margin-top: 16px;
@@ -13,19 +13,19 @@
   justify-content: space-between;
 }
 
-.warning {
+.warning{
   background-color: var(--six);
 }
 
-.info {
+.info{
   background-color: var(--seven);
 }
 
-.error {
+.error{
   background-color: var(--five);
 }
 
-.message-text {
+.message-text{
   text-overflow: ellipsis;
   line-break: auto;
   overflow: hidden;

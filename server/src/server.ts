@@ -1,7 +1,7 @@
-import { Server } from "socket.io";
-import { createServer } from "http";
+import {Server} from "socket.io";
+import {createServer} from "http";
 import UserRepository from "./repositories/User.repository";
-import { PrismaClient } from "@prisma/client";
+import {PrismaClient} from "@prisma/client";
 import EncryptionRepository from "./repositories/Encryption.repository";
 import UserService from "./services/User.service";
 import IdentityRepository from "./repositories/Identity.repository";
@@ -29,9 +29,9 @@ import LeaveGameEvent from "./events/LeaveGame.event";
 
 //#TODO move constants to central file
 const JWT_REFRESH_SECRET =
-  "aNMkyXrdEgGCQw6OpdnTsh1XEEKb5pbMaA1mfEfGLD6GHyAQriU4qWVsbpp5RsMCXIiCT27LnDCb72OUUX6xFCmdp1rB1eSxlW6A6XVZeprS681oFLaEKnWQOAQsNEhY";
+    "aNMkyXrdEgGCQw6OpdnTsh1XEEKb5pbMaA1mfEfGLD6GHyAQriU4qWVsbpp5RsMCXIiCT27LnDCb72OUUX6xFCmdp1rB1eSxlW6A6XVZeprS681oFLaEKnWQOAQsNEhY";
 const JWT_ACCESS_SECRET =
-  "ZdTytDiVUWcSfVh62VfiQ5mcV3JCT6exTHTNCOZH9XOdMXft82UiMToVtyfIsOenSE5BAullDJJqwOJSVVN1pvSsyOfjK7w8pLzgtznLxp5rGUG58D17rS7Ryltf8yIA";
+    "ZdTytDiVUWcSfVh62VfiQ5mcV3JCT6exTHTNCOZH9XOdMXft82UiMToVtyfIsOenSE5BAullDJJqwOJSVVN1pvSsyOfjK7w8pLzgtznLxp5rGUG58D17rS7Ryltf8yIA";
 const JWT_TOKEN_COUNT = 10;
 
 const app = express();
@@ -49,60 +49,65 @@ const encryptionRepository = new EncryptionRepository(10);
 const tokenRepository = new TokenRepository(prismaClient);
 const socketRepository = new SocketRepository(io, gameRepository);
 const friendshipRepository = new FriendshipRepository(
-  prismaClient,
-  userRepository
+    prismaClient,
+    userRepository
 );
 
+
 const tokenService = new TokenService(
-  tokenRepository,
-  accountRepository,
-  JWT_ACCESS_SECRET,
-  JWT_REFRESH_SECRET,
-  JWT_TOKEN_COUNT
+    tokenRepository,
+    accountRepository,
+    JWT_ACCESS_SECRET,
+    JWT_REFRESH_SECRET,
+    JWT_TOKEN_COUNT
 );
 const socketService = new SocketService(socketRepository);
 const guestService = new GuestService(guestRepository, identityRepository);
 const gameService = new GameService(
-  accountRepository,
-  gameRepository,
-  identityRepository,
-  socketService
+    accountRepository,
+    gameRepository,
+    identityRepository,
+    socketService
 );
 const friendshipService = new FriendshipService(
-  friendshipRepository,
-  accountRepository,
-  socketService
+    friendshipRepository,
+    accountRepository,
+    socketService
 );
 const accountService = new AccountService(accountRepository);
 const userService = new UserService(
-  userRepository,
-  encryptionRepository,
-  identityRepository,
-  accountRepository,
-  friendshipService,
-  socketService
+    userRepository,
+    encryptionRepository,
+    identityRepository,
+    accountRepository,
+    friendshipService,
+    socketService
 );
 new DecryptAccessTokenMiddleware(
-  socketService,
-  tokenService,
-  gameService,
-  friendshipService
+    socketService,
+    tokenService,
+    gameService,
+    friendshipService
 );
 
 new JoinGameEvent(socketService, gameService);
-new CreateGameEvent(socketService, gameService, friendshipService);
+new CreateGameEvent(
+    socketService,
+    gameService,
+    friendshipService
+);
 new TurnEvent(socketService);
 new PingEvent(socketService);
 new FriendEvent(socketService, friendshipService);
 new LeaveGameEvent(socketService, gameService);
 
 new ExpressServer(
-  app,
-  tokenService,
-  guestService,
-  userService,
-  accountService,
-  gameService
+    app,
+    tokenService,
+    guestService,
+    userService,
+    accountService,
+    gameService
 );
 
 server.listen(5000, () => console.log("listening on port 5000"));

@@ -1,5 +1,5 @@
 import AbstractRouter from "./Abstract.router";
-import { Router } from "express";
+import {Router} from "express";
 import TokenService from "../../services/Token.service";
 import UserService from "../../services/User.service";
 import AccountService from "../../services/Account.service";
@@ -13,41 +13,32 @@ import UserGamesController from "../controller/UserGames.controller";
 import GameService from "../../services/Game.service";
 
 export default class UserRouter extends AbstractRouter {
-  constructor(
-    path: string,
-    app: Router,
-    private tokenService: TokenService,
-    private userService: UserService,
-    private accountService: AccountService,
-    private gameService: GameService,
-    private decryptAccessTokenMiddleware: DecryptAccessTokenMiddleware,
-    private isUserParameterValidMiddleware: UserExistsMiddleware,
-    private isThisUserMiddleware: IsThisUserMiddleware
-  ) {
-    super(path, app);
 
-    const userController = new UserController(userService);
-    const usersController = new UsersController(userService);
-    const userGamesController = new UserGamesController(gameService);
+    constructor(path: string, app: Router,
+                private tokenService: TokenService,
+                private userService: UserService,
+                private accountService: AccountService,
+                private gameService: GameService,
+                private decryptAccessTokenMiddleware: DecryptAccessTokenMiddleware,
+                private isUserParameterValidMiddleware: UserExistsMiddleware,
+                private isThisUserMiddleware: IsThisUserMiddleware) {
+        super(path, app);
 
-    this.router.get("/:id/games", (req, res, next) =>
-      userGamesController.get(req, res, next)
-    );
-    this.router.get("/:id", (req, res, next) =>
-      userController.get(req, res, next)
-    );
-    this.router.get("/", (req, res, next) =>
-      usersController.get(req, res, next)
-    );
+        const userController = new UserController(userService);
+        const usersController = new UsersController(userService);
+        const userGamesController = new UserGamesController(gameService);
 
-    new ThisUserRouter(
-      "/:id",
-      this.router,
-      tokenService,
-      userService,
-      decryptAccessTokenMiddleware,
-      isUserParameterValidMiddleware,
-      isThisUserMiddleware
-    );
-  }
+        this.router.get("/:id/games", (req, res, next) => userGamesController.get(req,res,next));
+        this.router.get("/:id", (req, res, next) => userController.get(req,res,next));
+        this.router.get("/", (req, res, next) => usersController.get(req,res,next));
+
+        new ThisUserRouter("/:id",
+            this.router,
+            tokenService,
+            userService,
+            decryptAccessTokenMiddleware,
+            isUserParameterValidMiddleware,
+            isThisUserMiddleware);
+    }
+
 }

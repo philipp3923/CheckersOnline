@@ -14,22 +14,22 @@ every event all valid parameter types as well as all response types are specifie
 
 ### joinGame
 
-_Parameters:_ `{ key: string }`
-_Response:_ `{ success: true }`  
-_Error:_ `{ success: false, error: string }`  
+*Parameters:* ```{ key: string }```
+*Response:* ```{ success: true }```  
+*Error:* ```{ success: false, error: string }```  
 Using a joinGame event a player is able to join a game by providing a valid game key.
 
 ### createFriendGame
 
-_Parameters:_ `{ timeType: TimeType, invitation: string }`  
-_Response:_ `{ success: true, key: string }`  
-_Error:_ `{ success: false, error: string}`
+*Parameters:* ```{ timeType: TimeType, invitation: string }```  
+*Response:* ```{ success: true, key: string }```  
+*Error:* ```{ success: false, error: string}```
 
 ### createCasualGame
 
-_Parameters_: `{ timeType: TimeType }`  
-_Response_: `{ success: true, key: string }`  
-_Error_: `{ success: false, error: string}`
+*Parameters*: ```{ timeType: TimeType }```  
+*Response*: ```{ success: true, key: string }```  
+*Error*: ```{ success: false, error: string}```
 
 ## Receiving Events
 

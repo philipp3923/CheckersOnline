@@ -1,39 +1,39 @@
-.scroll {
+.scroll{
   overflow-y: auto;
   height: 100vh;
 }
 
-.scroll-block {
+.scroll-block{
   height: 570px;
 }
 
-.overview {
+.overview{
 }
 
-.waiting {
+.waiting{
   background-color: var(--six);
 }
 
-.active {
+.active{
   background-color: var(--seven);
 }
 
-.active,
-.waiting {
+.active, .waiting{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 }
 
-.info {
+.info{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.timer-box {
+.timer-box{
 }
 
-.timer-sub {
+.timer-sub{
 }
+

@@ -1,15 +1,17 @@
-import { PrismaClient } from "@prisma/client";
-import { Role } from "../services/Token.service";
+import {PrismaClient} from "@prisma/client";
+import {Role} from "../services/Token.service";
 import AccountRepository from "./Account.repository";
 
-export default class GuestRepository {
-  constructor(
-    private prismaClient: PrismaClient,
-    private accountRepository: AccountRepository
-  ) {}
+export default class GuestRepository{
 
-  public async create(id: string) {
-    await this.accountRepository.create(id, Role.GUEST);
-    await this.accountRepository.login(id);
-  }
+    constructor(private prismaClient: PrismaClient, private accountRepository : AccountRepository) {
+    }
+
+    public async create(id: string){
+        await this.accountRepository.create(id, Role.GUEST);
+        await this.accountRepository.login(id);
+    }
+
+
+
 }

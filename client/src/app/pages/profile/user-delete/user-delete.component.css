@@ -1,25 +1,25 @@
-.text-display,
-.form-display {
+
+.text-display, .form-display{
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-input {
+input{
   flex-grow: 1;
 }
 
-.text-field {
+.text-field{
   display: flex;
   align-items: center;
   align-content: center;
 }
 
-.flex-row {
+.flex-row{
   display: flex;
 }
 
-.property-box {
+.property-box{
   margin-top: 16px;
   align-items: center;
   display: flex;
@@ -27,7 +27,7 @@ input {
   flex-direction: column;
 }
 
-.content {
+.content{
   box-shadow: none;
   background-color: transparent;
   justify-content: center;

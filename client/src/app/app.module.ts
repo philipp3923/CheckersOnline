@@ -1,14 +1,14 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { InfoComponent } from './pages/info/info.component';
-import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
-import { FooterComponent } from './core/footer/footer.component';
-import { HeaderComponent } from './core/header/header.component';
-import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {InfoComponent} from './pages/info/info.component';
+import {PageNotFoundComponent} from './pages/page-not-found/page-not-found.component';
+import {FooterComponent} from './core/footer/footer.component';
+import {HeaderComponent} from './core/header/header.component';
+import {HttpClientModule} from "@angular/common/http";
+import {FormsModule} from "@angular/forms";
 import { BoardComponent } from './pages/game/board/board.component';
 import { PlayComponent } from './pages/play/play/play.component';
 import { ActiveGamesOverviewComponent } from './pages/play/active-games-overview/active-games-overview.component';
@@ -25,7 +25,7 @@ import { FriendsComponent } from './pages/friends/friends/friends.component';
 import { GameHistoryComponent } from './pages/player/game-history/game-history.component';
 import { ViewGameComponent } from './pages/game/view-game/view-game.component';
 import { MessageComponent } from './core/message/message.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { FriendActionComponent } from './pages/friends/friend-action/friend-action.component';
 
 @NgModule({
@@ -51,15 +51,16 @@ import { FriendActionComponent } from './pages/friends/friend-action/friend-acti
     GameHistoryComponent,
     ViewGameComponent,
     MessageComponent,
-    FriendActionComponent,
+    FriendActionComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    BrowserAnimationsModule,
+    BrowserAnimationsModule
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+}
