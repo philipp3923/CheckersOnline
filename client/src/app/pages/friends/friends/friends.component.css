@@ -1,25 +1,25 @@
-ul{
+ul {
   margin: 0 0 32px;
 }
 
-.online{
+.online {
   color: var(--seven);
 }
 
-.offline{
+.offline {
   color: var(--five);
 }
 
-.content{
+.content {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.empty{
+.empty {
   padding: 8px;
 }
 
-.h1{
+.h1 {
   font-size: 20px;
 }

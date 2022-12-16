@@ -129,6 +129,7 @@ export class SocketService {
   public addGameLeaveListener(listener: (res: any) => void) {
     this.addListener("leave", listener);
   }
+
   public clearPendingEmits() {
     this.pendingEmits = [];
   }

@@ -1,11 +1,11 @@
 <div class="content">
   <div class="text-display">
-      <button (click)="switchEdit()">DELETE ACCOUNT</button>
+    <button (click)="switchEdit()">DELETE ACCOUNT</button>
   </div>
-  <form *ngIf="edit" class="form-display" (submit)="update()">
+  <form (submit)="update()" *ngIf="edit" class="form-display">
     <div>
-      <input autocomplete="section-delete password" type="password" #input
-             placeholder="Enter password">
+      <input #input autocomplete="section-delete password" placeholder="Enter password"
+             type="password">
     </div>
     <button class="icon-button">done</button>
   </form>

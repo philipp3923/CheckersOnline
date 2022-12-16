@@ -1,5 +1,4 @@
-
-export default interface CoordinateSchema{
+export default interface CoordinateSchema {
     x: number,
     y: number
 }

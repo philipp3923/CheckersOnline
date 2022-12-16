@@ -36,15 +36,19 @@ export default abstract class UserGameModel extends GameModel {
         this.invitation = null;
     }
 
-    public async invite(id: string){
+    public static isValidTime(time?: number, increment?: number): boolean {
+        return false;
+    }
+
+    public async invite(id: string) {
         this.invitation = id;
     }
 
-    public getIncrement(){
+    public getIncrement() {
         return 0;
     }
 
-    public getTimeType(){
+    public getTimeType() {
         return "STATIC";
     }
 
@@ -52,10 +56,10 @@ export default abstract class UserGameModel extends GameModel {
         if (this.player.length >= 2) {
             throw new Error("Game is full");
         }
-        if(this.player[0]?.id === player || this.player[1]?.id === player){
+        if (this.player[0]?.id === player || this.player[1]?.id === player) {
             throw new Error("Cannot join the same game twice");
         }
-        if(this.invitation !== null && this.invitation !== player){
+        if (this.invitation !== null && this.invitation !== player) {
             throw new Error("Uninvited player cannot join game");
         }
         if (Math.random() >= 0.5) {
@@ -72,7 +76,7 @@ export default abstract class UserGameModel extends GameModel {
         return this.board.getWinner();
     }
 
-    public setWinner(color: Color){
+    public setWinner(color: Color) {
         this.finished = true;
         if (this.timeout !== null) {
             clearTimeout(this.timeout);
@@ -189,7 +193,7 @@ export default abstract class UserGameModel extends GameModel {
     protected abstract updateTime(player: Player, play: Play): void;
 
     private async handleTimeout(color: Color) {
-        if(this.finished){
+        if (this.finished) {
             return;
         }
         this.finished = true;
@@ -202,10 +206,6 @@ export default abstract class UserGameModel extends GameModel {
 
         lostPlayer.time = 0;
         await this.finish();
-    }
-
-    public static isValidTime(time?: number, increment?: number): boolean{
-        return false;
     }
 
 }

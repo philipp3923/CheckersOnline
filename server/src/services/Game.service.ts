@@ -3,13 +3,13 @@ import IdentityRepository from "../repositories/Identity.repository";
 import SocketService from "./Socket.service";
 import {Color, Play} from "../models/Board.model";
 import UserGame from "../models/UserGame.model";
+import UserGameModel from "../models/UserGame.model";
 import StaticGame from "../models/StaticGame.model";
 import Game, {GameType} from "../models/Game.model";
 import DynamicGame from "../models/DynamicGame.model";
 import GameSchema from "../schemas/Game.schema";
 import AccountRepository from "../repositories/Account.repository";
 import PlaySchema from "../schemas/Play.schema";
-import UserGameModel from "../models/UserGame.model";
 
 export enum TimeType {
     STATIC, DYNAMIC
@@ -20,7 +20,8 @@ export default class GameService {
 
     constructor(private accountRepository: AccountRepository, private gameRepository: GameRepository, private identityRepository: IdentityRepository, private socketService: SocketService) {
         this.games = {};
-        this.gameRepository.deleteActiveGames().then(() => {});
+        this.gameRepository.deleteActiveGames().then(() => {
+        });
     }
 
     public async start(game: UserGame) {
@@ -44,7 +45,7 @@ export default class GameService {
 
     public async remove(game: Game) {
         delete this.games[game.getKey()];
-        if(game instanceof UserGameModel){
+        if (game instanceof UserGameModel) {
             this.socketService.getConnectionByAccountID(game.getBlack()?.id ?? "")?.removeGame(game);
             this.socketService.getConnectionByAccountID(game.getWhite()?.id ?? "")?.removeGame(game);
         }
@@ -75,10 +76,10 @@ export default class GameService {
         return this.games[key] ?? null;
     }
 
-    public getGamesByUserID(user_id: string): { [key: string]: UserGame }{
+    public getGamesByUserID(user_id: string): { [key: string]: UserGame } {
         const result: { [key: string]: UserGame } = {};
-        for(let key of Object.keys(this.games)){
-            if(this.games[key].getBlack()?.id === user_id || this.games[key].getWhite()?.id === user_id){
+        for (let key of Object.keys(this.games)) {
+            if (this.games[key].getBlack()?.id === user_id || this.games[key].getWhite()?.id === user_id) {
                 result[key] = this.games[key];
             }
         }
@@ -87,6 +88,92 @@ export default class GameService {
 
     public emitGameState(game: UserGame) {
         this.socketService.sendIn(game.getKey(), "gameState", game.getGameState());
+    }
+
+    public async getFinishedGamesOfUser(id: string): Promise<GameSchema[] | null> {
+        const user = await this.accountRepository.getByExtID(id);
+        if (!user) {
+            return null;
+        }
+        const games = await this.gameRepository.getGamesByAccountID(user.id);
+
+        if (!games) {
+            return null;
+        }
+
+        return await Promise.all(games.map(async (game): Promise<GameSchema> => {
+            return {
+                black: (await this.accountRepository.getByID(game.id_black))?.ext_id ?? "",
+                start: game.startedAt.getTime(),
+                timeIncrement: game.time_increment,
+                timeLimit: game.time_limit,
+                timeType: game.time_type,
+                type: game.type,
+                white: (await this.accountRepository.getByID(game.id_white))?.ext_id ?? "",
+                winner: game.winner ?? "",
+                id: game.ext_id
+            };
+        }));
+    }
+
+    public async getFinishedGame(id: string): Promise<GameSchema | null> {
+        const game = await this.gameRepository.getGame(id);
+        if (!game || !game.winner || game.plays.length <= 0) {
+            return null;
+        }
+
+        const plays: PlaySchema[] = game.plays.map((play) => {
+            return {
+                timestamp: play.timestamp,
+                start: {x: play.start_x, y: play.start_y},
+                target: {x: play.target_x, y: play.target_y},
+                capture: play.capture,
+                color: play.color,
+                time_left: play.time_left
+            }
+        });
+
+        return {
+            black: (await this.accountRepository.getByID(game.id_black))?.ext_id ?? "",
+            plays: plays,
+            start: game.startedAt.getTime(),
+            timeIncrement: game.time_increment,
+            timeLimit: game.time_limit,
+            timeType: game.time_type,
+            type: game.type,
+            white: (await this.accountRepository.getByID(game.id_white))?.ext_id ?? "",
+            winner: game.winner,
+            id: game.ext_id
+        };
+    }
+
+    public async invitePlayer(game: UserGame, invitation: string) {
+        await game.invite(invitation);
+        this.socketService.sendTo(invitation, "invite", game.getKey());
+    }
+
+    async leaveGame(game_key: string, player_id: string) {
+        const game = this.getGame(game_key);
+        if (game === null) {
+            throw new Error("Game does not exist");
+        }
+        await this.socketService.sendIn(game_key, "leave", {key: game_key, id: player_id});
+        if (!(game instanceof UserGameModel)) {
+            await this.remove(game);
+            return;
+        }
+        if (!game.getWhite() || !game.getBlack()) {
+            await this.remove(game);
+            return;
+        }
+
+        if (game.getPlays().length < 1) {
+            await this.remove(game);
+            return;
+        }
+
+        game.setWinner(game.getWhite()?.id === player_id ? Color.BLACK : Color.WHITE);
+        await this.finish(game);
     }
 
     private async createUserGame(gameType: GameType, timeType: TimeType, time: number, increment?: number) {
@@ -120,97 +207,11 @@ export default class GameService {
         return game;
     }
 
-    public async getFinishedGamesOfUser(id: string): Promise<GameSchema[] |null>{
-        const user = await this.accountRepository.getByExtID(id);
-        if(!user){
-            return null;
-        }
-        const games = await this.gameRepository.getGamesByAccountID(user.id);
-
-        if(!games){
-            return null;
-        }
-
-        return await Promise.all(games.map(async (game): Promise<GameSchema> => {
-            return {
-                black: (await this.accountRepository.getByID(game.id_black))?.ext_id ?? "",
-                start: game.startedAt.getTime(),
-                timeIncrement: game.time_increment,
-                timeLimit: game.time_limit,
-                timeType: game.time_type,
-                type: game.type,
-                white: (await this.accountRepository.getByID(game.id_white))?.ext_id ?? "",
-                winner: game.winner ?? "",
-                id: game.ext_id
-            };
-        }));
-    }
-
-    public async getFinishedGame(id: string): Promise<GameSchema |null>{
-        const game = await this.gameRepository.getGame(id);
-        if(!game || !game.winner || game.plays.length <= 0){
-            return null;
-        }
-
-        const plays: PlaySchema[] = game.plays.map((play)=>{
-            return {
-                timestamp: play.timestamp,
-                start: {x: play.start_x, y: play.start_y},
-                target: {x: play.target_x, y: play.target_y},
-                capture: play.capture,
-                color: play.color,
-                time_left: play.time_left
-            }
-        });
-
-        return {
-            black: (await this.accountRepository.getByID(game.id_black))?.ext_id ?? "",
-            plays: plays,
-            start: game.startedAt.getTime(),
-            timeIncrement: game.time_increment,
-            timeLimit: game.time_limit,
-            timeType: game.time_type,
-            type: game.type,
-            white: (await this.accountRepository.getByID(game.id_white))?.ext_id ?? "",
-            winner: game.winner,
-            id: game.ext_id
-        };
-    }
-
-    public async invitePlayer(game: UserGame, invitation: string){
-        await game.invite(invitation);
-        this.socketService.sendTo(invitation, "invite", game.getKey());
-    }
-
     private generateKey(): string {
         let key = this.identityRepository.generateKey();
         while (typeof this.games[key] !== "undefined") {
             key = this.identityRepository.generateKey();
         }
         return key;
-    }
-
-    async leaveGame(game_key: string, player_id: string) {
-        const game = this.getGame(game_key);
-        if(game === null){
-            throw new Error("Game does not exist");
-        }
-        await this.socketService.sendIn(game_key, "leave", {key: game_key, id: player_id});
-        if(!(game instanceof UserGameModel)) {
-            await this.remove(game);
-            return;
-        }
-        if(!game.getWhite() || !game.getBlack()){
-            await this.remove(game);
-            return;
-        }
-
-        if(game.getPlays().length < 1){
-            await this.remove(game);
-            return;
-        }
-
-        game.setWinner(game.getWhite()?.id === player_id ? Color.BLACK : Color.WHITE);
-        await this.finish(game);
     }
 }

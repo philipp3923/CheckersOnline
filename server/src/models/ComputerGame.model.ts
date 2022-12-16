@@ -1,7 +1,7 @@
 import {Color} from "./Board.model";
 import GameModel, {GameType} from "./Game.model";
 
-export default class ComputerGameModel extends GameModel{
+export default class ComputerGameModel extends GameModel {
     private readonly player: Color;
 
     /**
@@ -27,11 +27,8 @@ export default class ComputerGameModel extends GameModel{
         return Promise.resolve(false);
     }
 
-    protected start(): void {
-    }
-
     public getGameState() {
-        const state: any =  super.getGameState();
+        const state: any = super.getGameState();
         state.player = this.player;
         return state;
     }
@@ -41,6 +38,9 @@ export default class ComputerGameModel extends GameModel{
      */
     public getNext(): string | null {
         throw new Error("Method not implemented.");
+    }
+
+    protected start(): void {
     }
 
 }

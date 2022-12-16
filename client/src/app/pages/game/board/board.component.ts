@@ -1,13 +1,4 @@
-import {
-  AfterContentInit,
-  AfterViewChecked,
-  AfterViewInit,
-  Component,
-  ElementRef, Input,
-  OnInit,
-  Output,
-  ViewChild
-} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, OnInit, Output, ViewChild} from '@angular/core';
 import PositionModel from "../../../models/position.model";
 import {Observable, Subject} from "rxjs";
 
@@ -43,13 +34,15 @@ export class BoardComponent implements OnInit, AfterViewInit {
   public wd_img: ElementRef<HTMLImageElement> | undefined;
   @ViewChild('wp')
   public wp_img: ElementRef<HTMLImageElement> | undefined;
+  @Input()
+  public turnBoard: boolean;
   private state: number[][];
   private animation: boolean;
   private clickStream = new Subject<PositionModel>();
   @Output()
   public clickObserver: Observable<PositionModel> = this.clickStream.asObservable();
-  @Input()
-  public turnBoard: boolean;
+  private stateWasSet = false;
+
   constructor() {
     this.state = [
       [0, -1, 0, -1, 0, -1, 0, -1],
@@ -67,9 +60,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
   }
 
-  private stateWasSet = false;
-
-  public reset(){
+  public reset() {
     this.state = [
       [0, -1, 0, -1, 0, -1, 0, -1],
       [-1, 0, -1, 0, -1, 0, -1, 0],
@@ -80,7 +71,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
       [0, 1, 0, 1, 0, 1, 0, 1],
       [1, 0, 1, 0, 1, 0, 1, 0]
     ];
-    this.stateWasSet =true;
+    this.stateWasSet = true;
   }
 
   public setState(state: number[][]) {
@@ -123,14 +114,14 @@ export class BoardComponent implements OnInit, AfterViewInit {
     this.drawPieces();
   }
 
-  public getState(){
+  public getState() {
     return this.state;
   }
 
   public refresh() {
     this.flushScreen();
     this.drawBackground();
-    if(this.stateWasSet){
+    if (this.stateWasSet) {
       this.drawPieces();
     }
   }
@@ -144,6 +135,14 @@ export class BoardComponent implements OnInit, AfterViewInit {
     const row = Math.floor(($event.clientY - this.boundingRect.top) / tile_size_onscreen);
     const column = Math.floor(($event.clientX - this.boundingRect.left) / tile_size_onscreen);
     this.clickStream.next({x: this.transformX(column), y: this.transformY(row)});
+  }
+
+  public transformX(x: number) {
+    return this.turnBoard ? 7 - x : x;
+  }
+
+  public transformY(y: number) {
+    return this.turnBoard ? 7 - y : y;
   }
 
   private fitBoard() {
@@ -213,9 +212,9 @@ export class BoardComponent implements OnInit, AfterViewInit {
       let y_movement = move.to.y - move.from.y;
       let x_movement = move.to.x - move.from.x;
 
-      if(this.turnBoard){
-        y_movement*=-1;
-        x_movement*=-1;
+      if (this.turnBoard) {
+        y_movement *= -1;
+        x_movement *= -1;
       }
 
       animationOffset[1] = (TILE_SIZE * x_movement * frame) / ANIMATION_LENGTH;
@@ -263,7 +262,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
           this.drawBackground();
           this.drawPieces(move, frame);
         }, ANIMATION_DELAY);
-      } else if(this.animation){
+      } else if (this.animation) {
         //updateBoardAfterMove
         this.state[move.to.y][move.to.x] = this.state[move.from.y][move.from.x];
         this.state[move.from.y][move.from.x] = 0;
@@ -281,13 +280,5 @@ export class BoardComponent implements OnInit, AfterViewInit {
       }
 
     }
-  }
-
-  public transformX(x: number){
-    return this.turnBoard ? 7-x : x;
-  }
-
-  public transformY(y: number){
-    return this.turnBoard? 7-y : y;
   }
 }

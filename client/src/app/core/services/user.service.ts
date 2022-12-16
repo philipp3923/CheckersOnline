@@ -19,12 +19,6 @@ export class UserService {
     this.socketService.addWelcomeListener((args) => this.welcome(args));
   }
 
-  private welcome(args: any){
-    if(this.isUser()){
-      this.friendsService.init(this.getUser().id, args.friends);
-    }
-  }
-
   public isUser() {
     try {
       return this.getUser().role === "USER";
@@ -50,6 +44,84 @@ export class UserService {
     this.save(user);
   }
 
+  public async logout() {
+    if (this.isUser()) {
+      await this.apiService.logoutUser();
+    }
+    this.socketService.disconnect();
+    this.tokenService.removeTokens();
+    this.friendsService.reset();
+    window.localStorage.clear();
+    window.sessionStorage.clear();
+  }
+
+  public async guest() {
+    const authResponse = await this.apiService.authGuest();
+    //console.log(authResponse);
+    await this.tokenService.saveAccessToken(authResponse.accessToken);
+    await this.tokenService.saveRefreshToken(authResponse.refreshToken);
+    this.socketService.connect((await this.tokenService.getAccessToken()).string);
+    this.save(authResponse.user);
+  }
+
+  public async getInfo(): Promise<{ id: string, username: string, email: string }> {
+    const id = this.getUser().id;
+    const publicInfo = await this.apiService.getUser(id);
+    const email = await this.apiService.getUserEmail(id);
+    return {id: id, username: publicInfo.username, email: email.email};
+  }
+
+  public async changePassword(oldPassword: string, newPassword: string): Promise<boolean> {
+    const id = this.getUser().id;
+    try {
+      await this.apiService.changePassword(id, oldPassword, newPassword);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  public async changeUsername(username: string): Promise<boolean> {
+    const id = this.getUser().id;
+    try {
+      await this.apiService.changeUsername(id, username);
+      return true;
+    } catch (e) {
+      //console.log(e);
+      return false;
+    }
+  }
+
+  public async changeEmail(email: string): Promise<boolean> {
+    const id = this.getUser().id;
+    try {
+      await this.apiService.changeEmail(id, email);
+      return true;
+    } catch (e) {
+      //console.log(e);
+      return false;
+    }
+  }
+
+  public async deleteUser(password: string) {
+    const id = this.getUser().id;
+    try {
+      await this.apiService.deleteUser(id, password);
+      await this.logout();
+      await this.guest();
+      return true;
+    } catch (e) {
+      //console.log(e);
+      return false;
+    }
+  }
+
+  private welcome(args: any) {
+    if (this.isUser()) {
+      this.friendsService.init(this.getUser().id, args.friends);
+    }
+  }
+
   private async auth() {
     try {
       await this.tokenService.saveRefreshToken(await this.apiService.updateRefreshToken());
@@ -64,84 +136,8 @@ export class UserService {
     }
   }
 
-  public async logout() {
-    if(this.isUser()){
-      await this.apiService.logoutUser();
-    }
-    this.socketService.disconnect();
-    this.tokenService.removeTokens();
-    this.friendsService.reset();
-    window.localStorage.clear();
-    window.sessionStorage.clear();
-  }
-
   private save(user: UserModel) {
     window.localStorage.removeItem(USER_KEY);
     window.localStorage.setItem(USER_KEY, JSON.stringify(user));
-  }
-
-  public async guest() {
-    const authResponse = await this.apiService.authGuest();
-    //console.log(authResponse);
-    await this.tokenService.saveAccessToken(authResponse.accessToken);
-    await this.tokenService.saveRefreshToken(authResponse.refreshToken);
-    this.socketService.connect((await this.tokenService.getAccessToken()).string);
-    this.save(authResponse.user);
-  }
-
-  public async getInfo(): Promise<{id: string, username: string, email: string}>{
-    const id = this.getUser().id;
-    const publicInfo = await this.apiService.getUser(id);
-    const email = await this.apiService.getUserEmail(id);
-    return {id: id, username: publicInfo.username, email: email.email};
-  }
-
-  public async changePassword(oldPassword: string, newPassword: string): Promise<boolean>{
-    const id = this.getUser().id;
-    try{
-      await this.apiService.changePassword(id, oldPassword, newPassword);
-      return true;
-    }
-    catch (e) {
-      return false;
-    }
-  }
-
-  public async changeUsername(username: string): Promise<boolean>{
-    const id = this.getUser().id;
-    try{
-      await this.apiService.changeUsername(id, username);
-      return true;
-    }
-    catch (e) {
-      //console.log(e);
-      return false;
-    }
-  }
-
-  public async changeEmail(email: string): Promise<boolean>{
-    const id = this.getUser().id;
-    try{
-      await this.apiService.changeEmail(id, email);
-      return true;
-    }
-    catch (e) {
-      //console.log(e);
-      return false;
-    }
-  }
-
-  public async deleteUser(password: string){
-    const id = this.getUser().id;
-    try{
-      await this.apiService.deleteUser(id, password);
-      await this.logout();
-      await this.guest();
-      return true;
-    }
-    catch (e) {
-      //console.log(e);
-      return false;
-    }
   }
 }

@@ -1,19 +1,19 @@
 <div class="content">
   <div class="mode-select">
-    <button #join_casual [classList]="state==='join_casual' ? 'highlight switch': 'switch'"
-            (click)="switchJoinCasual()">Join Casual Game
+    <button #join_casual (click)="switchJoinCasual()"
+            [classList]="state==='join_casual' ? 'highlight switch': 'switch'">Join Casual Game
     </button>
-    <button #join_custom [classList]="state==='join_custom' ? 'highlight switch': 'switch'"
-            (click)="switchJoinCustom()">Join Custom Game
+    <button #join_custom (click)="switchJoinCustom()"
+            [classList]="state==='join_custom' ? 'highlight switch': 'switch'">Join Custom Game
     </button>
-    <button #create_custom [classList]="state==='create_custom' ? 'highlight switch': 'switch'"
-            (click)="switchCreateCustom()">Create Custom Game
+    <button #create_custom (click)="switchCreateCustom()"
+            [classList]="state==='create_custom' ? 'highlight switch': 'switch'">Create Custom Game
     </button>
   </div>
   <div class="content">
-    <div class="sub-box" *ngIf="state==='join_custom'">
-      <input class="game-key-input" #game_key placeholder="GAME KEY">
-      <button class="finish-button" (click)="enterGame()">Join</button>
+    <div *ngIf="state==='join_custom'" class="sub-box">
+      <input #game_key class="game-key-input" placeholder="GAME KEY">
+      <button (click)="enterGame()" class="finish-button">Join</button>
     </div>
     <div *ngIf="state==='join_casual' || state==='create_custom' ">
       <div class="sub-box">
@@ -29,18 +29,20 @@
           <div>Time:</div>
           <div>{{type ? DYN_TIME_MAP[time] : STAT_TIME_MAP[time]}}</div>
         </div>
-        <input (input)="updateTime()" #time_slider class="slider" type="range" min="0" value="2"
-               max="{{STAT_TIME_MAP.length-1}}">
+        <input #time_slider (input)="updateTime()" class="slider" max="{{STAT_TIME_MAP.length-1}}" min="0" type="range"
+               value="2">
       </div>
-      <div class="slider-box" *ngIf="type===1">
+      <div *ngIf="type===1" class="slider-box">
         <div class="time-info-text">
-          <div>Increment: </div><div>{{DYN_INC_MAP[increment]}}</div></div>
-        <input (input)="updateIncrement()" #increment_slider class="slider" type="range" min="0" value="2"
-               max="{{DYN_INC_MAP.length-1}}" min="0"
+          <div>Increment:</div>
+          <div>{{DYN_INC_MAP[increment]}}</div>
+        </div>
+        <input #increment_slider (input)="updateIncrement()" class="slider" max="{{DYN_INC_MAP.length-1}}" min="0" min="0"
+               type="range" value="2"
         >
       </div>
       <div class="sub-box">
-        <button class="finish-button" (click)="enterGame()">{{state === 'join_casual' ? "Join" : "Create"}}</button>
+        <button (click)="enterGame()" class="finish-button">{{state === 'join_casual' ? "Join" : "Create"}}</button>
       </div>
     </div>
 

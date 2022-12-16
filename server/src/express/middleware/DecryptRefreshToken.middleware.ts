@@ -2,7 +2,7 @@ import TokenService from "../../services/Token.service";
 import {NextFunction, Request, Response} from "express";
 import InterfaceMiddleware from "./Interface.middleware";
 
-export default class DecryptRefreshTokenMiddleware implements InterfaceMiddleware{
+export default class DecryptRefreshTokenMiddleware implements InterfaceMiddleware {
 
     constructor(private tokenService: TokenService) {
     }

@@ -3,7 +3,7 @@ import UserService from "../../services/User.service";
 import {NextFunction, Request, Response} from "express";
 import AbstractController from "./Abstract.controller";
 
-export default class EmailController extends AbstractController{
+export default class EmailController extends AbstractController {
     constructor(private tokenService: TokenService, private userService: UserService) {
         super();
     }
@@ -11,12 +11,12 @@ export default class EmailController extends AbstractController{
     public async patch(req: Request, res: Response, next: NextFunction): Promise<void> {
         const email: string = req.body.email;
 
-        if(!email){
+        if (!email) {
             res.status(406).send();
             return;
         }
 
-        if(!this.userService.validateEmail(email)){
+        if (!this.userService.validateEmail(email)) {
             res.status(406).send();
             return;
         }

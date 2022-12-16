@@ -24,7 +24,7 @@ export class UserDeleteComponent implements OnInit {
   }
 
   update() {
-    if(this.input?.nativeElement.value === "" || !this.input){
+    if (this.input?.nativeElement.value === "" || !this.input) {
       this.messageService.addMessage(MessageType.WARNING, "Fill out all fields.");
       return;
     }

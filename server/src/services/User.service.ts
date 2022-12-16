@@ -13,7 +13,6 @@ export default class UserService {
         private identRepository: IdentityRepository,
         private accountRepository: AccountRepository,
         private friendshipService: FriendshipService,
-
         private socketService: SocketService
     ) {
     }
@@ -150,18 +149,18 @@ export default class UserService {
         return true;
     }
 
-    private async getByID(id: string) {
-        return await this.userRepository.getByAccountID(id);
-    }
-
     public async delete(decryptedToken: DecryptedToken) {
         const connection = this.socketService.getConnection(decryptedToken);
         const friendships = await this.friendshipService.getFriends(decryptedToken.id);
-        for(let friend of friendships){
+        for (let friend of friendships) {
             await this.friendshipService.delete(friend.user, friend.friend);
         }
         await connection?.disconnectAllSockets();
         await this.accountRepository.setDeleted(decryptedToken.id);
         await this.userRepository.deleteUser(decryptedToken.id);
+    }
+
+    private async getByID(id: string) {
+        return await this.userRepository.getByAccountID(id);
     }
 }

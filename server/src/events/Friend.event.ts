@@ -3,14 +3,14 @@ import Connection from "../models/Connection.model";
 import SocketService, {SocketResponse} from "../services/Socket.service";
 import FriendshipService from "../services/Friendship.service";
 
-export default class FriendEvent extends AbstractEvent{
+export default class FriendEvent extends AbstractEvent {
 
     public constructor(socketService: SocketService, private friendshipService: FriendshipService) {
         super(socketService, "friend");
     }
 
     public async on(connection: Connection, args: any, respond: SocketResponse): Promise<void> {
-        if(typeof args.type === "undefined" || typeof args.friend !== "string"){
+        if (typeof args.type === "undefined" || typeof args.friend !== "string") {
             respond({error: "Invalid argument type"});
             return;
         }
@@ -29,7 +29,7 @@ export default class FriendEvent extends AbstractEvent{
                 default:
                     throw new Error();
             }
-        }catch (e){
+        } catch (e) {
             respond({error: "Illegal operation"});
             return;
         }

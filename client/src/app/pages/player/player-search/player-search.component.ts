@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import UserInfoModel from "../../../models/user-info.model";
 import {ApiService} from "../../../core/services/api.service";
 import {BehaviorSubject, debounceTime, skip} from "rxjs";
@@ -28,7 +28,7 @@ export class PlayerSearchComponent implements OnInit {
     this.filteredInput.pipe(
       skip(1),
       debounceTime(400)
-    ).subscribe(async (next:string) => {
+    ).subscribe(async (next: string) => {
       await this.search(next);
     });
   }

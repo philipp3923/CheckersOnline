@@ -1,6 +1,6 @@
 <div class="overview">
   <div class="scroll">
-    <div class="content active" *ngFor="let info of this.activeGames; index as i">
+    <div *ngFor="let info of this.activeGames; index as i" class="content active">
       <div class="game-info-list">
         <div class="game-info">
           <div class="game-info-value">
@@ -42,7 +42,8 @@
             <app-timer [colorToDisplay]="1" [gameKey]="info.key"></app-timer>
           </div>
           <div class="game-info-type">WHITE ({{getPlayerTerm(info, 1)}})
-          </div></div>
+          </div>
+        </div>
         <div class="game-info">
           <div class="game-info-value">
             <app-timer [colorToDisplay]="-1" [gameKey]="info.key"></app-timer>
@@ -53,13 +54,13 @@
         </div>
       </div>
       <div class="game-button-container">
-        <button class="icon-button" (click)="leaveGame(info.key)">close</button>
+        <button (click)="leaveGame(info.key)" class="icon-button">close</button>
         <button class="icon-button" routerLink="/play/{{info.key}}">
           chevron_right
         </button>
       </div>
     </div>
-    <div class="content waiting" *ngFor="let info of this.waitingGames; index as i">
+    <div *ngFor="let info of this.waitingGames; index as i" class="content waiting">
       <div class="game-info-list">
         <div class="game-info">
           <div class="game-info-value">
@@ -96,7 +97,7 @@
         </div>
       </div>
       <div class="game-button-container">
-        <button class="icon-button" (click)="leaveGame(info.key)">close</button>
+        <button (click)="leaveGame(info.key)" class="icon-button">close</button>
         <button class="icon-button" routerLink="/play/{{info.key}}">
           chevron_right
         </button>
@@ -104,7 +105,7 @@
     </div>
     <div class="scroll-block">
 
-  </div>
+    </div>
   </div>
 
 </div>

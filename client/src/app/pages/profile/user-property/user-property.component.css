@@ -1,33 +1,33 @@
 
-.text-display, .form-display{
+.text-display, .form-display {
   display: flex;
   justify-content: space-between;
   width: 100%;
 }
 
-.text-display{
+.text-display {
   align-items: center;
 }
 
-.form-display{
+.form-display {
   align-items: flex-end;
 }
 
-input{
+input {
   flex-grow: 1;
 }
 
-.text-field{
+.text-field {
   display: flex;
   align-items: center;
   align-content: center;
 }
 
-.flex-row{
+.flex-row {
   display: flex;
 }
 
-.property-box{
+.property-box {
   margin-top: 16px;
   width: 100%;
   align-items: center;

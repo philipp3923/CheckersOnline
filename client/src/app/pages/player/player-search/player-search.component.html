@@ -6,7 +6,7 @@
 <div *ngIf="results.length <= 0 && query" class="content-transparent">No results found.</div>
 
 <ul *ngIf="results.length > 0">
-  <li class="content result" *ngFor="let user of results">
+  <li *ngFor="let user of results" class="content result">
     <a class="profile-link" routerLink="/player/{{user.id}}">{{user.username}}</a>
     <app-friend-action [other_id]="user.id"></app-friend-action>
   </li>

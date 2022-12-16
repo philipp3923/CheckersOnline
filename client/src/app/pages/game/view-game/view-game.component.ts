@@ -15,15 +15,15 @@ export class ViewGameComponent implements OnInit, AfterViewInit {
   @ViewChild("board") board: BoardComponent | undefined;
   @ViewChild("black_timer") blackTimer: TimerComponent | undefined;
   @ViewChild("white_timer") whiteTimer: TimerComponent | undefined;
+  public blackPlayer: UserInfoModel | undefined;
+  public whitePlayer: UserInfoModel | undefined;
+  public DYN_TIME_MAP: string[];
+  public DYN_INC_MAP: string[];
+  public STAT_TIME_MAP: string[];
   private currentMoveIndex: number;
   private states: number[][][];
   private blackTimes: number[];
   private whiteTimes: number[];
-  public blackPlayer: UserInfoModel | undefined;
-  public whitePlayer: UserInfoModel |undefined;
-  public DYN_TIME_MAP: string[];
-  public DYN_INC_MAP: string[];
-  public STAT_TIME_MAP: string[];
 
   constructor(private route: ActivatedRoute, private router: Router, private apiService: ApiService) {
     this.DYN_TIME_MAP = DYN_TIME_MAP;
@@ -48,14 +48,14 @@ export class ViewGameComponent implements OnInit, AfterViewInit {
       await this.router.navigate([]);
       return;
     }
-    try{
+    try {
       this.blackPlayer = await this.apiService.getUser(this.game.black);
-    }catch (e) {
+    } catch (e) {
 
     }
-    try{
+    try {
       this.whitePlayer = await this.apiService.getUser(this.game.white);
-    }catch (e) {
+    } catch (e) {
 
     }
   }
@@ -112,6 +112,11 @@ export class ViewGameComponent implements OnInit, AfterViewInit {
     this.board?.refresh();
   }
 
+  getTimeString(time: number) {
+    const date = new Date(time);
+    return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+  }
+
   private setTimes() {
     this.blackTimer?.setTime(this.blackTimes[this.currentMoveIndex]);
     this.whiteTimer?.setTime(this.whiteTimes[this.currentMoveIndex]);
@@ -131,13 +136,13 @@ export class ViewGameComponent implements OnInit, AfterViewInit {
     for (const play of this.game.plays) {
       const newState = this.copyState(this.states[this.states.length - 1]);
 
-      if(play.color === "BLACK"){
+      if (play.color === "BLACK") {
         this.blackTimes.push(play.time_left ?? 0);
-        this.whiteTimes.push(this.whiteTimes[this.whiteTimes.length-1]);
+        this.whiteTimes.push(this.whiteTimes[this.whiteTimes.length - 1]);
       }
-      if(play.color === "WHITE"){
+      if (play.color === "WHITE") {
         this.whiteTimes.push(play.time_left ?? 0);
-        this.blackTimes.push(this.blackTimes[this.blackTimes.length-1]);
+        this.blackTimes.push(this.blackTimes[this.blackTimes.length - 1]);
       }
 
       if (play.capture) {
@@ -154,11 +159,5 @@ export class ViewGameComponent implements OnInit, AfterViewInit {
       this.states.push(newState);
     }
     console.log(this.states.length);
-  }
-
-
-  getTimeString(time: number){
-    const date = new Date(time);
-    return `${date.getDate()}.${date.getMonth()+1}.${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
   }
 }

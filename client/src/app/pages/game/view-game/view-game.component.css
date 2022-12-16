@@ -1,11 +1,11 @@
 
-.full{
+.full {
   display: flex;
   flex-direction: column;
 }
 
 
-.buttons{
+.buttons {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -13,17 +13,17 @@
   height: min-content;
 }
 
-.information{
+.information {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.game-info-list{
+.game-info-list {
   justify-content: center;
 }
 
-a{
+a {
   padding: 0;
   max-width: 100px;
   text-overflow: ellipsis;

@@ -15,7 +15,7 @@ export class FooterComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  async logout(){
+  async logout() {
     await this.userService.logout();
     await this.userService.guest();
     await this.router.navigate([""]);

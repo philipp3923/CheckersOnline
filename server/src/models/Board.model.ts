@@ -1,4 +1,3 @@
-
 export enum Values {
     E = 0, BS = -1, WS = 1, BD = -2, WD = 2
 }
@@ -16,8 +15,8 @@ export interface Location {
     y: number
 }
 
-export enum Color{
-    WHITE= 1, BLACK=-1
+export enum Color {
+    WHITE = 1, BLACK = -1
 }
 
 export default class BoardModel {
@@ -52,15 +51,15 @@ export default class BoardModel {
     /**
      * #TODO implement tie rules
      */
-    public getWinner(): Color | null{
+    public getWinner(): Color | null {
         return this.winner;
     }
 
-    public setWinner(color: Color){
+    public setWinner(color: Color) {
         this.winner = color;
     }
 
-    public setNextTurnNull(){
+    public setNextTurnNull() {
         this.nextTurn = null;
     }
 
@@ -86,6 +85,14 @@ export default class BoardModel {
             this.nextTurn = null;
             this.winner = this.lastTurn?.color ?? null;
         }
+    }
+
+    public getState() {
+        return this.state;
+    }
+
+    public getNextTurn(): Color | null {
+        return this.nextTurn;
     }
 
     private turn(start: Location, target: Location) {
@@ -125,11 +132,9 @@ export default class BoardModel {
 
                 if (!capture && possibleCaptures.length <= 0) {
                     this.possibleTurns.push(...this.calculatePossibleMoves({x: x, y: y}));
-                }
-                else if (capture) {
+                } else if (capture) {
                     this.possibleTurns.push(...possibleCaptures);
-                }
-                else {
+                } else {
                     capture = true;
                     this.possibleTurns = [];
                     this.possibleTurns.push(...possibleCaptures);
@@ -254,14 +259,6 @@ export default class BoardModel {
 
     private setValue(location: Location, value: Values) {
         this.state[location.y][location.x] = value;
-    }
-
-    public getState(){
-        return this.state;
-    }
-
-    public getNextTurn(): Color | null{
-        return this.nextTurn;
     }
 
 }

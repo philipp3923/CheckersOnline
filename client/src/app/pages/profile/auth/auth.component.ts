@@ -43,11 +43,11 @@ export class AuthComponent implements OnInit {
     const username = this.nameInput?.nativeElement.value ?? "";
     const password = this.passwordInput?.nativeElement.value ?? "";
 
-    try{
+    try {
       const res = await this.apiService.loginUser(username, password);
       await this.userService.login(res.user, res.accessToken, res.refreshToken);
       await this.router.navigate(["/"]);
-    } catch(e) {
+    } catch (e) {
       this.messageService.addMessage(MessageType.ERROR, "Wrong username or password.");
     }
   }
@@ -72,10 +72,10 @@ export class AuthComponent implements OnInit {
     const email = this.emailInput?.nativeElement.value ?? "";
     const password = this.passwordInput?.nativeElement.value ?? "";
 
-    try{
+    try {
       const reg_res = await this.apiService.registerUser(email, username, password);
       this.login();
-    }catch (e){
+    } catch (e) {
       this.messageService.addMessage(MessageType.ERROR, "Username or E-Mail is already in use.");
     }
   }

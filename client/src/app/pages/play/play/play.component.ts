@@ -25,7 +25,7 @@ export class PlayComponent implements OnInit {
 
   @ViewChild("time_slider") public timeSlider: ElementRef<HTMLInputElement> | undefined;
   @ViewChild("increment_slider") public incrementSlider: ElementRef<HTMLInputElement> | undefined;
-  @ViewChild("game_key") public game_keyInput: ElementRef<HTMLInputElement> |undefined;
+  @ViewChild("game_key") public game_keyInput: ElementRef<HTMLInputElement> | undefined;
 
   constructor(private socketService: SocketService, private gameService: GameService, private router: Router, private messageService: MessageService) {
     this.type = 0;
@@ -58,7 +58,7 @@ export class PlayComponent implements OnInit {
         //@ts-ignore
         this.timeSlider.nativeElement.max = this.STAT_TIME_MAP.length - 1;
         //@ts-ignore
-        if(this.timeSlider.nativeElement.value >= this.STAT_TIME_MAP.length - 1){
+        if (this.timeSlider.nativeElement.value >= this.STAT_TIME_MAP.length - 1) {
 
           this.time = STAT_TIME_MAP.length - 1;
           //@ts-ignore
@@ -70,7 +70,7 @@ export class PlayComponent implements OnInit {
         //@ts-ignore
         this.timeSlider.nativeElement.max = this.DYN_TIME_MAP.length - 1;
         //@ts-ignore
-        if(this.timeSlider.nativeElement.value >= this.DYN_TIME_MAP.length - 1){
+        if (this.timeSlider.nativeElement.value >= this.DYN_TIME_MAP.length - 1) {
           this.time = DYN_TIME_MAP.length - 1;
           //@ts-ignore
           this.timeSlider.nativeElement.value = this.DYN_TIME_MAP.length - 1;
@@ -94,52 +94,50 @@ export class PlayComponent implements OnInit {
     const time = this.time;
     const increment = this.increment;
 
-    switch (this.state){
+    switch (this.state) {
       case "join_custom":
         const key = this.game_keyInput?.nativeElement.value.toUpperCase();
-        if(!key){
+        if (!key) {
           this.messageService.addMessage(MessageType.WARNING, "Please enter a Game Key.");
           return;
         }
-        this.socketService.joinCustomGame(key, (res)=>{
-          if(!res.success){
-            if(res.error === "Game does not exist"){
+        this.socketService.joinCustomGame(key, (res) => {
+          if (!res.success) {
+            if (res.error === "Game does not exist") {
               this.messageService.addMessage(MessageType.ERROR, "A Game with the given Key does not exist.");
-            }
-            else if(res.error === "Exceeded amount of possible simultaneous games"){
+            } else if (res.error === "Exceeded amount of possible simultaneous games") {
               this.messageService.addMessage(MessageType.ERROR, "You have reached the maximum amount of simultaneous" +
                 " games (20).");
+            } else {
+              this.messageService.addMessage(MessageType.ERROR, "You are not allowed to join this game.");
             }
-            else{
-                this.messageService.addMessage(MessageType.ERROR, "You are not allowed to join this game.");
-              }
             return;
           }
-          if(!this.gameService.getGame(key)){
-            this.gameService.addWaitingGame(key,0,0,0);
+          if (!this.gameService.getGame(key)) {
+            this.gameService.addWaitingGame(key, 0, 0, 0);
           }
-          this.router.navigate(["/play/"+key]).then();
+          this.router.navigate(["/play/" + key]).then();
         });
         break
       case "join_casual":
-        this.socketService.joinCasualGame(this.type===1, this.time, this.increment, (res)=>{
-          if(!res.success){
+        this.socketService.joinCasualGame(this.type === 1, this.time, this.increment, (res) => {
+          if (!res.success) {
             this.messageService.addMessage(MessageType.ERROR, "We are sorry, this feature has yet to be implemented.");
             return;
           }
-          this.gameService.addWaitingGame(res.key,timeType,time,increment);
-          this.router.navigate(["/play/"+res.key]).then();
+          this.gameService.addWaitingGame(res.key, timeType, time, increment);
+          this.router.navigate(["/play/" + res.key]).then();
         });
         break
       case "create_custom":
-        this.socketService.createCustomGame(this.type===1, this.time, this.increment, (res)=>{
-          if(!res.success){
+        this.socketService.createCustomGame(this.type === 1, this.time, this.increment, (res) => {
+          if (!res.success) {
             this.messageService.addMessage(MessageType.ERROR, "You have reached the maximum amount of simultaneous" +
               " games (20).");
             return;
           }
-          this.gameService.addWaitingGame(res.key,timeType,time,increment);
-          this.router.navigate(["/play/"+res.key]).then();
+          this.gameService.addWaitingGame(res.key, timeType, time, increment);
+          this.router.navigate(["/play/" + res.key]).then();
         });
         break
     }
