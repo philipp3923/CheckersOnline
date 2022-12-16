@@ -117,8 +117,8 @@ export default class UserRepository {
         if (typeof user_id === "undefined") {
             throw new Error("User has no account");
         }
-        console.log(user_id);
-        console.log(email);
+        //console.log(user_id);
+        //console.log(email);
         await this.prismaClient.user.update({
             data: {email: email},
             where: {id: user_id},

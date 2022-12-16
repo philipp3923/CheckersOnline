@@ -74,8 +74,8 @@ export default class FriendshipRepository {
             throw new Error("User does not exist");
         }
 
-        console.log(user);
-        console.log(friend);
+        //console.log(user);
+        //console.log(friend);
 
         await this.prismaClient.friend.deleteMany({
             where: {AND: [{id_user: user.id}, {id_friend: friend.id}]},

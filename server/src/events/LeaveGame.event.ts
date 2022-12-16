@@ -9,7 +9,7 @@ export default class LeaveGameEvent extends AbstractEvent {
     }
 
     public async on(connection: Connection, args: any, respond: SocketResponse) {
-        console.log("TEST");
+        //console.log("TEST");
         if (typeof args.key !== "string") {
             respond({success: false, error: "Invalid argument type"});
             return;
