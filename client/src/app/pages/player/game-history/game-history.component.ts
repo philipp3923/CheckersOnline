@@ -58,7 +58,7 @@ export class GameHistoryComponent implements OnInit {
   }
 
   private async retrieveGames() {
-    console.log(this._user_id);
+    //console.log(this._user_id);
     this.gamesWithEnemy = [];
     const games: GameModel[] = await this.apiService.getFinishedGamesOfUser(this._user_id);
     for (let game of games) {

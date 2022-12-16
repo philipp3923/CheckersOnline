@@ -34,7 +34,7 @@ export class SocketService {
       this.socket.disconnect();
     }
 
-    this.socket = io("localhost:4200", {
+    this.socket = io("", {
       auth: {
         token: token
       },
@@ -94,8 +94,8 @@ export class SocketService {
     this.emit("leaveGame", {key: key}, (res: any) => callback(res));
   }
 
-  public playMove(key: string, index: number) {
-    this.emit("gameTurn", {key: key, index: index}, (res: any) => console.log(res));
+  public playMove(key: string, index: number, callback: (res: any) => void) {
+    this.emit("gameTurn", {key: key, index: index},(res: any) => callback(res));
   }
 
   public addGameStateListener(listener: (gameState: GameStateModel) => void) {

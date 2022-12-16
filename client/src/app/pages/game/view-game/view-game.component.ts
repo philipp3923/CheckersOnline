@@ -68,9 +68,9 @@ export class ViewGameComponent implements OnInit, AfterViewInit {
       return;
     }
     const currentMove = this.game.plays[this.currentMoveIndex];
-    console.table(this.states[this.currentMoveIndex]);
+    //console.table(this.states[this.currentMoveIndex]);
     this.board?.move(currentMove.start, currentMove.target, currentMove.capture);
-    console.log(currentMove);
+    //console.log(currentMove);
     this.currentMoveIndex++;
     this.setTimes();
     /*this.board?.setState(this.copyState(this.states[this.currentMoveIndex]));
@@ -158,6 +158,6 @@ export class ViewGameComponent implements OnInit, AfterViewInit {
 
       this.states.push(newState);
     }
-    console.log(this.states.length);
+    //console.log(this.states.length);
   }
 }

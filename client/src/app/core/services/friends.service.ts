@@ -76,7 +76,7 @@ export class FriendsService {
   public deleteFriend(id: string) {
     this.socketService.deleteFriend(id, (args) => {
       if (!args.success) {
-        console.log(args);
+        //console.log(args);
       } else {
         this.messageService.addMessage(MessageType.INFO, "Deleted friend.");
       }
@@ -90,7 +90,7 @@ export class FriendsService {
   }
 
   public isIncoming(id: string) {
-    console.log(this.incomingRequests.value);
+    //console.log(this.incomingRequests.value);
     return this.incomingRequests.value.map((f) => f.id).indexOf(id) >= 0;
   }
 
@@ -99,10 +99,10 @@ export class FriendsService {
   }
 
   public acceptFriend(id: string) {
-    console.log(id);
+    //console.log(id);
     this.socketService.acceptFriend(id, (args) => {
       if (!args.success) {
-        console.log(args);
+        //console.log(args);
       }
 
     });
