@@ -17,7 +17,8 @@
       <input #input autocomplete="section-{{name.toLowerCase()}} new-{{name.toLowerCase()}}"
              placeholder="Enter a new {{name}}" type="{{name.toLowerCase()}}">
       <input #input_repeat (input)="compareInputs()"
-             *ngIf="repetitionOnUpdate" autocomplete="section-{{name.toLowerCase()}} new-{{name.toLowerCase()}}" placeholder="Repeat new {{name}}"
+             *ngIf="repetitionOnUpdate" autocomplete="section-{{name.toLowerCase()}} new-{{name.toLowerCase()}}"
+             placeholder="Repeat new {{name}}"
              type="{{name.toLowerCase()}}">
     </div>
     <button class="icon-button">done</button>

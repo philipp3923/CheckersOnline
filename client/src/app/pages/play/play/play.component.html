@@ -37,7 +37,8 @@
           <div>Increment:</div>
           <div>{{DYN_INC_MAP[increment]}}</div>
         </div>
-        <input #increment_slider (input)="updateIncrement()" class="slider" max="{{DYN_INC_MAP.length-1}}" min="0" min="0"
+        <input #increment_slider (input)="updateIncrement()" class="slider" max="{{DYN_INC_MAP.length-1}}" min="0"
+               min="0"
                type="range" value="2"
         >
       </div>
