@@ -75,6 +75,7 @@ export class ProfileComponent implements OnInit {
     const deleteSuccess = await this.userService.deleteUser(password);
     if (deleteSuccess) {
       await this.router.navigate([""]);
+      this.messageService.addMessage(MessageType.INFO, "Account deleted.");
     } else {
       this.messageService.addMessage(MessageType.ERROR, "Something went wrong.");
     }
